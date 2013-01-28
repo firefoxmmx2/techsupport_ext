@@ -22,6 +22,11 @@ import javax.persistence.Table;
 @Table(name = "t_role")
 public class Role implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3524393715428189926L;
+
 	public Role(Integer roleid, Integer departid, String rolename,
 			String roledescription, Integer roletype) {
 		super();
@@ -39,7 +44,6 @@ public class Role implements Serializable{
 
 	public Role() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/** @ --角色ID--roleid--Integer--9-- */

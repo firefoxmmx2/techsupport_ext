@@ -90,9 +90,7 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 	public List<User> getListUser(User user) {
 		this.getHibernateTemplate().setCacheQueries(true);
 
-		StringBuffer hql = new StringBuffer("select new User(t.userid,t.departid,t.useraccount,t.username,t.password," +
-				"t.userorder,t.isvalid,t.usertype,t.idnum,t.mobilephone," +
-				"t.jzlbdm,t.jzlbmc) from User t");
+		StringBuffer hql = new StringBuffer("select new User(t.userid,t.departid,t.useraccount,t.username,t.password,t.department,t.roles) from User t");
 		Map<String, Object> para_map = get_para_and_hql(user, hql);
 		hql = (StringBuffer) para_map.get("hql");
 		List<Object> para_list = (List<Object>) para_map.get("para");

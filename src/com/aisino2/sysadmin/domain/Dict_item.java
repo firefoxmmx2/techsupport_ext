@@ -15,6 +15,11 @@ import javax.persistence.Table;
 @Table(name="t_dict_item")
 public class Dict_item implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5232878913105889597L;
+
 	/** @param 字典项(t_dict_item) */
 
 	@Id

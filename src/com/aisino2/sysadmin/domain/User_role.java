@@ -35,6 +35,10 @@ class User_rolePk implements Serializable{
 @IdClass(User_rolePk.class)
 public class User_role implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2054228654798657726L;
 	/** @param 用户角色(t_user_role) */
 
 	private User_rolePk id;

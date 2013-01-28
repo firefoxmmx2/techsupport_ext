@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Component;
 
+import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.IMenuDao;
 import com.aisino2.sysadmin.domain.Department;
 import com.aisino2.sysadmin.domain.Menu;
@@ -163,9 +164,17 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 	}
 
 	public List<Menu> getChildMenu(Menu menu) {
-		String hql = "select t from Menu t where t.parentmenucode = ? ";
-		return this.getHibernateTemplate().find(hql,
-				new Object[] { menu.getMenucode() });
+		String hql = "select t from Menu t";
+		if(Util.isNotEmpty(menu.getMenucode())){
+			hql += " where t.parent = ?";
+			return this.getHibernateTemplate().find(hql,
+					new Object[] { menu.getMenucode() });
+		}
+		else{
+			hql += " where t.parent is null";
+			return this.getHibernateTemplate().find(hql,
+					new Object[] { });
+		}
 	}
 
 	public List<Menu> getRoleCheckedMenuList(Menu menu) {

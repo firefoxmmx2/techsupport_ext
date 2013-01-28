@@ -34,6 +34,10 @@ class RoleMenuPk implements Serializable{
 @IdClass(RoleMenuPk.class)
 public class Role_menu implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9152732015090732452L;
 	/** @param 角色菜单(t_role_menu) */
 
 	private RoleMenuPk id;

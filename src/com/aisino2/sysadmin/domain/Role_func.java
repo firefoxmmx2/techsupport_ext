@@ -37,6 +37,10 @@ class RoleFuncPk implements Serializable{
 @IdClass(RoleFuncPk.class)
 public class Role_func implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6093289511189631548L;
 	private RoleFuncPk id;
 	/** @param 角色功能(t_role_func) */
 	@Id

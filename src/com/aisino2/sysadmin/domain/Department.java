@@ -52,7 +52,6 @@ public class Department implements Serializable  {
 
 	public Department() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/** @ --机构ID--departid--Integer--9-- */

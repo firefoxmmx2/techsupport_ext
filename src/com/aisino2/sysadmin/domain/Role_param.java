@@ -13,6 +13,10 @@ import javax.persistence.Table;
 @IdClass(RoleParamPk.class)
 public class Role_param implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8871045931676509016L;
 	/** @param 角色参数(t_role_param) */
 
 	private RoleParamPk id;

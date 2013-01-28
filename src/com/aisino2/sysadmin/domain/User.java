@@ -17,19 +17,23 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@org.hibernate.annotations.Entity(dynamicInsert=true,dynamicUpdate=true)
-@Table(name="t_user")
-public class User  implements Serializable{
+@org.hibernate.annotations.Entity(dynamicInsert = true, dynamicUpdate = true)
+@Table(name = "t_user")
+public class User implements Serializable {
 
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8417307436448716076L;
+
 	public User() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public User(Integer userid, Integer departid, String useraccount,
 			String username, String password, Integer userorder,
-			String isvalid, String usertype, String idnum, String mobilephone, String jzlbdm, String jzlbmc) {
+			String isvalid, String usertype, String idnum, String mobilephone,
+			String jzlbdm) {
 		super();
 		this.userid = userid;
 		this.departid = departid;
@@ -42,19 +46,69 @@ public class User  implements Serializable{
 		this.idnum = idnum;
 		this.mobilephone = mobilephone;
 		this.jzlbdm = jzlbdm;
-		this.jzlbmc = jzlbmc;
 	}
 
 	
-	/** @param 用户(t_user) */
+	public User(Integer userid, Integer departid, String useraccount,
+			String username, String password, Integer userorder,
+			String isvalid, String usertype, String idnum, String mobilephone,
+			String email, Department department, List<Role> roles,
+			String ssdwbm, String jzlbdm) {
+		super();
+		this.userid = userid;
+		this.departid = departid;
+		this.useraccount = useraccount;
+		this.username = username;
+		this.password = password;
+		this.userorder = userorder;
+		this.isvalid = isvalid;
+		this.usertype = usertype;
+		this.idnum = idnum;
+		this.mobilephone = mobilephone;
+		this.email = email;
+		this.department = department;
+		this.roles = roles;
+		this.ssdwbm = ssdwbm;
+		this.jzlbdm = jzlbdm;
+	}
+
+	
+	public User(Integer userid, Integer departid, String useraccount,
+			String username, String password, List<Role> roles) {
+		super();
+		this.userid = userid;
+		this.departid = departid;
+		this.useraccount = useraccount;
+		this.username = username;
+		this.password = password;
+		this.roles = roles;
+	}
+
+
+	public User(Integer userid, Integer departid, String useraccount,
+			String username, String password, Department department,List<Role> roles) {
+		this.userid = userid;
+		this.departid = departid;
+		this.useraccount = useraccount;
+		this.username = username;
+		this.password = password;
+		this.department = department;
+		this.roles = roles;
+	}
+
+
+	/**
+	 * @param 用户
+	 *            (t_user)
+	 */
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="SEQ_GEN_USERID")
-	@SequenceGenerator(name="SEQ_GEN_USERID",sequenceName="userid")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_USERID")
+	@SequenceGenerator(name = "SEQ_GEN_USERID", sequenceName = "userid")
 	/** @ --用户ID--userid--Integer--9-- */
 	private Integer userid;
 	
-	@Column
 	/** @ --机构ID--departid--Integer--9-- */
+	@Column
 	private Integer departid;
 
 	@Column
@@ -80,96 +134,51 @@ public class User  implements Serializable{
 	@Column
 	/** @ --用户类别--usertype--String--2-- */
 	private String usertype;
-	
+
 	@Column
 	/** @ --用户身份证号--usertype--String--2-- */
 	private String idnum;
-	
-	private String idnum15;  ///15位的身份证号
-	
+
 	@Column
 	/** @ --用户移动电话--usertype--String--2-- */
 	private String mobilephone;
-
-	/** 分页排序 */
-	private String pageSort;
-	/** @ --部门代码-- */
-	private String departcode;
-	
-	/** @ --用户新密码-- */
-	private String passwordNew;
 	/**
-	 * 用户类别名称 - 非数据库字段 -
+	 * 电子邮件
 	 */
-	private String usertypename;
+	@Column
+	private String email;
+
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "departid", insertable = false, updatable = false)
+	private Department department;
+
+	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, targetEntity = Role.class)
+	@JoinTable(name = "t_user_role", joinColumns = @JoinColumn(name = "userid"), inverseJoinColumns = @JoinColumn(name = "roleid"))
+	private List<Role> roles;
+	
+	private String baojingflag;
+	private String loginip;
+	private String loginmac;
+
 	/**
-	 * 是否有效 值 - 非数据库字段 -
+	 * ssdwbm-用户所属单位编码。企业用户及员工用户放置企业编码，其他用户为空 added by mds at 20100121
 	 */
-	private String isvalidValue;
-	
-	/** 移动方式 */
-	private String way;
+	@Column
+	private String ssdwbm;
 
-	/**机构名称*/
-	private String departname;
-	
-	/**userId 集合属性*/
-	private String useridSet;
-	
-	private String checkbox;
-	
-	private String userAccP; ///用户的用户名||密码
-	
-	//ukey属性
-	private String ukeyid;
-	
-	
-	  
-	  @ManyToOne(cascade=CascadeType.ALL)
-	  @JoinColumn(name="departid",insertable=false,updatable=false)
-	  private Department department;
-	  
-	  @ManyToMany(cascade={CascadeType.MERGE,CascadeType.PERSIST},targetEntity=Role.class)
-	  @JoinTable(name="t_user_role",joinColumns=@JoinColumn(name="userid"),inverseJoinColumns=@JoinColumn(name="roleid"))
-	  private List<Role> roles;
+	@Column
+	private String jzlbdm;
 
-	  private String baojingflag;
-	  private String loginip;
-	  private String loginmac;
-	  
-	  /**
-	   *  ssdwbm-用户所属单位编码。企业用户及员工用户放置企业编码，其他用户为空
-	   *  added by mds at 20100121
-	   */
-	  private String ssdwbm;
-	  private String ssdwmc;
-	  
-	  private String jzlbdm;
-	  private String jzlbmc;
-	  
-	public String getUseridSet() {
-		return useridSet;
+	
+	public String getEmail() {
+		return email;
 	}
 
-	public void setUseridSet(String useridSet) {
-		this.useridSet = useridSet;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public String getCheckbox() {
-		return checkbox;
-	}
-
-	public void setCheckbox(String checkbox) {
-		this.checkbox = checkbox;
-	}
-
-	public String getDepartname() {
-			return departname;
-	}
-
-	public void setDepartname(String departname) {
-		this.departname = departname;
-	}
 
 	public Department getDepartment() {
 		return department;
@@ -242,55 +251,6 @@ public class User  implements Serializable{
 		this.usertype = usertype;
 	}
 
-	/** 分页排序 */
-	public String getPageSort() {
-		return pageSort;
-	}
-
-	public void setPageSort(String pageSort) {
-		this.pageSort = pageSort;
-	}
-
-	public String getUsertypename() {
-		return usertypename;
-	}
-
-	public void setUsertypename(String usertypename) {
-		this.usertypename = usertypename;
-	}
-
-	public String getWay() {
-		return way;
-	}
-
-	public void setWay(String way) {
-		this.way = way;
-	}
-
-	public String getPasswordNew() {
-		return passwordNew;
-	}
-
-	public void setPasswordNew(String passwordNew) {
-		this.passwordNew = passwordNew;
-	}
-
-	public String getIsvalidValue() {
-		return isvalidValue;
-	}
-
-	public void setIsvalidValue(String isvalidValue) {
-		this.isvalidValue = isvalidValue;
-	}
-
-	public String getDepartcode() {
-		return departcode;
-	}
-
-	public void setDepartcode(String departcode) {
-		this.departcode = departcode;
-	}
-
 
 	public String getIdnum() {
 		return idnum;
@@ -332,21 +292,6 @@ public class User  implements Serializable{
 		this.loginmac = loginmac;
 	}
 
-	public String getUserAccP() {
-		return userAccP;
-	}
-
-	public void setUserAccP(String userAccP) {
-		this.userAccP = userAccP;
-	}
-
-	public String getIdnum15() {
-		return idnum15;
-	}
-
-	public void setIdnum15(String idnum15) {
-		this.idnum15 = idnum15;
-	}
 
 	public String getSsdwbm() {
 		return ssdwbm;
@@ -356,13 +301,6 @@ public class User  implements Serializable{
 		this.ssdwbm = ssdwbm;
 	}
 
-	public String getSsdwmc() {
-		return ssdwmc;
-	}
-
-	public void setSsdwmc(String ssdwmc) {
-		this.ssdwmc = ssdwmc;
-	}
 
 	public String getJzlbdm() {
 		return jzlbdm;
@@ -370,22 +308,6 @@ public class User  implements Serializable{
 
 	public void setJzlbdm(String jzlbdm) {
 		this.jzlbdm = jzlbdm;
-	}
-
-	public String getJzlbmc() {
-		return jzlbmc;
-	}
-
-	public void setJzlbmc(String jzlbmc) {
-		this.jzlbmc = jzlbmc;
-	}
-	
-	public String getUkeyid() {
-		return ukeyid;
-	}
-
-	public void setUkeyid(String ukeyid) {
-		this.ukeyid = ukeyid;
 	}
 
 	public List<Role> getRoles() {
@@ -403,6 +325,5 @@ public class User  implements Serializable{
 	public void setUseraccount(String useraccount) {
 		this.useraccount = useraccount;
 	}
-	
-	
+
 }

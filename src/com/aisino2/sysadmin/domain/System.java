@@ -2,9 +2,12 @@ package com.aisino2.sysadmin.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -12,13 +15,31 @@ import javax.persistence.Table;
 @Table(name="t_system")
 public class System implements Serializable {
 
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2721863152529504755L;
+
 
 	/** @param 系统(t_system) */
 
+	
 	public System() {
 		super();
-		// TODO Auto-generated constructor stub
+	}
+
+	public System(String systemcode, String systemname, String systemdefine,
+			String picturepath, System parent, Integer nodeorder,
+			String isleaf, String fullcode) {
+		super();
+		this.systemcode = systemcode;
+		this.systemname = systemname;
+		this.systemdefine = systemdefine;
+		this.picturepath = picturepath;
+		this.parent = parent;
+		this.nodeorder = nodeorder;
+		this.isleaf = isleaf;
+		this.fullcode = fullcode;
 	}
 
 	/** @ --系统代码--systemcode--String--20-- */
@@ -36,7 +57,8 @@ public class System implements Serializable {
 	@Column
 	/** @ --图片路径--picturepath--String--200-- */
 	private String picturepath;
-
+	@ManyToOne(cascade=CascadeType.ALL,targetEntity=System.class)
+	@JoinColumn(name="parentsystemcode",nullable=true,referencedColumnName="systemcode")
 	private System parent;
 	@Column
 	/** @ --节点顺序--nodeorder--Integer--9-- */

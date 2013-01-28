@@ -71,7 +71,7 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 
 			public List<System> doInHibernate(Session sess)
 					throws HibernateException, SQLException {
-				StringBuffer hql = new StringBuffer("select new System(t.systemcode, t.systemname, t.systemdefine,	t.picturepath, t.parentsystemcode,t.nodeorder,t.isleaf, t.fullcode) from System t");
+				StringBuffer hql = new StringBuffer("select new System(t.systemcode, t.systemname, t.systemdefine,	t.picturepath, t.parent,t.nodeorder,t.isleaf, t.fullcode) from System t");
 				Map<String, Object> para_map = get_para_and_hql(system, hql);
 				hql = (StringBuffer) para_map.get("hql");
 				List<Object> para_list = (List<Object>) para_map.get("para");
@@ -98,7 +98,7 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 
 			public List<System> doInHibernate(Session sess)
 					throws HibernateException, SQLException {
-				StringBuffer hql = new StringBuffer("select new System(t.systemcode, t.systemname, t.systemdefine,	t.picturepath, t.parentsystemcode,t.nodeorder,t.isleaf, t.fullcode)from System t");
+				StringBuffer hql = new StringBuffer("select new System(t.systemcode, t.systemname, t.systemdefine,	t.picturepath, t.parent,t.nodeorder,t.isleaf, t.fullcode)from System t");
 				Map<String, Object> para_map = get_para_and_hql(system, hql);
 				hql = (StringBuffer) para_map.get("hql");
 				List<Object> para_list = (List<Object>) para_map.get("para");

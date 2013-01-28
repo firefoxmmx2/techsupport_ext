@@ -12,6 +12,10 @@ import javax.persistence.Table;
 @Table(name="t_param")
 public class Param implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3570392215158028592L;
 	/** @param 参数设置(t_param) */
 
 	@Id

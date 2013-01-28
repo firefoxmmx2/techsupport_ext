@@ -2,12 +2,15 @@ package com.aisino2.sysadmin.domain;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -63,7 +66,6 @@ public class Menu implements Serializable {
 
 	public Menu() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/** @ --菜单代码--menucode--String--40-- */
@@ -98,6 +100,7 @@ public class Menu implements Serializable {
 	@JoinColumn(name="parentmenucode",nullable=true,referencedColumnName="menucode")
 	@Fetch(FetchMode.SELECT)
 	private Menu parent;
+
 
 	public System getSystem() {
 		return system;
