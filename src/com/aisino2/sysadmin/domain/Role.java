@@ -68,26 +68,6 @@ public class Role implements Serializable{
 	/** @ --角色类别--roletype--Integer--1-- */
 	private Integer roletype;
 
-	/** 分页排序 */
-	private String pageSort;
-
-	/** 移动方式 */
-	private String way;
-
-	/** 选中菜单 */
-	private String menucode;
-
-	/** 角色ID串 */
-	private String roleidString;
-
-	/** 部门名称 */
-	private String departname;
-
-	/** 部门代码 */
-	private String departcode;
-
-	/** 筛选字段 */
-	private String query_simplepin;
 	@ManyToOne
 	@JoinColumn(name="departid",insertable=false,updatable=false)
 	private Department department;
@@ -101,49 +81,6 @@ public class Role implements Serializable{
 	@JoinTable(name="t_role_menu",joinColumns=@JoinColumn(name="roleid"),inverseJoinColumns=@JoinColumn(name="menucode"))
 	private List<Menu> roleMenus;
 
-	private String systemcode;
-
-	private String roleNameType = "0";
-
-	/** 设置复选框的属性 */
-	private String checkbox;
-
-
-
-	private String jzlbdm;
-	private String jzlbmc;
-
-	public String getRoleNameType() {
-		return roleNameType;
-	}
-
-	public void setRoleNameType(String roleNameType) {
-		this.roleNameType = roleNameType;
-	}
-
-	public String getCheckbox() {
-		return checkbox;
-	}
-
-	public void setCheckbox(String checkbox) {
-		this.checkbox = checkbox;
-	}
-
-	public String getMenucode() {
-		return menucode;
-	}
-
-	public void setMenucode(String menucode) {
-		this.menucode = menucode;
-	}
-
-	public String getSystemcode() {
-		return systemcode;
-	}
-
-	public void setSystemcode(String systemcode) {
-		this.systemcode = systemcode;
-	}
 
 	/** @ 角色ID(roleid) */
 	public Integer getRoleid() {
@@ -190,14 +127,6 @@ public class Role implements Serializable{
 		this.roletype = roletype;
 	}
 
-	/** 分页排序 */
-	public String getPageSort() {
-		return pageSort;
-	}
-
-	public void setPageSort(String pageSort) {
-		this.pageSort = pageSort;
-	}
 
 	public Department getDepartment() {
 		return department;
@@ -207,62 +136,6 @@ public class Role implements Serializable{
 		this.department = department;
 	}
 
-	public String getWay() {
-		return way;
-	}
-
-	public void setWay(String way) {
-		this.way = way;
-	}
-
-
-	public String getRoleidString() {
-		return roleidString;
-	}
-
-	public void setRoleidString(String roleidString) {
-		this.roleidString = roleidString;
-	}
-
-	public String getDepartname() {
-		return departname;
-	}
-
-	public void setDepartname(String departname) {
-		this.departname = departname;
-	}
-
-	public String getDepartcode() {
-		return departcode;
-	}
-
-	public void setDepartcode(String departcode) {
-		this.departcode = departcode;
-	}
-
-	public String getQuery_simplepin() {
-		return query_simplepin;
-	}
-
-	public void setQuery_simplepin(String query_simplepin) {
-		this.query_simplepin = query_simplepin;
-	}
-
-	public String getJzlbdm() {
-		return jzlbdm;
-	}
-
-	public void setJzlbdm(String jzlbdm) {
-		this.jzlbdm = jzlbdm;
-	}
-
-	public String getJzlbmc() {
-		return jzlbmc;
-	}
-
-	public void setJzlbmc(String jzlbmc) {
-		this.jzlbmc = jzlbmc;
-	}
 
 	public List<Function> getRoleFunctions() {
 		return roleFunctions;

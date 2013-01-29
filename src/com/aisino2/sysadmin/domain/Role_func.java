@@ -30,6 +30,39 @@ class RoleFuncPk implements Serializable{
 	public void setFunccode(String funccode) {
 		this.funccode = funccode;
 	}
+	public RoleFuncPk(Integer roleid, String funccode) {
+		super();
+		this.roleid = roleid;
+		this.funccode = funccode;
+	}
+	@Override
+	public int hashCode() {
+		final int PRIME = 41;
+
+		int result = 1;
+
+		result = PRIME * result + ((funccode == null) ? 0 : funccode.hashCode());
+
+		result = PRIME * result + ((roleid == null) ? 0 : roleid.hashCode());
+
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final RoleFuncPk other = (RoleFuncPk) obj;
+		if (other.getRoleid().equals(this.getRoleid())
+				&& other.getFunccode().equals(this.getFunccode()))
+			return true;
+		return false;
+	}
+	
+	
 }
 
 @Entity
@@ -41,7 +74,6 @@ public class Role_func implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -6093289511189631548L;
-	private RoleFuncPk id;
 	/** @param 角色功能(t_role_func) */
 	@Id
 	/** @ --角色ID--roleid--Integer--9-- */
@@ -96,11 +128,4 @@ public class Role_func implements Serializable {
 		this.paramObject = paramObject;
 	}
 
-	public RoleFuncPk getId() {
-		return id;
-	}
-
-	public void setId(RoleFuncPk id) {
-		this.id = id;
-	}
 }

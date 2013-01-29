@@ -30,72 +30,6 @@ public class User implements Serializable {
 		super();
 	}
 
-	public User(Integer userid, Integer departid, String useraccount,
-			String username, String password, Integer userorder,
-			String isvalid, String usertype, String idnum, String mobilephone,
-			String jzlbdm) {
-		super();
-		this.userid = userid;
-		this.departid = departid;
-		this.useraccount = useraccount;
-		this.username = username;
-		this.password = password;
-		this.userorder = userorder;
-		this.isvalid = isvalid;
-		this.usertype = usertype;
-		this.idnum = idnum;
-		this.mobilephone = mobilephone;
-		this.jzlbdm = jzlbdm;
-	}
-
-	
-	public User(Integer userid, Integer departid, String useraccount,
-			String username, String password, Integer userorder,
-			String isvalid, String usertype, String idnum, String mobilephone,
-			String email, Department department, List<Role> roles,
-			String ssdwbm, String jzlbdm) {
-		super();
-		this.userid = userid;
-		this.departid = departid;
-		this.useraccount = useraccount;
-		this.username = username;
-		this.password = password;
-		this.userorder = userorder;
-		this.isvalid = isvalid;
-		this.usertype = usertype;
-		this.idnum = idnum;
-		this.mobilephone = mobilephone;
-		this.email = email;
-		this.department = department;
-		this.roles = roles;
-		this.ssdwbm = ssdwbm;
-		this.jzlbdm = jzlbdm;
-	}
-
-	
-	public User(Integer userid, Integer departid, String useraccount,
-			String username, String password, List<Role> roles) {
-		super();
-		this.userid = userid;
-		this.departid = departid;
-		this.useraccount = useraccount;
-		this.username = username;
-		this.password = password;
-		this.roles = roles;
-	}
-
-
-	public User(Integer userid, Integer departid, String useraccount,
-			String username, String password, Department department,List<Role> roles) {
-		this.userid = userid;
-		this.departid = departid;
-		this.useraccount = useraccount;
-		this.username = username;
-		this.password = password;
-		this.department = department;
-		this.roles = roles;
-	}
-
 
 	/**
 	 * @param 用户
@@ -157,18 +91,6 @@ public class User implements Serializable {
 	@JoinTable(name = "t_user_role", joinColumns = @JoinColumn(name = "userid"), inverseJoinColumns = @JoinColumn(name = "roleid"))
 	private List<Role> roles;
 	
-	private String baojingflag;
-	private String loginip;
-	private String loginmac;
-
-	/**
-	 * ssdwbm-用户所属单位编码。企业用户及员工用户放置企业编码，其他用户为空 added by mds at 20100121
-	 */
-	@Column
-	private String ssdwbm;
-
-	@Column
-	private String jzlbdm;
 
 	
 	public String getEmail() {
@@ -266,48 +188,6 @@ public class User implements Serializable {
 
 	public void setMobilephone(String mobilephone) {
 		this.mobilephone = mobilephone;
-	}
-
-	public String getBaojingflag() {
-		return baojingflag;
-	}
-
-	public void setBaojingflag(String baojingflag) {
-		this.baojingflag = baojingflag;
-	}
-
-	public String getLoginip() {
-		return loginip;
-	}
-
-	public void setLoginip(String loginip) {
-		this.loginip = loginip;
-	}
-
-	public String getLoginmac() {
-		return loginmac;
-	}
-
-	public void setLoginmac(String loginmac) {
-		this.loginmac = loginmac;
-	}
-
-
-	public String getSsdwbm() {
-		return ssdwbm;
-	}
-
-	public void setSsdwbm(String ssdwbm) {
-		this.ssdwbm = ssdwbm;
-	}
-
-
-	public String getJzlbdm() {
-		return jzlbdm;
-	}
-
-	public void setJzlbdm(String jzlbdm) {
-		this.jzlbdm = jzlbdm;
 	}
 
 	public List<Role> getRoles() {

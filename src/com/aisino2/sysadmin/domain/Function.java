@@ -34,24 +34,7 @@ public class Function  implements Serializable{
 	/** @ --功能类别--functype--Integer--1-- */
 	private Integer functype;
 
-	/**
-	 * 功能类别名称
-	 */
-	private String functypename;
-
-	/**
-	 * 用户userid
-	 */
-	private  Integer userid;
-
 	
-	public Integer getUserid() {
-		return userid;
-	}
-
-	public void setUserid(Integer userid) {
-		this.userid = userid;
-	}
 
 	/** @ 功能代码(funccode) */
 	public String getFunccode() {
@@ -98,12 +81,4 @@ public class Function  implements Serializable{
 		this.functype = functype;
 	}
 
-
-	public String getFunctypename() {
-		return functypename;
-	}
-
-	public void setFunctypename(String functypename) {
-		this.functypename = functypename;
-	}
 }

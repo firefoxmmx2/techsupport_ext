@@ -27,6 +27,34 @@ class RoleMenuPk implements Serializable{
 	public void setRoleid(Integer roleid) {
 		this.roleid = roleid;
 	}
+	@Override
+	public int hashCode() {
+		final int PRIME = 41;
+
+		int result = 1;
+
+		result = PRIME * result + ((menucode == null) ? 0 : menucode.hashCode());
+
+		result = PRIME * result + ((roleid == null) ? 0 : roleid.hashCode());
+
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final RoleMenuPk other = (RoleMenuPk) obj;
+		if (other.getRoleid().equals(this.getRoleid())
+				&& other.getMenucode().equals(this.getMenucode()))
+			return true;
+		return false;
+	}
+	
+	
 }
 @Entity
 @org.hibernate.annotations.Entity(dynamicInsert=true,dynamicUpdate=true)
@@ -40,7 +68,6 @@ public class Role_menu implements Serializable {
 	private static final long serialVersionUID = 9152732015090732452L;
 	/** @param 角色菜单(t_role_menu) */
 
-	private RoleMenuPk id;
 	@Id
 	/** @ --菜单代码--menucode--String--40-- */
 	private String menucode;
@@ -65,14 +92,6 @@ public class Role_menu implements Serializable {
 
 	public void setRoleid(Integer roleid) {
 		this.roleid = roleid;
-	}
-
-	public RoleMenuPk getId() {
-		return id;
-	}
-
-	public void setId(RoleMenuPk id) {
-		this.id = id;
 	}
 
 }

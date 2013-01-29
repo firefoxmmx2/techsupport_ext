@@ -72,7 +72,6 @@ public class System implements Serializable {
 	/** @ --系统全路径代码--fullcode--String--50-- */
 	private String fullcode;
 
-	
 	/** @ 系统代码(systemcode) */
 	public String getSystemcode() {
 		return systemcode;
