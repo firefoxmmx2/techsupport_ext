@@ -46,14 +46,24 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 				user.getUserid());
 	}
 
-	public User getPasswordByUseraccount(User user) {
+	public User getPasswordByUseraccount(final User user) {
 		if (user == null || user.getUseraccount() == null
 				|| user.getPassword() == null)
 			throw new RuntimeException("用户名或者密码为空");
-		List<User> lst = getListUser(user);
-		if (lst.size() > 0)
-			return lst.get(0);
-		return null;
+		return this.getHibernateTemplate().execute(new HibernateCallback<User>() {
+
+			@Override
+			public User doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				String hql  = "select t from User t where t.useraccount = ? and t.password = ?";
+				Query q = session.createQuery(hql);
+				q.setParameter(0, user.getUseraccount());
+				q.setParameter(1, user.getPassword());
+				User findUser = (User) q.uniqueResult();
+				return findUser;
+			}
+			
+		});
 	}
 
 	public List<User> getListForPage(final User user, final int pageNo,

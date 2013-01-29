@@ -108,7 +108,7 @@ public interface IRoleService {
 	  boolean updateRolemenuAndRolefunc(Role role);
 
 		/** @param 查询登陆账号非所属部门和下属部门的角色(t_role) 多条查询 */
-       List getloginUserRoleOutDeptList(User user);
+       List<Role> getloginUserRoleOutDeptList(User user);
        /** @param 查询部门及下属部门的全部角色(t_role) 多条查询 */
        List getDeptRoleList(User user);
 }

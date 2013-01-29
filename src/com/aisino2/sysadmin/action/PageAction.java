@@ -31,7 +31,15 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 	public String returnMessage;
 	public Integer returnNo;
 	public String returnMessageDebug;
+	public Map<String, Object> queryExtraCond = new HashMap<String, Object>();
 	
+	
+	public Map<String, Object> getQueryExtraCond() {
+		return queryExtraCond;
+	}
+	public void setQueryExtraCond(Map<String, Object> queryExtraCond) {
+		this.queryExtraCond = queryExtraCond;
+	}
 	@JSON(serialize=true)
 	public String getDir() {
 		return dir;

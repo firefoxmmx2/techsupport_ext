@@ -20,7 +20,7 @@ public interface ISystemDao {
 	List<System> getListForPage(System system, int pageNo,int pageSize,String sort,String desc);
 
 	/** @param 系统(t_system) 多条查询 */
-	List<System> getListSystem(System system);
+	List<System> getListSystem(System system,Map<String, Object> queryExtraCond);
 	  
 	/**
 	 *  根据systemcode取得子系统

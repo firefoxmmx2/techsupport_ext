@@ -100,9 +100,8 @@ public class RoleServiceImpl implements IRoleService {
 		return false;
 	}
 
-	public List getloginUserRoleOutDeptList(User user) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Role> getloginUserRoleOutDeptList(User user) {
+		return role_dao.getRolesByUser(user);
 	}
 
 	public List getDeptRoleList(User user) {

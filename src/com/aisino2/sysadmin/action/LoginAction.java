@@ -3,6 +3,7 @@ package com.aisino2.sysadmin.action;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -10,7 +11,9 @@ import org.hibernate.Hibernate;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.aisino2.sysadmin.domain.Role;
 import com.aisino2.sysadmin.domain.User;
+import com.aisino2.sysadmin.service.IRoleService;
 import com.aisino2.sysadmin.service.IUserService;
 
 @Component
@@ -21,6 +24,7 @@ public class LoginAction extends PageAction {
 	 */
 	private static final long serialVersionUID = -499200930319623886L;
 	private IUserService userService;
+	private IRoleService roleService;
 	private User user;
 	
 	public String execute() throws Exception{
@@ -42,6 +46,13 @@ public class LoginAction extends PageAction {
 		
 		return SUCCESS;
 	}
+	
+	
+	@Resource(name="roleServiceImpl")
+	public void setRoleService(IRoleService roleService) {
+		this.roleService = roleService;
+	}
+
 	public User getUser() {
 		return user;
 	}

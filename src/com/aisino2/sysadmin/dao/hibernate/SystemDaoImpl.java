@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Component;
 
+import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.ISystemDao;
 import com.aisino2.sysadmin.domain.System;
 @Component
@@ -34,7 +35,7 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 				system.getSystemcode());
 	}
 
-	private Map<String, Object> get_para_and_hql(System para_entity,
+	private Map<String, Object> get_para_and_hql(System para_entity,Map<String, Object> queryExtraCond,
 			StringBuffer hql) {
 		List<Object> para_list = new ArrayList<Object>();
 		if (para_entity != null) {
@@ -54,6 +55,10 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 				hql.append(" and t.parent = ?");
 				para_list.add(para_entity.getParent());
 			}
+			
+			if(Util.isNotEmpty(queryExtraCond.get("top"))){
+				hql.append(" and t.parent is null");
+			}
 
 		}
 
@@ -72,7 +77,7 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 			public List<System> doInHibernate(Session sess)
 					throws HibernateException, SQLException {
 				StringBuffer hql = new StringBuffer("select new System(t.systemcode, t.systemname, t.systemdefine,	t.picturepath, t.parent,t.nodeorder,t.isleaf, t.fullcode) from System t");
-				Map<String, Object> para_map = get_para_and_hql(system, hql);
+				Map<String, Object> para_map = get_para_and_hql(system, null, hql);
 				hql = (StringBuffer) para_map.get("hql");
 				List<Object> para_list = (List<Object>) para_map.get("para");
 
@@ -93,13 +98,13 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<System> getListSystem(final System system) {
+	public List<System> getListSystem(final System system,final Map<String, Object> queryExtraCond) {
 		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<System>>() {
 
 			public List<System> doInHibernate(Session sess)
 					throws HibernateException, SQLException {
-				StringBuffer hql = new StringBuffer("select new System(t.systemcode, t.systemname, t.systemdefine,	t.picturepath, t.parent,t.nodeorder,t.isleaf, t.fullcode)from System t");
-				Map<String, Object> para_map = get_para_and_hql(system, hql);
+				StringBuffer hql = new StringBuffer("select t from System t");
+				Map<String, Object> para_map = get_para_and_hql(system, queryExtraCond, hql);
 				hql = (StringBuffer) para_map.get("hql");
 				List<Object> para_list = (List<Object>) para_map.get("para");
 
@@ -118,7 +123,7 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 	@SuppressWarnings("unchecked")
 	public List<System> getChildSystem(System system) {
 		this.getHibernateTemplate().setCacheQueries(true);
-		String hql = "from System t where t.parent = ?";
+		String hql = "select new System(t.systemcode, t.systemname, t.systemdefine,	t.picturepath, t.parent,t.nodeorder,t.isleaf, t.fullcode) from System t where t.parent = ?";
 		
 		return this.getHibernateTemplate().find(hql,new Object[]{system});
 	}

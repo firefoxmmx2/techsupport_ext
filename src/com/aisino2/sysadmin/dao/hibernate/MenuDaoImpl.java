@@ -114,8 +114,6 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 
 	@SuppressWarnings("unchecked")
 	public List<Menu> getTheUserChildMenu(final Menu menu, final User user) {
-		final String sql = "select distinct t.* from t_menu t,t_user_role ur, t_role_menu rm"
-				+ " where t.menucode = rm.menucode and ur.roleid = rm.roleid and ur.userid = ?";
 		final List<Object> para_list = new ArrayList();
 		para_list.add(user.getUserid());
 		// if(menu.getMenucode() == null){

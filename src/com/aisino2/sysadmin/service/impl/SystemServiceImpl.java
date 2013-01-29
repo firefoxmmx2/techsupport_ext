@@ -50,8 +50,8 @@ public class SystemServiceImpl implements ISystemService {
 	}
 
 
-	public List<System> getListSystem(System system) {
-		return this.system_dao.getListSystem(system);
+	public List<System> getListSystem(System system,Map<String, Object> queryExtraCond) {
+		return this.system_dao.getListSystem(system,queryExtraCond);
 	}
 
 

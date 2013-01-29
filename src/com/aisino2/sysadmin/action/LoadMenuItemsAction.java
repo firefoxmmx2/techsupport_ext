@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.Constants;
 import com.aisino2.sysadmin.domain.Menu;
-import com.aisino2.sysadmin.domain.Role;
 import com.aisino2.sysadmin.domain.User;
 import com.aisino2.sysadmin.service.IMenuService;
 import com.aisino2.sysadmin.service.ISystemService;
@@ -33,12 +32,15 @@ public class LoadMenuItemsAction extends PageAction {
 		HttpSession session = this.request.getSession();
 		User user = (User) session.getAttribute(Constants.userKey);
 		List<Menu> user_root_menu_list = new ArrayList<Menu>();
-		for(Role role : user.getRoles()){
-			user_root_menu_list.addAll(role.getRoleMenus());
-		}
+//		for(Role role : user.getRoles()){
+//			user_root_menu_list.addAll(role.getRoleMenus());
+//		}
+		Menu menu = new Menu();
+		user_root_menu_list = menu_service.getTheUserChildMenu(menu, user);
 		UIContainer side_system_menu_container = new UIContainer();
 		com.aisino2.sysadmin.domain.System system = new com.aisino2.sysadmin.domain.System();
-		List<com.aisino2.sysadmin.domain.System> system_list = system_service.getListSystem(system);
+		queryExtraCond.put("top", 1); //设置为顶层的系统标志
+		List<com.aisino2.sysadmin.domain.System> system_list = system_service.getListSystem(system,queryExtraCond);
 		side_system_menu_container.initContainer(system_list, user_root_menu_list, user,tree_node_tool);
 		session.setAttribute(Constants.systemKey, side_system_menu_container);
 		

@@ -86,7 +86,7 @@ public class RoleDaoImpl extends TechSupportBaseDaoImpl implements IRoleDao {
 
 		return this
 				.getHibernateTemplate()
-				.find("select new Role(t.roleid,t.departid,t.rolename,t.roledescription,t.roletype) from Role t,User_role ur whre t.roleid = ur.roleid and ur.userid = ?",
+				.find("select new Role(t.roleid,t.departid,t.rolename,t.roledescription,t.roletype) from Role t,User_role ur where t.roleid = ur.roleid and ur.userid = ?",
 						user.getUserid());
 	}
 
