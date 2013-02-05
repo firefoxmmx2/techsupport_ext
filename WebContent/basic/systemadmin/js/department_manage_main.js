@@ -466,7 +466,7 @@
 //								执行置底动作
 							}},
 							'-','-',
-							{xtype:'button',text:'保存',handler:function(){ 
+							{xtype:'button',text:'保存↑',handler:function(){ 
 								/* 保存当前机构 */
 								var record = this.ownerCt.ownerCt.ownerCt.ownerCt.detail_store.getAt(0);
 								this.ownerCt.ownerCt.ownerCt.ownerCt.detail_panel.getForm().updateRecord(record);
