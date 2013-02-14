@@ -18,12 +18,12 @@
 	src="<%=javascript_home%>/ext/ext-all-debug.js"></script>
 <script type="text/javascript"
 	src="<%=javascript_home%>/ext/ext-basex.js"></script>
-<script type="text/javascript"
-	src="<%=javascript_home%>/ext/jit.js"></script>
+<script type="text/javascript" src="<%=javascript_home%>/ext/jit.js"></script>
+<script type="text/javascript" src="<%=javascript_home%>/jquery-1.4.4.min.js"></script>
 
 <!-- LOADER -->
 <script type="text/javascript"
 	src="<%=javascript_home%>/ext/src/ext-core/src/core/Loader.js"></script>
 <script type="text/javascript"
 	src="<%=javascript_home%>/ext/examples/shared/examples.js"></script>
-<script type="text/javascript" src="<%=javascript_home %>/common.js"></script>
+<script type="text/javascript" src="<%=javascript_home%>/common.js"></script>
