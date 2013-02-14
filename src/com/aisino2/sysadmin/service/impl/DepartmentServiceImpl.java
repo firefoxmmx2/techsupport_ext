@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aisino2.sysadmin.dao.IDepartmentDao;
 import com.aisino2.sysadmin.domain.Department;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.service.IDepartmentService;
 
 @Component
@@ -53,12 +54,12 @@ public class DepartmentServiceImpl implements IDepartmentService {
 		return this.department_dao.getDepartment(department);
 	}
 
-	public List getListForPage(Department department, int start, int limit,
+	public Pager getListForPage(Department department, int start, int limit,
 			String sort, String desc) {
 		return this.department_dao.getListForPage(department, start, limit, sort, desc);
 	}
 
-	public List getDicListForPage(Department department, int pageNo,
+	public Pager getDicListForPage(Department department, int pageNo,
 			int pageSize, String sort, String desc) {
 		return null;
 	}

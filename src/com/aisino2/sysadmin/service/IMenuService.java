@@ -3,6 +3,7 @@ package com.aisino2.sysadmin.service;
 import java.util.List;
 
 import com.aisino2.sysadmin.domain.Menu;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
 
 public interface IMenuService {
@@ -19,7 +20,7 @@ public interface IMenuService {
 	Menu getMenu(Menu menu);
 
 	/** @param 菜单(t_menu) 分页查询 */
-	List getListForPage(Menu menu, int pageNo,int pageSize,String sort,String desc);
+	Pager getListForPage(Menu menu, int pageNo,int pageSize,String sort,String desc);
 
 	/** @param 菜单(t_menu) 多条查询 */
 	List<Menu> getListMenu(Menu menu);

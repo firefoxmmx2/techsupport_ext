@@ -3,6 +3,7 @@ package com.aisino2.sysadmin.service;
 import java.util.List;
 import java.util.Map;
 
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.System;
 
 public interface ISystemService {
@@ -19,7 +20,7 @@ public interface ISystemService {
 	System getSystem(System system);
 
 	/** @param 系统(t_system) 分页查询 */
-	List getListForPage(System system, int pageNo,int pageSize,String sort,String desc);
+	Pager getListForPage(System system, int pageNo,int pageSize,String sort,String desc);
 
 	/** @param 系统(t_system) 多条查询 */
 	List<System> getListSystem(System system,Map<String, Object> queryExtraCond);

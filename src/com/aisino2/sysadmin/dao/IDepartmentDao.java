@@ -3,6 +3,7 @@ package com.aisino2.sysadmin.dao;
 import java.util.Map;
 
 import com.aisino2.sysadmin.domain.Department;
+import com.aisino2.sysadmin.domain.Pager;
 public interface IDepartmentDao {
 	/** @param 机构(t_department) 增加 */
 	void insertDepartment(Department department);
@@ -26,10 +27,10 @@ public interface IDepartmentDao {
 	Department getDepartment(Department department);
 
 	/** @param 机构(t_department) 分页查询 */
-	List getListForPage(Department department, int pageNo,int pageSize,String sort,String desc);
+	Pager getListForPage(Department department, int pageNo,int pageSize,String sort,String desc);
 	
 	/** @param 机构(t_department) 分页查询 平板字典下拉框*/
-	List getDicListForPage(Map map, int pageNo,int pageSize,String sort,String desc);
+	Pager getDicListForPage(Map map, int pageNo,int pageSize,String sort,String desc);
 	
 	/** @param 机构(t_department) 多条查询 平板字典下拉框 放到内存*/
 	List getListDepartmentForCache(Department department);

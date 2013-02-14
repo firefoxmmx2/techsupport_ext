@@ -3,7 +3,7 @@
 <!-- <script type="text/javascript" src="basic/systemadmin/js/department_manage_main.js"></script> -->
 <script type="text/javascript">
 	Ext.onReady(function(){
-		Ext.Loader.load(['basic/systemadmin/js/department_manage_main.js','basic/systemadmin/js/systemManageMain.js'],function(){
+		Ext.Loader.load(['basic/systemadmin/js/systemManageMain2.js'],function(){
 			var systemManage = new techsupport.systemmanage.SystemMain({
 				renderTo:'systemManageCt'
 			});

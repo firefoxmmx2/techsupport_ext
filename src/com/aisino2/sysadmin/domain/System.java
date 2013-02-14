@@ -42,6 +42,21 @@ public class System implements Serializable {
 		this.fullcode = fullcode;
 	}
 
+	
+	public System(String systemcode, String systemname, String systemdefine,
+			String picturepath, Integer nodeorder, String isleaf,
+			String fullcode) {
+		super();
+		this.systemcode = systemcode;
+		this.systemname = systemname;
+		this.systemdefine = systemdefine;
+		this.picturepath = picturepath;
+		this.nodeorder = nodeorder;
+		this.isleaf = isleaf;
+		this.fullcode = fullcode;
+	}
+
+
 	/** @ --系统代码--systemcode--String--20-- */
 	@Id
 	private String systemcode;
@@ -57,7 +72,7 @@ public class System implements Serializable {
 	@Column
 	/** @ --图片路径--picturepath--String--200-- */
 	private String picturepath;
-	@ManyToOne(cascade=CascadeType.ALL,targetEntity=System.class)
+	@ManyToOne(cascade={CascadeType.MERGE,CascadeType.PERSIST},targetEntity=System.class)
 	@JoinColumn(name="parentsystemcode",nullable=true,referencedColumnName="systemcode")
 	private System parent;
 	@Column
@@ -72,7 +87,7 @@ public class System implements Serializable {
 	/** @ --系统全路径代码--fullcode--String--50-- */
 	private String fullcode;
 
-	/** @ 系统代码(systemcode) */
+
 	public String getSystemcode() {
 		return systemcode;
 	}
@@ -81,7 +96,6 @@ public class System implements Serializable {
 		this.systemcode = systemcode;
 	}
 
-	/** @ 系统名称(systemname) */
 	public String getSystemname() {
 		return systemname;
 	}
@@ -90,7 +104,6 @@ public class System implements Serializable {
 		this.systemname = systemname;
 	}
 
-	/** @ 系统定义(systemdefine) */
 	public String getSystemdefine() {
 		return systemdefine;
 	}
@@ -99,40 +112,12 @@ public class System implements Serializable {
 		this.systemdefine = systemdefine;
 	}
 
-	/** @ 图片路径(picturepath) */
 	public String getPicturepath() {
 		return picturepath;
 	}
 
 	public void setPicturepath(String picturepath) {
 		this.picturepath = picturepath;
-	}
-
-	/** @ 节点顺序(nodeorder) */
-	public Integer getNodeorder() {
-		return nodeorder;
-	}
-
-	public void setNodeorder(Integer nodeorder) {
-		this.nodeorder = nodeorder;
-	}
-
-	/** @ 是否叶结点(isleaf) */
-	public String getIsleaf() {
-		return isleaf;
-	}
-
-	public void setIsleaf(String isleaf) {
-		this.isleaf = isleaf;
-	}
-
-	/** @ 系统全路径代码(fullcode) */
-	public String getFullcode() {
-		return fullcode;
-	}
-
-	public void setFullcode(String fullcode) {
-		this.fullcode = fullcode;
 	}
 
 	public System getParent() {
@@ -142,4 +127,30 @@ public class System implements Serializable {
 	public void setParent(System parent) {
 		this.parent = parent;
 	}
+
+	public Integer getNodeorder() {
+		return nodeorder;
+	}
+
+	public void setNodeorder(Integer nodeorder) {
+		this.nodeorder = nodeorder;
+	}
+
+	public String getIsleaf() {
+		return isleaf;
+	}
+
+	public void setIsleaf(String isleaf) {
+		this.isleaf = isleaf;
+	}
+
+	public String getFullcode() {
+		return fullcode;
+	}
+
+	public void setFullcode(String fullcode) {
+		this.fullcode = fullcode;
+	}
+
+	
 }

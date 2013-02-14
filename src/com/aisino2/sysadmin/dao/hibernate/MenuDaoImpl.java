@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +20,7 @@ import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.IMenuDao;
 import com.aisino2.sysadmin.domain.Department;
 import com.aisino2.sysadmin.domain.Menu;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
 
 @Component
@@ -39,24 +43,34 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 				menu.getMenucode());
 	}
 
-	public List<Menu> getListForPage(final Menu menu, int pageNo, int pageSize,
+	public Pager getListForPage(final Menu menu, final int pageNo, final int pageSize,
 			String sort, String desc) {
-		return this.getHibernateTemplate().executeFind(new HibernateCallback() {
-
-			public List<Department> doInHibernate(Session sess)
+		return this.getHibernateTemplate().execute(new HibernateCallback<Pager>() {
+			public Pager doInHibernate(Session sess)
 					throws HibernateException, SQLException {
-				StringBuffer hqlbuf = new StringBuffer("from Department t");
-				Map<String, Object> para_map = get_para_and_hql(menu, hqlbuf);
-
-				hqlbuf = (StringBuffer) para_map.get("hql");
-				List<Object> para_list = (List<Object>) para_map.get("para");
-
-				Query q = sess.createQuery(hqlbuf.toString());
+				Pager pager = new Pager();
+				pager.setPageNo(pageNo);
+				pager.setPageSize(pageSize);
+				
+				Criteria q = sess.createCriteria(Menu.class,"t");
 				q.setCacheable(true);
-				// para
-				for (int i = 0; i < para_list.size(); i++)
-					q.setParameter(i, para_list.get(i));
-				return q.list();
+				//condition
+				Example ex = Example.create(menu);
+				ex.enableLike();
+				ex.excludeZeroes();
+				ex.ignoreCase();
+				q.add(ex);
+				//count
+				q.setProjection(Projections.rowCount());
+				pager.setTotalCount(((Long)q.uniqueResult()).intValue());
+				//pager
+				q.setFirstResult(pager.getStartRecord());
+				q.setMaxResults(pager.getPageSize());
+				//data
+				q.setProjection(null);
+				pager.setDatas(q.list());
+				
+				return pager;
 			}
 		});
 	}
@@ -67,12 +81,10 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 	}
 
 	public boolean checkMenu(Menu menu) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public List getOwnMenu(Menu menu) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -88,27 +100,27 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 	}
 
 	public List getAllChildren(Menu menu) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public List getAllMenu() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public List getMenuBySystem(Menu menu) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public boolean checkChild(Menu menu) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	public Menu getNextNodeorder(Menu menu) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -176,7 +188,7 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 	}
 
 	public List<Menu> getRoleCheckedMenuList(Menu menu) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

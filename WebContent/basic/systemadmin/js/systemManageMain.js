@@ -94,7 +94,7 @@
 				});
 				//复习重新设定父类属性加载器属性
 				this.treeloader = new Ext.tree.TreeLoader({
-					url:context_path+'/sysadminDefault/query_system_node_systemmanage.action',
+					url:context_path+'/sysadminDefault/querySystemNodes_systemmanage.action', //设置为系统管理查询节点的链接
 					method:'post',
 					listeners:{
 						beforeload:{
@@ -104,7 +104,52 @@
 							scope:this
 						}
 					}});
-				this.treepanel.loader = this.treeloader;	
+				this.treepanel = new Ext.tree.TreePanel({
+					region : 'west',
+					id : this.id+'_tree',
+					title : this.title_base +'树',// 以后去掉
+					useArrows : true,
+					autoScroll : true,
+					animate : true,
+					enableDD : false,
+					containerScroll : true,
+					border : false,
+					width: '25%',
+					rootVisable : false,
+					viewConfig:{
+						forceFit:true,
+						enableRowBody:true
+					},
+					loader:this.treeloader,
+					root:{id:'0',text:'顶端',nodeType: 'async'},
+					listeners:{
+						click:function(node,evt){
+							//点击动作
+//							子类可以按照自己的需求重载
+							this.ownerCt.current_treenode_id = node.id;
+							
+							this.ownerCt.store.load(
+									{
+										params:{
+											start:0,
+											limit:this.ownerCt.pagesize,
+											dir:this.ownerCt.dir,
+											desc:this.ownerCt.desc
+										}
+									}
+							);
+							var param={};
+							param[this.ownerCt.actionPrefix+self.store.idProperty]=node.id;
+							this.ownerCt.detail_store.load({params:param,callback:function(r,options,success){
+								var record = this.getAt(0);
+								var form = self.detail_panel.getForm();
+							
+								form.setValues(buildSubmitParam({},record.data));
+							}});
+							
+						}
+					}
+				});
 				//------------------------	复习重新设定父类属性加载器属性-----------------------
 				//右边详情显示面板
 				var detail_panel_items_defaults = {

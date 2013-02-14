@@ -11,7 +11,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.action.PageAction;
+import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.domain.Department;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.service.IDepartmentService;
 import com.aisino2.sysadmin.tree.TreeNodeTool;
 
@@ -42,14 +44,15 @@ public class DepartmentManageAction extends PageAction {
 	 */
 	public String querylist() throws Exception {
 		try {
-			List page_list = department_service.getListForPage(department,
+			Pager pager = department_service.getListForPage(department,
 					this.start, this.limit, this.dir, this.sort);
-			this.total = (Integer) page_list.get(0);
-			department_list = (List<Department>) page_list.get(1);
+			this.total = pager.getTotalCount();
+			department_list = (List<Department>) pager.getDatas();
 
 		} catch (Exception e) {
 			this.returnNo = 1;
 			this.returnMessage = "获取列表发生错误";
+			log.error(e);
 			if(log.isDebugEnabled()){
 				log.debug(e,e.fillInStackTrace());
 				this.returnMessageDebug = e.getMessage() +"\n";
@@ -97,6 +100,8 @@ public class DepartmentManageAction extends PageAction {
 	 */
 	public String query() throws Exception {
 		try{
+			if(department == null || !Util.isNotEmpty(department.getDepartid()))
+				throw new RuntimeException("机构详情参数传输错误");
 			department = department_service.getDepartment(department);
 		}catch (Exception e) {
 			returnNo = 1;
@@ -120,6 +125,11 @@ public class DepartmentManageAction extends PageAction {
 		this.department_treenode_list = department_treenode_list;
 	}
 
+	/**
+	 * 添加机构
+	 * @return
+	 * @throws Exception
+	 */
 	public String add() throws Exception {
 		try{
 			if(department==null)
@@ -140,6 +150,11 @@ public class DepartmentManageAction extends PageAction {
 		return SUCCESS;
 	}
 
+	/**
+	 * 移除机构
+	 * @return
+	 * @throws Exception
+	 */
 	public String remove() throws Exception {
 		try{
 			if(department_list==null || department_list.isEmpty())
@@ -174,6 +189,11 @@ public class DepartmentManageAction extends PageAction {
 		return SUCCESS;
 	}
 
+	/**
+	 * 修改机构
+	 * @return
+	 * @throws Exception
+	 */
 	public String modify() throws Exception {
 		try{
 			if(department == null || department.getDepartid()==null)

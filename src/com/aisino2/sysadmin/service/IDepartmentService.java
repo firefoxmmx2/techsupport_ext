@@ -3,6 +3,7 @@ package com.aisino2.sysadmin.service;
 import java.util.List;
 
 import com.aisino2.sysadmin.domain.Department;
+import com.aisino2.sysadmin.domain.Pager;
 
 public interface IDepartmentService {
 	/** @param 机构(t_department) 增加 */
@@ -22,10 +23,10 @@ public interface IDepartmentService {
 	Department getDepartment(Department department);
 
 	/** @param 机构(t_department) 分页查询 */
-	List getListForPage(Department department, int start,int limit,String sort,String desc);
+	Pager getListForPage(Department department, int start,int limit,String sort,String desc);
 	
 	/** @param 机构(t_department) 分页查询 平板字典下拉框*/
-	List getDicListForPage(Department department, int pageNo,int pageSize,String sort,String desc);
+	Pager getDicListForPage(Department department, int pageNo,int pageSize,String sort,String desc);
 
 	/** @param 机构(t_department) 多条查询 */
 	List<Department> getListDepartment(Department department);

@@ -6,14 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.ISystemDao;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.System;
 @Component
 public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao {
@@ -69,30 +74,63 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<System> getListForPage(final System system, final int pageNo,
+	public Pager getListForPage(final System system, final int pageNo,
 			final int pageSize, String sort, String desc) {
 
-		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<System>>() {
+		return  this.getHibernateTemplate().execute(new HibernateCallback<Pager>() {
 
-			public List<System> doInHibernate(Session sess)
+			public Pager doInHibernate(Session sess)
 					throws HibernateException, SQLException {
-				StringBuffer hql = new StringBuffer("select new System(t.systemcode, t.systemname, t.systemdefine,	t.picturepath, t.parent,t.nodeorder,t.isleaf, t.fullcode) from System t");
-				Map<String, Object> para_map = get_para_and_hql(system, null, hql);
-				hql = (StringBuffer) para_map.get("hql");
-				List<Object> para_list = (List<Object>) para_map.get("para");
+				Pager pager = new Pager();
+				pager.setPageSize(pageSize);
+				pager.setPageNo(pageNo);
+				
 
-				Query q = sess.createQuery(hql.toString());
-				q.setCacheable(true);
-
+				Criteria q = sess.createCriteria(System.class,"s");
+				
+				//condition
+				Example ex = Example.create(system)
+								.excludeZeroes()
+								.ignoreCase();
+				q.add(ex);
+				if(system.getParent()==null || !Util.isNotEmpty(system.getParent().getSystemcode()))
+					q.add(Restrictions.isNull("parent"));
+				else
+					q.add(Restrictions.eq("parent", system.getParent()));
+				if(Util.isNotEmpty(system.getSystemcode()))
+					q.add(Restrictions.eq("systemcode", system.getSystemcode()));
+				if(Util.isNotEmpty(system.getSystemname()))
+					q.add(Restrictions.like("systemname", system.getSystemname()));
+				if(Util.isNotEmpty(system.getSystemdefine()))
+					q.add(Restrictions.like("systemname", system.getSystemdefine()));
+				if(Util.isNotEmpty(system.getNodeorder()))
+					q.add(Restrictions.eq("nodeorder", system.getNodeorder()));
+				if(Util.isNotEmpty(system.getFullcode()))
+					q.add(Restrictions.like("fullcode", system.getFullcode()));
+				
+				//count
+				q.setProjection(Projections.rowCount());
+				pager.setTotalCount(((Long)q.uniqueResult()).intValue());
+				
+				//data
+//				q.setProjection(Projections.projectionList().add(Projections.property("systemcode"))
+//															.add(Projections.property("systemname"))
+//															.add(Projections.property("systemdefine"))
+//															.add(Projections.property("picturepath"))
+//															.add(Projections.property("parent"))
+//															.add(Projections.property("nodeorder"))
+//															.add(Projections.property("isleaf"))
+//															.add(Projections.property("fullcode")));
+				
+				q.setProjection(null);
 				// page
-				q.setFirstResult((pageNo - 1) * pageSize);
+				q.setFirstResult(pager.getStartRecord());
 				q.setMaxResults(pageSize);
-
-				// para
-				for (int i = 0; i < para_list.size(); i++)
-					q.setParameter(i, para_list.get(i));
-
-				return q.list();
+				
+				q.setResultTransformer(Criteria.ROOT_ENTITY);
+				pager.setDatas(q.list());
+				
+				return pager;
 			}
 		});
 	}
@@ -123,9 +161,17 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 	@SuppressWarnings("unchecked")
 	public List<System> getChildSystem(System system) {
 		this.getHibernateTemplate().setCacheQueries(true);
-		String hql = "select new System(t.systemcode, t.systemname, t.systemdefine,	t.picturepath, t.parent,t.nodeorder,t.isleaf, t.fullcode) from System t where t.parent = ?";
+		String hql = "";
+		if(system == null || !Util.isNotEmpty(system.getSystemcode())){
+			hql += "select new System(t.systemcode, t.systemname, t.systemdefine,	t.picturepath,t.nodeorder,t.isleaf, t.fullcode) from System t where t.parent is null";
+			return this.getHibernateTemplate().find(hql,new Object[]{});
+		}
+			
+		else{
+			hql += "select new System(t.systemcode, t.systemname, t.systemdefine,	t.picturepath, t.parent,t.nodeorder,t.isleaf, t.fullcode) from System t where t.parent = ?";
+			return this.getHibernateTemplate().find(hql,new Object[]{system});
+		}
 		
-		return this.getHibernateTemplate().find(hql,new Object[]{system});
 	}
 
 	public List getTheUserChildSystem(System system) {

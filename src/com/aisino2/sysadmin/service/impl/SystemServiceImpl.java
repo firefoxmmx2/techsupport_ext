@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.dao.ISystemDao;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.System;
 import com.aisino2.sysadmin.service.ISystemService;
 
@@ -43,7 +44,7 @@ public class SystemServiceImpl implements ISystemService {
 	}
 
 
-	public List getListForPage(System system, int pageNo, int pageSize,
+	public Pager getListForPage(System system, int pageNo, int pageSize,
 			String sort, String desc) {
 		
 		return this.system_dao.getListForPage(system, pageNo, pageSize, sort, desc);

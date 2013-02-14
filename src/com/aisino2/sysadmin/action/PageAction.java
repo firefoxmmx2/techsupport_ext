@@ -99,7 +99,7 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 		return start;
 	}
 	public void setStart(Integer start) {
-		this.start = start;
+		this.start = start+1;
 	}
 	@JSON(serialize=true)
 	public Integer getLimit() {

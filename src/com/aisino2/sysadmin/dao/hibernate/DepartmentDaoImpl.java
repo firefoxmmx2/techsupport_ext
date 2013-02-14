@@ -2,17 +2,13 @@ package com.aisino2.sysadmin.dao.hibernate;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -20,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.dao.IDepartmentDao;
 import com.aisino2.sysadmin.domain.Department;
+import com.aisino2.sysadmin.domain.Pager;
 
 @Component
 public class DepartmentDaoImpl extends TechSupportBaseDaoImpl implements
@@ -39,7 +36,7 @@ public class DepartmentDaoImpl extends TechSupportBaseDaoImpl implements
 	}
 
 	public void deleteCacheDepartment(Department department) {
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -48,7 +45,7 @@ public class DepartmentDaoImpl extends TechSupportBaseDaoImpl implements
 	}
 
 	public void updateCacheDepartment(Department department) {
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -57,20 +54,21 @@ public class DepartmentDaoImpl extends TechSupportBaseDaoImpl implements
 				department.getDepartid());
 	}
 
-	@SuppressWarnings("rawtypes")
-	public List getListForPage(final Department department, final int pageNo,
+	public Pager getListForPage(final Department department, final int pageNo,
 			final int pageSize, String sort, String desc) {
 
-		return this.getHibernateTemplate().executeFind(
-				new HibernateCallback<List>() {
+		return this.getHibernateTemplate().execute(
+				new HibernateCallback<Pager>() {
 
-					public List doInHibernate(Session sess)
+					public Pager doInHibernate(Session sess)
 							throws HibernateException, SQLException {
-						Integer count = 0;
-						List lst = new ArrayList();
+						Pager pager = new Pager();
+						pager.setPageNo(pageNo);
+						pager.setPageSize(pageSize);
+						
 						Criteria q = sess.createCriteria(Department.class,"t");
 						q.setCacheable(true);
-						//条件
+						//condition
 						Example ex = Example.create(department);
 						ex.enableLike();
 						ex.excludeZeroes();
@@ -82,36 +80,34 @@ public class DepartmentDaoImpl extends TechSupportBaseDaoImpl implements
 							q.add(Restrictions.eq("t.parent", department.getParent()));
 						if(department.getDepartid()!=null)
 							q.add(Restrictions.eq("t.departid", department.getDepartid()));
-						//计数
+						//count
 						q.setProjection(Projections.rowCount());
-						count = ((Long)q.uniqueResult()).intValue();
-						lst.add(count);
+						pager.setTotalCount(((Long)q.uniqueResult()).intValue());
 						
 						q.setProjection(null);
 						// page
-						q.setFirstResult(pageNo);
+						q.setFirstResult(pager.getStartRecord());
 						q.setMaxResults(pageSize);
-						// para
-						lst.add(q.list());
-						
-						return lst;
+						//data
+						pager.setDatas(q.list());
+						return pager;
 					}
 				});
 	}
 
-	public List getDicListForPage(Map map, int pageNo, int pageSize,
+	public Pager getDicListForPage(Map map, int pageNo, int pageSize,
 			String sort, String desc) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public List getListDepartmentForCache(Department department) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public List getListDepartment(Department department, String onlyGa) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -157,27 +153,27 @@ public class DepartmentDaoImpl extends TechSupportBaseDaoImpl implements
 	}
 
 	public Department getParentDepart(Department depart) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public List getDepartInfo(Department depart) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public List getAllChildDepart(Department depart) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public List getAllChildDepartByFullCode(Department depart) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public List getChildDepartCs(Department depart) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -210,7 +206,7 @@ public class DepartmentDaoImpl extends TechSupportBaseDaoImpl implements
 	}
 
 	public List getListAllDepartment(Department department) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

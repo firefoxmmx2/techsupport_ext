@@ -2,6 +2,7 @@ package com.aisino2.sysadmin.dao;
 import java.util.List;
 
 import com.aisino2.sysadmin.domain.Menu;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
 public interface IMenuDao {
 	/** @param 菜单(t_menu) 增加 */
@@ -17,7 +18,7 @@ public interface IMenuDao {
 	Menu getMenu(Menu menu);
 
 	/** @param 菜单(t_menu) 分页查询 */
-	List<Menu> getListForPage(Menu menu, int pageNo,int pageSize,String sort,String desc);
+	Pager getListForPage(Menu menu, int pageNo,int pageSize,String sort,String desc);
 
 	/** @param 菜单(t_menu) 多条查询 */
 	List<Menu> getListMenu(Menu menu);

@@ -5,10 +5,14 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.action.PageAction;
+import com.aisino2.sysadmin.common.Util;
+import com.aisino2.sysadmin.domain.Department;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.System;
 import com.aisino2.sysadmin.service.ISystemService;
 import com.aisino2.sysadmin.tree.TreeNodeTool;
@@ -20,7 +24,7 @@ public class SystemManageAction extends PageAction {
 	private List<System> systemList;
 	private ISystemService systemService;
 	private TreeNodeTool treeNodeTool;
-	
+	private static final Logger log = Logger.getLogger(SystemManageAction.class);
 	/**
 	 * 
 	 */
@@ -32,6 +36,19 @@ public class SystemManageAction extends PageAction {
 	 * @throws Exception
 	 */
 	public String query() throws Exception{
+		try{
+			if(system == null || !Util.isNotEmpty(system.getSystemcode()))
+				throw new RuntimeException("系统详情参数传输错误");
+			system = systemService.getSystem(system);
+		}catch(Exception e){
+			this.returnNo = 1;
+			this.returnMessage = "系统详情发生错误";
+			log.error(e);
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug = e.getMessage() +"\n";
+			}
+		}
 		return SUCCESS;
 	}
 	/**
@@ -40,6 +57,21 @@ public class SystemManageAction extends PageAction {
 	 * @throws Exception
 	 */
 	public String querylist() throws Exception{
+		try {
+			if(system == null)
+				throw new RuntimeException("系统列表查询参数传输错误");
+			Pager pager = systemService.getListForPage(system, this.start, this.limit, this.dir, this.sort);
+			this.total = pager.getTotalCount();
+			this.systemList = (List<System>) pager.getDatas();
+		} catch (Exception e) {
+			this.returnNo = 1;
+			this.returnMessage = "获取系统列表发生错误";
+			log.error(e);
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug = e.getMessage() +"\n";
+			}
+		}
 		return SUCCESS;
 	}
 	/**
@@ -48,6 +80,19 @@ public class SystemManageAction extends PageAction {
 	 * @throws Exception
 	 */
 	public String add() throws Exception{
+		try {
+			if(system == null)
+				throw new RuntimeException("系统新增参数传输错误");
+			systemService.insertSystem(system);
+		} catch (Exception e) {
+			this.returnNo = 1;
+			this.returnMessage = "系统新增发生错误";
+			log.error(e);
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug = e.getMessage() +"\n";
+			}
+		}
 		return SUCCESS;
 	}
 	/**
@@ -56,6 +101,19 @@ public class SystemManageAction extends PageAction {
 	 * @throws Exception
 	 */
 	public String remove() throws Exception{
+		try {
+			if(system == null)
+				throw new RuntimeException("系统删除参数传输错误");
+			systemService.deleteSystem(system);
+		} catch (Exception e) {
+			this.returnNo = 1;
+			this.returnMessage = "系统删除发生错误";
+			log.error(e);
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug = e.getMessage() +"\n";
+			}
+		}
 		return SUCCESS;
 	}
 	/**
@@ -64,6 +122,19 @@ public class SystemManageAction extends PageAction {
 	 * @throws Exception
 	 */
 	public String modify() throws Exception{
+		try {
+			if(system == null)
+				throw new RuntimeException("系统修改参数传输错误");
+			systemService.updateSystem(system);
+		} catch (Exception e) {
+			this.returnNo = 1;
+			this.returnMessage = "系统修改发生错误";
+			log.error(e);
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug = e.getMessage() +"\n";
+			}
+		}
 		return SUCCESS;
 	}
 	/**
@@ -71,13 +142,31 @@ public class SystemManageAction extends PageAction {
 	 * @return
 	 * @throws Exception
 	 */
-//	public String up() throws Exception{
-//		return SUCCESS;
-//	}
-//	
-//	public String down() throws Exception{
-//		return SUCCESS;
-//	}
+	public String up() throws Exception{
+		try {
+			if(system == null)
+				throw new RuntimeException("系统上移参数传输错误");
+			
+		} catch (Exception e) {
+			this.returnNo = 1;
+			this.returnMessage = "系统上移发生错误";
+			log.error(e);
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug = e.getMessage() +"\n";
+			}
+		}
+		return SUCCESS;
+	}
+	
+	/**
+	 * 下移
+	 * @return
+	 * @throws Exception
+	 */
+	public String down() throws Exception{
+		return SUCCESS;
+	}
 	/**
 	 * 置顶
 	 */
@@ -102,11 +191,15 @@ public class SystemManageAction extends PageAction {
 		if(system.getSystemcode()!=null && system.getSystemcode().equals("0"))
 			system.setSystemcode(null);
 		List<System> childSystemList = this.systemService.getChildSystem(system);
-		try{
-			system = this.systemService.getSystem(system);
-		}catch (Exception e) {
-			system = null;
+		if(Util.isNotEmpty(system.getSystemcode())){
+			try{
+				system = this.systemService.getSystem(system);
+			}catch (Exception e) {
+				system = null;
+			}
 		}
+		else
+			system = null;
 		StringBuffer buff = new StringBuffer();
 		String systemTreenodeList = "["+treeNodeTool.make_ext_tree_node(treeNodeTool
 				.parseToTreenodeFromSystem(childSystemList,

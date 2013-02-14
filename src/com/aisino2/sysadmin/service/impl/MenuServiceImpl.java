@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.dao.IMenuDao;
 import com.aisino2.sysadmin.domain.Menu;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
 import com.aisino2.sysadmin.service.IMenuService;
 
@@ -36,7 +37,7 @@ public class MenuServiceImpl implements IMenuService {
 		return this.menu_dao.getMenu(menu);
 	}
 
-	public List getListForPage(Menu menu, int pageNo, int pageSize,
+	public Pager getListForPage(Menu menu, int pageNo, int pageSize,
 			String sort, String desc) {
 		
 		return this.menu_dao.getListForPage(menu, pageNo, pageSize, sort, desc);
