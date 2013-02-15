@@ -29,7 +29,7 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 	public HttpServletResponse response;
 	public Map<String, Object> returnMap = new HashMap<String, Object>();
 	public String returnMessage;
-	public Integer returnNo;
+	public Integer returnNo = 0;
 	public String returnMessageDebug;
 	public Map<String, Object> queryExtraCond = new HashMap<String, Object>();
 	
