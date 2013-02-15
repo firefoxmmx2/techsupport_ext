@@ -67,4 +67,11 @@ public interface ISystemDao {
 	  List<System> getSystemByUserID(System system);
 	  /** 获得下一个排序号 */
 	  Integer getNextNodeorder(System system);
+	  
+	  /**
+	   * 验证系统编码是否可用
+	 * @param systemcode
+	 * @return true or false
+	 */
+	boolean checkSystemcode(String systemcode);
 }

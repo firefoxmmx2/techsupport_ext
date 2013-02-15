@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aisino2.sysadmin.action.PageAction;
 import com.aisino2.sysadmin.common.Util;
@@ -60,6 +61,11 @@ public class SystemManageAction extends PageAction {
 		try {
 			if(system == null)
 				throw new RuntimeException("系统列表查询参数传输错误");
+			if(system.getParent() != null && "0".equals(system.getParent().getSystemcode()))
+				system.setParent(null);
+			if("0".equals(system.getSystemcode()))
+				system.setSystemcode(null);
+			
 			Pager pager = systemService.getListForPage(system, this.start, this.limit, this.dir, this.sort);
 			this.total = pager.getTotalCount();
 			this.systemList = (List<System>) pager.getDatas();
@@ -102,9 +108,9 @@ public class SystemManageAction extends PageAction {
 	 */
 	public String remove() throws Exception{
 		try {
-			if(system == null)
+			if(systemList == null || systemList.size()==0)
 				throw new RuntimeException("系统删除参数传输错误");
-			systemService.deleteSystem(system);
+			systemService.removeAll(systemList);
 		} catch (Exception e) {
 			this.returnNo = 1;
 			this.returnMessage = "系统删除发生错误";
@@ -164,12 +170,14 @@ public class SystemManageAction extends PageAction {
 	 * @return
 	 * @throws Exception
 	 */
+	
 	public String down() throws Exception{
 		return SUCCESS;
 	}
 	/**
 	 * 置顶
 	 */
+	
 	public String top() throws Exception{
 		return SUCCESS;
 	}
@@ -178,6 +186,7 @@ public class SystemManageAction extends PageAction {
 	 * @return
 	 * @throws Exception
 	 */
+	
 	public String bottom() throws Exception{
 		return SUCCESS;
 	}
@@ -211,6 +220,32 @@ public class SystemManageAction extends PageAction {
 		return null;
 	}
 	
+	/**
+	 * 系统代码可用性验证
+	 * @return
+	 * @throws Exception
+	 */
+	public String checkSystemcode() throws Exception{
+		try {
+			if(system == null)
+				throw new RuntimeException("系统代码验证参数传输错误");
+			
+			boolean result = systemService.checkSystemcode(system.getSystemcode());
+			if(result)
+				this.returnNo = 0;
+			else
+				this.returnNo = 1;
+		} catch (Exception e) {
+			this.returnNo = 1;
+			this.returnMessage = "系统代码验证发生错误";
+			log.error(e);
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug = e.getMessage() +"\n";
+			}
+		}
+		return SUCCESS;
+	}
 	public System getSystem() {
 		return system;
 	}

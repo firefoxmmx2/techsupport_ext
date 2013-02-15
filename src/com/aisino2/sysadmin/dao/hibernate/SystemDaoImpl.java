@@ -93,9 +93,9 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 								.excludeZeroes()
 								.ignoreCase();
 				q.add(ex);
-				if(system.getParent()==null || !Util.isNotEmpty(system.getParent().getSystemcode()))
+				if(system.getParent()!=null && !Util.isNotEmpty(system.getParent().getSystemcode()))
 					q.add(Restrictions.isNull("parent"));
-				else
+				if(system.getParent()!=null && Util.isNotEmpty(system.getParent().getSystemcode()))
 					q.add(Restrictions.eq("parent", system.getParent()));
 				if(Util.isNotEmpty(system.getSystemcode()))
 					q.add(Restrictions.eq("systemcode", system.getSystemcode()));
@@ -206,11 +206,11 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 
 	public Integer getNextNodeorder(final System system) {
 		return this.getHibernateTemplate().execute(
-				new HibernateCallback<Integer>() {
+					new HibernateCallback<Integer>() {
 			public Integer doInHibernate(Session session)
 					throws HibernateException, SQLException {
-				String hql = "select max(nvl(t,0))+1 from System t" +
-						"where 1=1";
+				String hql = "select max(nvl(t.nodeorder,0))+1 from System t" +
+						" where 1=1";
 				List<Object> paraList = new ArrayList<Object>();
 				
 				if(system.getParent()!=null){
@@ -228,6 +228,25 @@ public class SystemDaoImpl extends TechSupportBaseDaoImpl implements ISystemDao 
 				return nodeorder;
 			}
 		});
+	}
+
+	public boolean checkSystemcode(final String systemcode) {
+		boolean result = false;
+		result = this.getHibernateTemplate().execute(new HibernateCallback<Boolean>() {
+
+			public Boolean doInHibernate(Session sess)
+					throws HibernateException, SQLException {
+				long count = (Long) sess.createQuery("select count(s) from System s where s.systemcode = ?")
+					.setParameter(0, systemcode)
+					.uniqueResult();
+				if(count==0)
+					return true;
+				else
+					return false;
+			}
+			
+		});
+		return result;
 	}
 
 }

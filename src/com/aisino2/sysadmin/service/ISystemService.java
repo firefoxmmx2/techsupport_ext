@@ -78,4 +78,17 @@ public interface ISystemService {
 	   * @return 
 		*/
 	Integer getNextNodeorder(System system);
+	
+	/**
+	 * 验证系统代码可用性，true可用false不可用
+	 * @param systemcode
+	 * @return true可用false不可用
+	 */
+	boolean checkSystemcode(String systemcode);
+	
+	/**
+	 * 批量删除
+	 * @param systemList
+	 */
+	void removeAll(List<System> systemList);
 }
