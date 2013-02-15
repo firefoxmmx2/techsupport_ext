@@ -124,9 +124,16 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 
 	}
 
-	public User getNextNodeorder(User user) {
-		// TODO Auto-generated method stub
-		return null;
+	public Integer getNextNodeorder(User user) {
+		String hql = "select max(nvl(t.nodeorder,0))+1 from User t where 1=1";
+		if(user.getDepartid() == null || user.getDepartid().equals(0)){
+			hql += " and t.departid is null";
+			return (Integer)this.getHibernateTemplate().find(hql).get(0);
+		}
+		else{
+			hql += " and t.departid = ?";
+			return (Integer)this.getHibernateTemplate().find(hql,user.getDepartid()).get(0);
+		}
 	}
 
 	public User getQybmByCyrybh(String sqlStmt) {

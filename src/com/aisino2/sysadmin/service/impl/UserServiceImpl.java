@@ -92,8 +92,7 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	public Integer getNextNodeorder(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.user_dao.getNextNodeorder(user);
 	}
 
 	public User getQybmByCyrybh(User user) {

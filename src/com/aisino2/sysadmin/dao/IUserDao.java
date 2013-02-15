@@ -44,7 +44,7 @@ public interface IUserDao {
 	void updatePwd(User user);
 	  
 	/** 获得下一个排序号 */
-	User getNextNodeorder(User user);
+	Integer getNextNodeorder(User user);
 	
 	/**
 	 * 通过从业人员编号(即员工用户账号)获得所属企业编码及所属企业名称
