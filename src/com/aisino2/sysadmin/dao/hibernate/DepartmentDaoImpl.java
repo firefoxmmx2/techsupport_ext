@@ -14,6 +14,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Component;
 
+import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.IDepartmentDao;
 import com.aisino2.sysadmin.domain.Department;
 import com.aisino2.sysadmin.domain.Pager;
@@ -200,9 +201,15 @@ public class DepartmentDaoImpl extends TechSupportBaseDaoImpl implements
 	}
 
 	public Integer getNextNodeorder(Department department) {
-		String hql = "select max(nvl(t.nodeorder,0))+1 from Department t where t.parent = ?";
-		List lst = this.getHibernateTemplate().find(hql, department.getParent());
-		return (Integer)lst.get(0);
+		String hql = "select max(nvl(t.nodeorder,0))+1 from Department t ";
+		if(department.getParent()==null || !Util.isNotEmpty(department.getParent().getDepartid())){
+			hql += " where t.parent is null";
+			return (Integer)this.getHibernateTemplate().find(hql).get(0);
+		}
+		else{
+			hql += " where t.parent = ?";
+			return (Integer)this.getHibernateTemplate().find(hql, department.getParent()).get(0);
+		}
 	}
 
 	public List getListAllDepartment(Department department) {

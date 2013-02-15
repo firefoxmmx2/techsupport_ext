@@ -29,9 +29,9 @@
 //				动作名称 例如 add modify detail之类的
 				this.action_name = config.action_name || 'detail';
 				this.action = config.action;
-				this.store = config.store;
 				this.modal = config.modal || true;
-				this.dstore = config.dstore;
+				//初始化数据
+				this.initRecord = config.initRecord;
 				
 				techsupport.deparmentmanage.DepartmentWindow.superclass.constructor.apply(this,arguments);
 			},
@@ -56,6 +56,10 @@
 					    	  validationEvent:'blur',
 					    	  validator:function(val){
 					    		  //验证机构代码是否可用
+					    		  if(self.initRecord){
+					    			  if(val == self.initRecord.data[this.name])
+					    				  return true;
+					    		  }
 					    		  var result = false;
 					    		  Ext.Ajax.request({url:context_path+'/sysadminDefault/check_departcode_departmentmanage.action',
 					    			  params:{'department.departcode':val},
@@ -84,6 +88,8 @@
 					      
 					]
 				});
+				if(self.initRecord)
+					this.form_panel.getForm().setValues(buildSubmitParam({},self.initRecord.data));
 				//添加FORM事件
 				this.form_panel.getForm().findField('departcode').on('blur',function(field){
 		    				  	var form = this.form_panel.getForm();
@@ -128,9 +134,7 @@
 					    	xtype:'button',text:'保存',handler:function(){
 					    		self.form_panel.getForm().findField('nodeorder').setVisable(true);
 					    		if(self.form_panel.getForm().isValid()){
-					    			self.action.modify(self.form_panel.getForm().getValues(),function(){
-						    			self.close();
-						    		});
+					    			self.action.modify(self.form_panel.getForm().getValues());
 					    		}
 					    		
 					    	}
@@ -346,14 +350,26 @@
 										}
 									}
 							);
-							var param={};
-							param[this.ownerCt.actionPrefix+self.store.idProperty]=node.id;
-							this.ownerCt.detail_store.load({params:param,callback:function(r,options,success){
-								var record = this.getAt(0);
-								var form = self.detail_panel.getForm();
+							if(node.id != 0){//非根节点的时候，显示右边详情面版和保存按钮
+								this.ownerCt.detail_panel.show();
+								Ext.getCmp("saveDetailBtn").enable();
+								
+								var param={};
+								param[this.ownerCt.actionPrefix+self.store.idProperty]=node.id;
+								this.ownerCt.detail_store.load({params:param,callback:function(r,options,success){
+									var record = this.getAt(0);
+									var form = self.detail_panel.getForm();
+								
+									form.setValues(buildSubmitParam({},record.data));
+								}});
+							}
+							else {
+								//根节点的时候，关闭右边的详情面版的保存按钮
+								Ext.getCmp("saveDetailBtn").disable();
+								var form = this.ownerCt.detail_panel.getForm();
+								form.reset();
+							}
 							
-								form.setValues(buildSubmitParam({},record.data));
-							}});
 							
 						}
 					}
@@ -367,7 +383,7 @@
 						{header: '机构ID', dataIndex: 'departid', sortable: false,width:100},
 						{header: this.title_base+'代码',dataIndex:'departfullcode',width:300},
 						{header: this.title_base+'名称',dataIndex:'departname',width:300},
-						{header:'上级'+this.title_base,dataIndex:'parent',renderer:function(obj){return obj.departname;},width:300}
+						{header:'上级'+this.title_base,dataIndex:'parent',renderer:function(obj){return obj?obj.departname:null;},width:300}
 					],
 				    defaults: {
 				        sortable: false,
@@ -399,13 +415,16 @@
 									 self.window.center();
 									 self.window.show();
 //									初始化添加机构时候的必须数据
-									var record = self.detail_store.getAt(0);
-									var form = self.window.form_panel.getForm();
-									form.setValues({
-												'parent.departid':record.data.departid,
-												'parent.departname':record.data.departname,
-												'parent.departfullcode':record.data.departfullcode
-											});
+									 if(self.detail_store.getCount()){
+										 var record = self.detail_store.getAt(0);
+										 var form = self.window.form_panel.getForm();
+										 form.setValues({
+													'parent.departid':record.data.departid,
+													'parent.departname':record.data.departname,
+													'parent.departfullcode':record.data.departfullcode
+												});
+									 }
+									 
 								}
 								else{
 									Ext.MessageBox.alert("提示","请选择树形菜单中的机构");
@@ -419,16 +438,12 @@
 									self.window = new techsupport.deparmentmanage.DepartmentWindow({
 										ownerCt:self,action_name:'modify',action:self.action,
 										renderTo:self.detailWindowCt,
-										store:self.store,
-										dstore:self.detail_store,
+										initRecord:record,
 										width:340
 									});
 									self.window.center();
 									self.window.show();
 									
-									
-									var form = self.window.form_panel.getForm();
-									form.setValues(buildSubmitParam({},record.data));
 								}
 								else
 									Ext.MessageBox.alert("提示","请选择需要修改的记录");
@@ -466,7 +481,7 @@
 //								执行置底动作
 							}},
 							'-','-',
-							{xtype:'button',text:'保存↑',handler:function(){ 
+							{id:"saveDetailBtn",xtype:'button',text:'保存↑',handler:function(){ 
 								/* 保存当前机构 */
 								var record = this.ownerCt.ownerCt.ownerCt.ownerCt.detail_store.getAt(0);
 								this.ownerCt.ownerCt.ownerCt.ownerCt.detail_panel.getForm().updateRecord(record);
