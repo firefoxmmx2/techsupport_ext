@@ -63,7 +63,7 @@ Ext.Ajax.simpleSubmit = function(config){
 			var data = Ext.decode(response.responseText);
 			
 			
-			if(!data.returnNo&&data.returnMessage){
+			if(!data.returnNo){
 				
 				//执行回调
 				if(config.successCallback){
@@ -72,8 +72,7 @@ Ext.Ajax.simpleSubmit = function(config){
 				
 				Ext.example.msg('成功',data.returnMessage);
 			}
-				
-			if(data.returnNo&&data.returnMessage){
+			else{
 				//执行错误回调
 				if(config.successFailCallback){
 					config.successFailCallback(data);
