@@ -1,11 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!-- <script type="text/javascript" -->
-<!-- 	src="basic/systemadmin/js/department_manage_main.js"></script> -->
 <script type="text/javascript">
 
 Ext.onReady(function() {
-	Ext.Loader.load(['basic/systemadmin/js/department_manage_main.js'],function(){
+	Ext.Loader.load(['basic/systemadmin/js/departmentManageMan.js'],function(){
 		var depament_manage_panel = new techsupport.deparmentmanage.DepartmentMain(
 				{
 					renderTo : 'department_manage_panel'
