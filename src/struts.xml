@@ -2,7 +2,7 @@
 <!DOCTYPE struts SYSTEM "struts-2.0.dtd">
 <struts>
 
-	<constant name="struts.devMode" value="false" />
+	<constant name="struts.devMode" value="true" />
 	<constant name="struts.objectFactory" value="spring" />
 	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
 	<!-- fixed encoding error of json data  -->

@@ -27,23 +27,23 @@
 		<action name="*_tree" class="treeMappingAction" method="{1}">
 <!-- 			跳转机构管理界面 -->
 			<result name="department">
-				/basic/systemadmin/department_manage_main.jsp
+				/basic/systemadmin/departmentManageMan.jsp
 			</result>
 <!-- 			跳转用户管理界面 -->
 			<result name="user">
-				/basic/systemadmin/user_manage_main.jsp
+				/basic/systemadmin/userManageMan.jsp
 			</result>
 <!-- 			跳转角色管理界面 -->
 			<result name="role">
-				/basic/systemadmin/role_manage_main.jsp
+				/basic/systemadmin/roleManageMan.jsp
 			</result>
 <!-- 			跳转系统管理界面 -->
 			<result name="system">
-				/basic/systemadmin/systemManageMain.jsp
+				/basic/systemadmin/systemManageMan.jsp
 			</result>
 <!-- 			跳转到功能管理界面 -->
 			<result name="function">
-				/basic/systemadmin/functionManageMain.jsp
+				/basic/systemadmin/functionManageMan.jsp
 			</result>
 		</action>
 	</package>
