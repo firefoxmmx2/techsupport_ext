@@ -25,6 +25,15 @@ if(!techsupport.systemmanage.UserManager){
 		removeURL : context_path+'/sysadminDefault/remove_user.action',
 		actionPrefix : 'user.',
 		removePrefix : 'userList[i].',
+		//构造器
+		constructor:function(config){
+			this.width = config.width || '100%';
+			this.height = config.width || '100%';
+			this.pagesize = config.pagesize || this.pagesize;//设置默认的每页显示记录数
+			this.dir = config.dir || 'nodeorder'; //设置默认的排序字段
+
+			techsupport.systemmanage.UserManager.superclass.apply(this,arguments);
+		},
 		//组件初始化
 		initComponent:function(ct,position){
 			var detail_panel_items_defaults = {
@@ -64,8 +73,7 @@ if(!techsupport.systemmanage.UserManager){
 					}
 				]
 			});
-			alert(techsupport.systemmanage.UserManager.superclass.call);
-			techsupport.systemmanage.UserManager.superclass.apply(this,arguments);
+			techsupport.systemmanage.UserManager.superclass.call(this);
 		}
 	});
 
