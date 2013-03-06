@@ -5,7 +5,7 @@
 <struts>
 	<package name="sysadmin" namespace="/sysadminDefault" extends="json-default">
 		<!-- 用户管理 -->
-		<action name="*_usermanage" class="userManageAction" method="{1}">
+		<action name="*_user" class="userManageAction" method="{1}">
 			<result type="json"></result>
 		</action>
 <!-- 		机构管理 -->
