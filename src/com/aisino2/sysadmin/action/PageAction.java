@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.apache.struts2.json.annotations.JSON;
@@ -33,6 +34,8 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 	public String returnMessageDebug;
 	public Map<String, Object> queryExtraCond = new HashMap<String, Object>();
 	
+//	日志
+	public static final Logger log = Logger.getLogger(PageAction.class);
 	
 	public Map<String, Object> getQueryExtraCond() {
 		return queryExtraCond;
