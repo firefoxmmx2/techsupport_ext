@@ -109,4 +109,9 @@ public interface IUserService {
 		*/
 	String getQymcByQybm(String qybm);
 
+	/**
+	 * 移除多个用户(物理)
+	 * @param needRemovedUsers 将要被删除的用户
+	 */
+	void removeUsers(List<User> needRemovedUsers);
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aisino2.sysadmin.dao.IUserDao;
 import com.aisino2.sysadmin.domain.User;
@@ -103,6 +104,17 @@ public class UserServiceImpl implements IUserService {
 	public String getQymcByQybm(String qybm) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Transactional
+	@Override
+	public void removeUsers(List<User> needRemovedUsers) {
+		if(needRemovedUsers==null || needRemovedUsers.size()==0)
+			throw new RuntimeException("[用户删除]需要被删除的用户列表为空");
+		for(User user : needRemovedUsers){
+			this.deleteUser(user);
+		}
+		
 	}
 	
 	

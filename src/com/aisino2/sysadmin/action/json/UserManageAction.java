@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.action.PageAction;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
 import com.aisino2.sysadmin.service.IUserService;
 
@@ -45,6 +46,20 @@ public class UserManageAction extends PageAction {
 	 * @throws Exception
 	 */
 	public String query() throws Exception{
+		try{
+			if(user==null||user.getUserid()==null)
+				throw new RuntimeException("需要查询的用户");
+			user=userService.getUser(user);
+		}catch(RuntimeException e){
+			log.error(e);
+			this.returnNo=1;
+			this.returnMessage = "获取用户详细数据错误";
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug=e.getMessage();
+			}
+		}
+		
 		
 		return SUCCESS;
 	}
@@ -54,6 +69,20 @@ public class UserManageAction extends PageAction {
 	 * @throws Exception
 	 */
 	public String add() throws Exception{
+		try {
+			if(user==null)
+				throw new RuntimeException("添加用户数据传输错误");
+			userService.insertUser(user);
+		} catch (Exception e) {
+			log.error(e);
+			this.returnNo=1;
+			this.returnMessage="添加用户发生错误";
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug=e.getMessage();
+			}
+			
+		}
 		return SUCCESS;
 	}
 	
@@ -63,6 +92,19 @@ public class UserManageAction extends PageAction {
 	 * @throws Exception
 	 */
 	public String modify() throws Exception{
+		try {
+			if(user==null)
+				throw new RuntimeException("修改用户信息数据传输错误");
+			userService.updateUser(user);
+		} catch (Exception e) {
+			log.error(e);
+			this.returnNo=1;
+			this.returnMessage="修改用户嘻嘻发生错误";
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug=e.getMessage();
+			}
+		}
 		return SUCCESS;
 	}
 	/**
@@ -71,10 +113,23 @@ public class UserManageAction extends PageAction {
 	 * @throws Exception
 	 */
 	public String remove() throws Exception{
+		try {
+			if(userList==null || userList.size()==0)
+				throw new RuntimeException("删除用户参数传输错误");
+			userService.removeUsers(userList);
+		} catch (Exception e) {
+			log.error(e);
+			this.returnNo=1;
+			this.returnMessage="删除用户信息发生错误";
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug=e.getMessage();
+			}
+		}
 		return SUCCESS;
 	}
 	/**
-	 * 用户检查
+	 * 用户检查,检查用户名是否存在
 	 * @return
 	 * @throws Exception
 	 */
@@ -88,6 +143,15 @@ public class UserManageAction extends PageAction {
 	 * @throws Exception
 	 */
 	public String querylist() throws Exception{
+		try {
+			if(user==null)
+				throw new RuntimeException("用户分页查询参数传输错误");
+			Pager pager=userService.getListForPage(this.user, this.pageNo, this.pageSize, this.dir, this.sort);
+			this.total=pager.getTotalCount();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		return SUCCESS;
 	}
 }
