@@ -13,6 +13,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.dao.IUserDao;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
 import com.opensymphony.module.sitemesh.Page;
 
@@ -50,40 +51,45 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 		if (user == null || user.getUseraccount() == null
 				|| user.getPassword() == null)
 			throw new RuntimeException("用户名或者密码为空");
-		return this.getHibernateTemplate().execute(new HibernateCallback<User>() {
+		return this.getHibernateTemplate().execute(
+				new HibernateCallback<User>() {
 
-			@Override
-			public User doInHibernate(Session session)
-					throws HibernateException, SQLException {
-				String hql  = "select t from User t where t.useraccount = ? and t.password = ?";
-				Query q = session.createQuery(hql);
-				q.setParameter(0, user.getUseraccount());
-				q.setParameter(1, user.getPassword());
-				User findUser = (User) q.uniqueResult();
-				return findUser;
-			}
-			
-		});
+					@Override
+					public User doInHibernate(Session session)
+							throws HibernateException, SQLException {
+						String hql = "select t from User t where t.useraccount = ? and t.password = ?";
+						Query q = session.createQuery(hql);
+						q.setParameter(0, user.getUseraccount());
+						q.setParameter(1, user.getPassword());
+						User findUser = (User) q.uniqueResult();
+						return findUser;
+					}
+
+				});
 	}
 
-	public List<User> getListForPage(final User user, final int pageNo,
+	@SuppressWarnings("unchecked")
+	public Pager getListForPage(final User user, final int pageNo,
 			final int pageSize, String sort, String desc) {
-		return this.getHibernateTemplate().executeFind(new HibernateCallback() {
+		return this.getHibernateTemplate().execute(new HibernateCallback() {
 
-			public List<User> doInHibernate(Session sess)
-					throws HibernateException, SQLException {
-				StringBuffer hql = new StringBuffer(
-						"select select new User(t.userid,t.departid,t.useraccount,t.username,t.password," +
-				"t.userorder,t.isvalid,t.usertype,t.idnum,t.mobilephone," +
-				"t.jzlbdm,t.jzlbmc) from User t");
-				
+			public Pager doInHibernate(Session sess) throws HibernateException,
+					SQLException {
+				StringBuffer hql = new StringBuffer("select count(t) from User t");
+
 				Map<String, Object> para_map = get_para_and_hql(user, hql);
 				hql = (StringBuffer) para_map.get("hql");
 				List<Object> para_list = (List<Object>) para_map.get("para");
 
+				Pager pager = new Pager();
+				
 				Query q = sess.createQuery(hql.toString());
 				q.setCacheable(true);
-				
+				pager.setTotalCount(((Long)q.uniqueResult()).intValue());
+				hql = new StringBuffer("select new User(t.userid,t.departid,t.useraccount,t.username,t.password,"
+						+ "t.userorder,t.isvalid,t.usertype,t.idnum,t.mobilephone,"
+						+ "t.jzlbdm,t.jzlbmc) from User t");
+				q=sess.createQuery(hql.toString());
 				// page
 				q.setFirstResult((pageNo - 1) * pageSize);
 				q.setMaxResults(pageSize);
@@ -92,7 +98,10 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 				for (int i = 0; i < para_list.size(); i++)
 					q.setParameter(i, para_list.get(i));
 
-				return q.list();
+				
+				pager.setDatas(q.list());
+
+				return pager;
 			}
 		});
 	}
@@ -100,7 +109,8 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 	public List<User> getListUser(User user) {
 		this.getHibernateTemplate().setCacheQueries(true);
 
-		StringBuffer hql = new StringBuffer("select new User(t.userid,t.departid,t.useraccount,t.username,t.password,t.department,t.roles) from User t");
+		StringBuffer hql = new StringBuffer(
+				"select new User(t.userid,t.departid,t.useraccount,t.username,t.password,t.department,t.roles) from User t");
 		Map<String, Object> para_map = get_para_and_hql(user, hql);
 		hql = (StringBuffer) para_map.get("hql");
 		List<Object> para_list = (List<Object>) para_map.get("para");
@@ -126,13 +136,13 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 
 	public Integer getNextNodeorder(User user) {
 		String hql = "select max(nvl(t.nodeorder,0))+1 from User t where 1=1";
-		if(user.getDepartid() == null || user.getDepartid().equals(0)){
+		if (user.getDepartid() == null || user.getDepartid().equals(0)) {
 			hql += " and t.departid is null";
-			return (Integer)this.getHibernateTemplate().find(hql).get(0);
-		}
-		else{
+			return (Integer) this.getHibernateTemplate().find(hql).get(0);
+		} else {
 			hql += " and t.departid = ?";
-			return (Integer)this.getHibernateTemplate().find(hql,user.getDepartid()).get(0);
+			return (Integer) this.getHibernateTemplate()
+					.find(hql, user.getDepartid()).get(0);
 		}
 	}
 

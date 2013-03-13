@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.aisino2.sysadmin.dao.IUserDao;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
 import com.aisino2.sysadmin.service.IUserService;
 
@@ -41,7 +42,7 @@ public class UserServiceImpl implements IUserService {
 		return this.user_dao.getPasswordByUseraccount(user);
 	}
 
-	public List<User> getListForPage(User user, int pageNo, int pageSize,
+	public Pager getListForPage(User user, int pageNo, int pageSize,
 			String sort, String desc) {
 		return this.user_dao.getListForPage(user, pageNo, pageSize, sort, desc);
 	}

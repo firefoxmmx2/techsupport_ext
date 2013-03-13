@@ -2,6 +2,7 @@ package com.aisino2.sysadmin.service;
 
 import java.util.List;
 
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
 
 public interface IUserService {
@@ -21,7 +22,7 @@ public interface IUserService {
 	User getPasswordByUseraccount(User user);
 
 	/** @param 用户(t_user) 分页查询 */
-	List getListForPage(User user, int pageNo,int pageSize,String sort,String desc);
+	Pager getListForPage(User user, int pageNo,int pageSize,String sort,String desc);
 
 	/** @param 用户(t_user) 多条查询 */
 	List<User> getListUser(User user);

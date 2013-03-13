@@ -1,6 +1,7 @@
 package com.aisino2.sysadmin.dao;
 import java.util.List;
 
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
 public interface IUserDao {
 	/** @param 用户(t_user) 增加 */
@@ -22,7 +23,7 @@ public interface IUserDao {
 	User getPasswordByUseraccount(User user);
 
 	/** @param 用户(t_user) 分页查询 */
-	List<User> getListForPage(User user, int pageNo,int pageSize,String sort,String desc);
+	Pager getListForPage(User user, int pageNo,int pageSize,String sort,String desc);
 
 	/** @param 用户(t_user) 多条查询 */
 	List<User> getListUser(User user);

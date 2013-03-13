@@ -142,15 +142,23 @@ public class UserManageAction extends PageAction {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public String querylist() throws Exception{
 		try {
 			if(user==null)
 				throw new RuntimeException("用户分页查询参数传输错误");
 			Pager pager=userService.getListForPage(this.user, this.pageNo, this.pageSize, this.dir, this.sort);
 			this.total=pager.getTotalCount();
+			userList=pager.getDatas();
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			this.returnNo=1;
+			this.returnMessage="用户列表查询出错";
+			log.error(e);
+			if(log.isDebugEnabled()){
+				this.returnMessageDebug=e.getMessage();
+				log.debug(e,e.fillInStackTrace());
+			}
 		}
 		return SUCCESS;
 	}

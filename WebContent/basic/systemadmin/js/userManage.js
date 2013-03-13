@@ -37,6 +37,105 @@ if (!techsupport.systemmanage.UserManager) {
 						actionPrefix : 'user.',
 						removePrefix : 'userList[i].',
 						gridSelectionModel : new Ext.grid.CheckboxSelectionModel(),
+						// 操作
+						actions : {
+							// 添加用户
+							add : function(params, scope) {
+								var _scope = this;
+								if (scope && typeof scope == "Object")
+									_scope = scope;
+								Ext.Ajax
+										.simpleSubmit({
+											url : _scope.addUrl,
+											actionPrefix : _scope.actionPrefix,
+											params : params,
+											successCallback : function(data) {
+												if (_scope.window)
+													_scope.window.close();
+												_scope.gridStore.load();
+
+												var currentNode = _scope.treePanel
+														.getNodeById(_scope.currentNodeId);
+												_scope.treeLoader
+														.load(
+																currentNode,
+																function(node) {
+																	if (node.childNodes.length > 0) {
+																		node.leaf = false;
+																	} else
+																		node.leaf = true;
+
+																	node
+																			.expand();
+																});
+											}
+										});
+							},
+							// 修改用户
+							modify : function(params, scope) {
+								var _scope = this;
+								if (scope && typeof scope == "Object")
+									_scope = scope;
+								Ext.Ajax
+										.simpleSubmit({
+											url : _scope.addUrl,
+											actionPrefix : _scope.actionPrefix,
+											params : params,
+											successCallback : function(data) {
+												if (_scope.window)
+													_scope.window.close();
+												_scope.gridStore.load();
+
+												var currentNode = _scope.treePanel
+														.getNodeById(_scope.currentNodeId);
+												_scope.treeLoader
+														.load(
+																currentNode,
+																function(node) {
+																	if (node.childNodes.length > 0) {
+																		node.leaf = false;
+																	} else
+																		node.leaf = true;
+
+																	node
+																			.expand();
+																});
+											}
+										});
+							},
+							// 删除用户
+							remove : function(params) {
+								var _scope = this;
+								if (scope && typeof scope == "Object")
+									_scope = scope;
+								Ext.Ajax
+										.simpleSubmit({
+											url : _scope.addUrl,
+											actionPrefix : _scope.actionPrefix,
+											params : params,
+											successCallback : function(data) {
+												if (_scope.window)
+													_scope.window.close();
+												_scope.gridStore.load();
+
+												var currentNode = _scope.treePanel
+														.getNodeById(_scope.currentNodeId);
+												_scope.treeLoader
+														.load(
+																currentNode,
+																function(node) {
+																	if (node.childNodes.length > 0) {
+																		node.leaf = false;
+																	} else
+																		node.leaf = true;
+
+																	node
+																			.expand();
+																});
+											}
+										});
+							}
+						},
 						constructor : function(config) {
 							this.renderTo = config.renderTo;
 							this.width = config.width || "100%";
@@ -215,32 +314,32 @@ if (!techsupport.systemmanage.UserManager) {
 									text : '添加',
 									handler : function() {
 									}
-								},'-', {
+								}, '-', {
 									xtype : 'button',
 									text : '修改',
 									handler : function() {
 									}
-								},'-', {
+								}, '-', {
 									xtype : 'button',
 									text : '删除',
 									handler : function() {
 									}
-								},'-','-', {
+								}, '-', '-', {
 									xtype : 'button',
 									text : '置顶',
 									handler : function() {
 									}
-								},'-', {
+								}, '-', {
 									xtype : 'button',
 									text : '上移',
 									handler : function() {
 									}
-								},'-', {
+								}, '-', {
 									xtype : 'button',
 									text : '下移',
 									handler : function() {
 									}
-								},'-', {
+								}, '-', {
 									xtype : 'button',
 									text : '置底',
 									handler : function() {
@@ -403,4 +502,180 @@ if (!techsupport.systemmanage.UserManager) {
 							this.gridPanel.body.setHeight(this.gridBodyHeight);
 						}
 					});
+}
+
+/**
+ * 用户管理的窗口
+ */
+if (!techsupport.systemmanage.UserWindow) {
+	techsupport.systemmanage.UserWindow = Ext.extend(Ext.Window, {
+		mode : 'detail',
+		ownerCt : null,
+		autoHeight : 'auto',
+		constructor : function(config) {
+			this.mode = config.mode || 'detail';
+			this.ownerCt = config.ownerCt;
+			this.renderTo = config.renderTo;
+			techsupport.systemmanage.UserWindow.superclass.constructor.call(
+					this, config);
+		},
+		initComponent : function(ct, position) {
+			var uw = this;
+			techsupport.systemmanage.UserWindow.superclass.initComponent.call(
+					this, ct, position);
+			this.formPanel = Ext.create({
+				xtype : 'form',
+				defaults : {
+					xtype : 'textfield'
+				},
+				items : [ {
+					name:'userid',
+					fieldLabel:'用户id',
+					allowBlank:true
+				},
+				{
+					name:'username',
+					fieldLabel:'用户名称',
+					allowBlank:false,
+					blankText:'用户名称不能为空'
+				},
+				{
+					name:'useraccount',
+					fieldLabel:'用户帐号',
+					blankText:'用户帐号必须输入',
+					validationEvent : 'blur',
+					validator : function(val) {
+						if (uw.initRecord) {
+							if (val == uw.initRecord.data[this.name])
+								return true;
+						}
+
+						var result = false;
+
+						$
+								.ajax({
+									url : context_path
+											+ '/sysadminDefault/check_user.action',
+									data : {
+										'user.useraccount' : val
+									},
+									async : false,
+									success : function(
+											response,
+											opt) {
+										var data = response;
+										if (!data.returnNo)
+											result = true;
+										else
+											result = false;
+									}
+								});
+						if (result)
+							return true;
+						else
+							return '用户帐号已存在';
+					}
+				},
+				{
+					name:'password',
+					fieldLabel:'密码',
+					blankText:'密码必须输入',
+					validationEvent:'blue',
+					validator:function(val){
+						var passwdRepeat = this.ownerCt.find('passwordRepeat');
+						if(val&&passwdRepeat.getValue()){
+							if(val == passwdRepeat.getValue())
+								return true;
+							else
+								return "两次输入密码不一致";
+						}
+					}
+				},
+				{
+					name:'passwordRepeat',
+					fieldLabel:'重复密码',
+					blankText:'重复密码必须输入',
+					validationEvent:'blue',
+					validator:function(val){
+						var passwd = this.ownerCt.find('password');
+						if(val&&passwd.getValue()){
+							if(val == passwd.getValue())
+								return true;
+							else
+								return "两次输入密码不一致";
+						}
+					}
+				},
+				{
+					name:'mobilephone',
+					fieldLabel:'电话',
+					allowBlank:true,
+					vtype:'number',
+					vtypeText : "电话输入必须为数字"
+					
+				},
+				{
+					name:'email',
+					fieldLabel:'电子邮件',
+					allowBlank:true,
+					vtype:'email',
+					vtypeText:'输入的电子邮件不正确'
+				}]
+			});
+//			详情显示
+			if (this.mode == 'detail') {
+//				关闭按钮
+				this.addButton({
+					xtype:'button',
+					text:'关闭',
+					handler:function(){
+						this.ownerCt.close();
+					}
+				});
+//				修改模式
+			} else if (this.mode == 'modify') {
+				// 确认按钮
+				this.addButton({
+					xtype : 'button',
+					text : '确认',
+					handler : function() {
+						if (this.ownerCt.formPanel.getForm().isValid()) {
+							this.ownerCt.ownerCt.actions
+									.modify(this.ownerCt.formPanel.getForm()
+											.getValues());
+						}
+					}
+				});
+				// 关闭按钮
+				this.addButton({
+					xtype : 'button',
+					text : '关闭',
+					handler : function() {
+						this.ownerCt.close();
+					}
+				});
+			} else if (this.mode == 'add') {
+				// 确认按钮
+				this.addButton({
+					xtype : 'button',
+					text : '确认',
+					handler : function() {
+						if (this.ownerCt.formPanel.getForm().isValid()) {
+							this.ownerCt.ownerCt.actions
+									.add(this.ownerCt.formPanel.getForm()
+											.getValues());
+						}
+					}
+				});
+				// 关闭按钮
+				this.addButton({
+					xtype : 'button',
+					text : '关闭',
+					handler : function() {
+						this.ownerCt.close();
+					}
+				});
+			}
+		}
+	});
 }
