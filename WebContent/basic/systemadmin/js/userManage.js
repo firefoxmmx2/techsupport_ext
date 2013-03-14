@@ -620,10 +620,37 @@ if (!techsupport.systemmanage.UserWindow) {
 					allowBlank:true,
 					vtype:'email',
 					vtypeText:'输入的电子邮件不正确'
+				},
+				{
+					name:'usertype',
+					fieldLabel:'用户类别',
+					xtype:'checkboxgroup',
+					itemCls: 'x-check-group-alt',
+					columns:1,
+					items:[{
+						boxLabel:'测试1',
+						name:'usertype'
+					},
+					{
+						boxLabel:'测试2',
+						name:'usertype'
+					},
+					{
+						boxLabel:'测试3',
+						name:'usertype'
+					}]
 				}]
 			});
+			//添加表单到窗口面板
+			this.add(this.formPanel);
 //			详情显示
 			if (this.mode == 'detail') {
+				Ext.each(this.formPanel.find(),function(item,index,all){
+					if(item.setReadOnly)
+						item.setReadOnly(true);
+					else if(item.setDisable)
+						item.setDisable(true);
+				});
 //				关闭按钮
 				this.addButton({
 					xtype:'button',
