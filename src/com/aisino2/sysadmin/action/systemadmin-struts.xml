@@ -46,6 +46,10 @@
 				/basic/systemadmin/functionManageMan.jsp
 			</result>
 		</action>
+<!-- 		字典 -->
+		<action name="*_dict" class="dictAction">
+			<result type="json"></result>
+		</action>
 	</package>
 	
 </struts>    
