@@ -240,8 +240,7 @@ if (!techsupport.systemmanage.UserManager) {
 				}
 			});
 			// --------------------------------机构树面板（加载位置在用户管理布局的左边）---------------------------------
-			this.treePanel = Ext.create({
-						xtype : 'treepanel',
+			this.treePanel = new Ext.tree.TreePanel({
 						region : 'west',
 						id : this.id + "TreePanel",
 						title : "机构树",
@@ -278,58 +277,72 @@ if (!techsupport.systemmanage.UserManager) {
 					});
 			// ------------------------------------用户展示的数据表格-------------------------------------
 			// -----------------------------嵌入到右边面板中---------------------------------------------
-			this.gridPanel = Ext.create({
-						xtype : 'grid',
-						id : this.id + "Grid",
-						store : this.gridStore,
-						border : false,
-						viewConfig : {
-							forceFit : true
-						},
-						sm : this.gridSelectionModel,
-						cm : this.gridColumnModel,
-						tbar : [{
-									xtype : 'button',
-									text : '添加',
-									handler : function() {
-									}
-								}, '-', {
-									xtype : 'button',
-									text : '修改',
-									handler : function() {
-									}
-								}, '-', {
-									xtype : 'button',
-									text : '删除',
-									handler : function() {
-									}
-								}, '-', '-', {
-									xtype : 'button',
-									text : '置顶',
-									handler : function() {
-									}
-								}, '-', {
-									xtype : 'button',
-									text : '上移',
-									handler : function() {
-									}
-								}, '-', {
-									xtype : 'button',
-									text : '下移',
-									handler : function() {
-									}
-								}, '-', {
-									xtype : 'button',
-									text : '置底',
-									handler : function() {
-									}
-								}],
-						bbar : [new Ext.AsinoPagingToolBar({
-									store : this.store,
-									displayInfo : true,
-									pageSize : this.pagesize
-								})]
-					});
+			this.gridPanel = new Ext.grid.GridPanel({
+				id : this.id + "Grid",
+				store : this.gridStore,
+				border : false,
+				viewConfig : {
+					forceFit : true
+				},
+				sm : this.gridSelectionModel,
+				cm : this.gridColumnModel,
+				tbar : [{
+					xtype : 'button',
+					text : '添加',
+					handler : function() {
+						var userAddWindow = new techsupport.systemmanage.UserWindow(
+								{
+									ownerCt : this.ownerCt.ownerCt.ownerCt,
+									mode : 'add'
+								});
+						userAddWindow.center();
+						userAddWindow.show();
+					}
+				}, '-', {
+					xtype : 'button',
+					text : '修改',
+					handler : function() {
+						var userModifyWindow = new techsupport.systemmanage.UserWindow(
+								{
+									ownerCt : this.ownerCt.ownerCt.ownerCt,
+									mode : 'modify'
+								});
+						userModifyWindow.center();
+						userModifyWindow.show();
+
+					}
+				}, '-', {
+					xtype : 'button',
+					text : '删除',
+					handler : function() {
+					}
+				}, '-', '-', {
+					xtype : 'button',
+					text : '置顶',
+					handler : function() {
+					}
+				}, '-', {
+					xtype : 'button',
+					text : '上移',
+					handler : function() {
+					}
+				}, '-', {
+					xtype : 'button',
+					text : '下移',
+					handler : function() {
+					}
+				}, '-', {
+					xtype : 'button',
+					text : '置底',
+					handler : function() {
+					}
+				}],
+				bbar : [new Ext.AsinoPagingToolBar({
+							store : this.store,
+							displayInfo : true,
+							pageSize : this.pagesize
+						})]
+			});
 			// --------------------查询面板内容的默认值------------------------
 			var queryPanelItemsDefaults = {
 				xtype : 'textfield'
@@ -473,13 +486,24 @@ if (!techsupport.systemmanage.UserManager) {
  */
 if (!techsupport.systemmanage.UserWindow) {
 	techsupport.systemmanage.UserWindow = Ext.extend(Ext.Window, {
-		mode : 'detail',
-		ownerCt : null,
-		autoHeight : 'auto',
 		constructor : function(config) {
 			this.mode = config.mode || 'detail';
 			this.ownerCt = config.ownerCt;
-			this.renderTo = config.renderTo;
+			this.renderTo = config.renderTo || Ext.getBody();
+			this.width = config.width || 500;
+			this.closeAction = "close";
+			this.title = '用户';
+			this.viewConfig = {
+				forceFit : true
+			};
+			// 设置是否为置顶窗口 , 可通过参数来改变
+			this.modal = config.modal || true,
+			// 初始化数据
+			this.initRecord = config.initRecord;
+			this.defaults = config.defaults || {
+				bodyStyle : 'padding: 4px;',
+				xtype : 'textfield'
+			};
 			techsupport.systemmanage.UserWindow.superclass.constructor.call(
 					this, config);
 		},
@@ -487,24 +511,28 @@ if (!techsupport.systemmanage.UserWindow) {
 			var uw = this;
 			techsupport.systemmanage.UserWindow.superclass.initComponent.call(
 					this, ct, position);
-			this.formPanel = Ext.create({
-				xtype : 'form',
+			// 表单区域
+			this.formPanel = new Ext.form.FormPanel({
 				defaults : {
 					xtype : 'textfield'
 				},
 				items : [{
+							id : 'userid',
 							name : 'userid',
 							fieldLabel : '用户id',
 							allowBlank : true,
-							hidden:true
+							hidden : true
 						}, {
+							id : 'username',
 							name : 'username',
 							fieldLabel : '用户名称',
 							allowBlank : false,
 							blankText : '用户名称不能为空'
 						}, {
+							id : 'useraccount',
 							name : 'useraccount',
 							fieldLabel : '用户帐号',
+							allowBlank:false,
 							blankText : '用户帐号必须输入',
 							validationEvent : 'blur',
 							validator : function(val) {
@@ -535,8 +563,9 @@ if (!techsupport.systemmanage.UserWindow) {
 								else
 									return '用户帐号已存在';
 							},
-							vtype:'alphanum'
+							vtype : 'alphanum'
 						}, {
+							id : 'password',
 							name : 'password',
 							fieldLabel : '密码',
 							blankText : '密码必须输入',
@@ -552,6 +581,7 @@ if (!techsupport.systemmanage.UserWindow) {
 								}
 							}
 						}, {
+							id : 'passwordRepeat',
 							name : 'passwordRepeat',
 							fieldLabel : '重复密码',
 							blankText : '重复密码必须输入',
@@ -566,6 +596,12 @@ if (!techsupport.systemmanage.UserWindow) {
 								}
 							}
 						}, {
+							id : 'idnum',
+							name : 'idnum',
+							fieldLabel : '身份证号码',
+							allowBlank : true
+						}, {
+							id : 'mobilephone',
 							name : 'mobilephone',
 							fieldLabel : '电话',
 							allowBlank : true,
@@ -573,29 +609,45 @@ if (!techsupport.systemmanage.UserWindow) {
 							vtypeText : "电话输入必须为数字"
 
 						}, {
+							id : 'email',
 							name : 'email',
 							fieldLabel : '电子邮件',
 							allowBlank : true,
 							vtype : 'email',
 							emailText : '输入的电子邮件不正确'
 						}, {
+							id : 'usertype',
 							name : 'usertype',
 							fieldLabel : '用户类别',
 							xtype : 'checkboxgroup',
 							itemCls : 'x-check-group-alt',
-							columns : 1,
-							items : [{
-										boxLabel : '测试1',
-										name : 'usertype'
-									}, {
-										boxLabel : '测试2',
-										name : 'usertype'
-									}, {
-										boxLabel : '测试3',
-										name : 'usertype'
-									}]
-						}]
+							columns : 1
+							
+						}, {
+							id : 'userorder',
+							name : 'userorder',
+							fieldLabel : '序号',
+							allowBlank : true
+						}, new Ext.form.ComboBox({
+									id : 'isvalid',
+									name : 'isvalid',
+									fieldLabel : '是否可用',
+									typeAhead : true,
+									trigerAction : 'all',
+									mode : 'local',
+									store : new Ext.data.ArrayStore({
+												id : 0,
+												fields : ['factValue',
+														'displayName'],
+												data : [['Y', '是'], ['N', '否']]
+											}),
+									valueField : 'factValue',
+									displayField : 'displayName'
+								})]
 			});
+			
+			// 加载用户类型内容项
+			
 			// 添加表单到窗口面板
 			this.add(this.formPanel);
 			// 详情模式
@@ -603,19 +655,34 @@ if (!techsupport.systemmanage.UserWindow) {
 				Ext.each(this.formPanel.find(), function(item, index, all) {
 							if (item.setReadOnly)
 								item.setReadOnly(true);
+							else if (item.setEditable)
+								item.setEditable(true);
 							else if (item.setDisable)
 								item.setDisable(true);
 						});
+
+				var useraccountField = this.formPanel.findById('useraccout');
+				useraccountField.un('blur');
+				var passwdField = this.formPanel.findById('password');
+				passwdField.un('blur');
+				var passwdRepeatField = this.formPanel.findById('passwordRepeat');
+				passwdRepeatField.un('blur');
+
 				// 关闭按钮
 				this.addButton({
 							xtype : 'button',
 							text : '关闭',
 							handler : function() {
-								this.ownerCt.close();
+								this.ownerCt.ownerCt.close();
 							}
 						});
 				// 修改模式
 			} else if (this.mode == 'modify') {
+				// 不让修改用户帐号
+				var useraccountField = this.formPanel.findById('useraccout');
+				useraccountField.setReadOnly(true);
+				useraccountField.un('blur');
+
 				// 确认按钮
 				this.addButton({
 							xtype : 'button',
@@ -633,12 +700,18 @@ if (!techsupport.systemmanage.UserWindow) {
 							xtype : 'button',
 							text : '关闭',
 							handler : function() {
-								this.ownerCt.close();
+								this.ownerCt.ownerCt.close();
 							}
 						});
 				// 添加模式
 			} else if (this.mode == 'add') {
-				this.formPanel.find('')
+				// 隐藏是否可用
+				var isValidField = this.formPanel.findById('isvalid');
+				isValidField.hide();
+				// 隐藏序号
+				var userOrderField=this.formPanel.findById('userorder');
+				userOrderField.hide();
+				
 				// 确认按钮
 				this.addButton({
 							xtype : 'button',
@@ -656,7 +729,7 @@ if (!techsupport.systemmanage.UserWindow) {
 							xtype : 'button',
 							text : '关闭',
 							handler : function() {
-								this.ownerCt.close();
+								this.ownerCt.ownerCt.close();
 							}
 						});
 			}
