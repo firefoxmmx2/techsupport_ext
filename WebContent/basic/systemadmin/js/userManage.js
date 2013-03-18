@@ -713,7 +713,7 @@ if (!techsupport.systemmanage.UserWindow) {
 				userOrderField.hide();
 				
 				// 确认按钮
-				this.addButton({
+				this.addButton(new Ext.Button({
 							xtype : 'button',
 							text : '确认',
 							handler : function() {
@@ -723,15 +723,15 @@ if (!techsupport.systemmanage.UserWindow) {
 													.getForm().getValues());
 								}
 							}
-						});
+						}));
 				// 关闭按钮
-				this.addButton({
+				this.addButton(new Ext.Button({
 							xtype : 'button',
 							text : '关闭',
 							handler : function() {
 								this.ownerCt.ownerCt.close();
 							}
-						});
+						}));
 			}
 		}
 	});
