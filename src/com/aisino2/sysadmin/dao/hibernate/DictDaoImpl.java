@@ -3,6 +3,7 @@ package com.aisino2.sysadmin.dao.hibernate;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.dao.IDictDao;
 import com.aisino2.sysadmin.domain.Dict;
+import com.aisino2.sysadmin.domain.Pager;
 
 @Component
 public class DictDaoImpl extends TechSupportBaseDaoImpl implements IDictDao {
@@ -23,62 +25,23 @@ public class DictDaoImpl extends TechSupportBaseDaoImpl implements IDictDao {
 		return dict;
 	}
 
-	public Dict insertCacheDict(Dict dict) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public int deleteDict(Dict dict) {
 		this.getHibernateTemplate().delete(dict);
 		return 0;
 	}
 
-	public int deleteCacheDict(Dict dict) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	public int updateDict(Dict dict) {
 		this.getHibernateTemplate().update(dict);
 		return 0;
 	}
 
-	public int updateCacheDict(Dict dict) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	public Dict getDict(Dict dict) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getHibernateTemplate().get(Dict.class, dict.getDict_id());
 	}
 
-	public List getListForPage(final Dict map,final int pageNo, final int pageSize, final String sort,
-final			String desc) {
-		return this.getHibernateTemplate().executeFind(new HibernateCallback<List>() {
-
-			public List doInHibernate(Session session) throws HibernateException,
-					SQLException {
-				Long count = 0l;
-				Criteria q = session.createCriteria(Dict.class,"t");
-				//condition
-				Example ex = Example.create(map).enableLike().ignoreCase().excludeZeroes();
-				q.add(ex);
-				//count
-				q.setProjection(Projections.rowCount());
-				count = (Long) q.uniqueResult();
-				//page
-				q.setProjection(null);
-				q.setFirstResult((pageNo - 1) * pageSize);
-				q.setMaxResults(pageSize);
-				
-				List lst = new ArrayList();
-				lst.add(count);
-				lst.add(q.list());
-				return lst;
-			}
-		});
-	}
 
 	public List<Dict> getListDict(Dict dict) {
 		Example ex = Example.create(dict).enableLike().excludeZeroes().ignoreCase();
@@ -98,6 +61,38 @@ final			String desc) {
 	public int deleteDictionaryItemByDictionary(Dict dict) {
 		this.getHibernateTemplate().bulkUpdate("delete from Dict_item where dict_code=?",dict.getDict_code());
 		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * 分页查询
+	 * @see com.aisino2.sysadmin.dao.IDictDao#getListForPage(com.aisino2.sysadmin.domain.Dict, java.util.Map, int, int, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Pager getListForPage(final Dict dict, Map<String, Object> extraParams,
+			final int pageNo, final int pageSize, String sort, String desc) {
+		return (Pager) this.getHibernateTemplate().execute(new HibernateCallback<Pager>() {
+
+			public Pager doInHibernate(Session session) throws HibernateException,
+					SQLException {
+				Pager pager=new Pager();
+				
+				Criteria q = session.createCriteria(Dict.class,"t");
+				//condition
+				Example ex = Example.create(dict).enableLike().ignoreCase().excludeZeroes();
+				q.add(ex);
+				//count
+				q.setProjection(Projections.rowCount());
+				pager.setTotalCount(((Long) q.uniqueResult()).intValue());
+				
+				//page
+				q.setProjection(null);
+				q.setFirstResult((pageNo - 1) * pageSize);
+				q.setMaxResults(pageSize);
+				
+				pager.setDatas(q.list());
+				return pager;
+			}
+		});
 	}
 
 }

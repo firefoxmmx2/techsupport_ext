@@ -1,8 +1,10 @@
 package com.aisino2.sysadmin.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.aisino2.sysadmin.domain.Dict;
+import com.aisino2.sysadmin.domain.Pager;
 
 public interface IDictService {
 	/** @param 字典(t_dict) 增加 */
@@ -18,7 +20,7 @@ public interface IDictService {
 	Dict getDict(Dict dict);
 
 	/** @param 字典(t_dict) 分页查询 */
-	List getListForPage(final Dict map,final int pageNo, final int pageSize,final String sort,final String desc);
+	Pager getListForPage(final Dict dict,final Map<String, Object> extraParams,final int pageNo, final int pageSize,final String sort,final String desc);
 
 	/** @param 字典(t_dict) 多条查询 */
 	List<Dict> getListDict(Dict dict);

@@ -1,6 +1,7 @@
 package com.aisino2.sysadmin.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.dao.IDictDao;
 import com.aisino2.sysadmin.domain.Dict;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.service.IDictService;
 
 @Component
@@ -30,10 +32,6 @@ public class DictServiceImpl implements IDictService {
 		return dict_dao.getDict(dict);
 	}
 
-	public List getListForPage(Dict map, int pageNo, int pageSize, String sort,
-			String desc) {
-		return dict_dao.getListForPage(map, pageNo, pageSize, sort, desc);
-	}
 
 	public List<Dict> getListDict(Dict dict) {
 		return dict_dao.getListDict(dict);
@@ -50,6 +48,12 @@ public class DictServiceImpl implements IDictService {
 	@Resource(name="dictDaoImpl")
 	public void setDict_dao(IDictDao dict_dao) {
 		this.dict_dao = dict_dao;
+	}
+
+	@Override
+	public Pager getListForPage(Dict dict, Map<String, Object> extraParams,
+			int pageNo, int pageSize, String sort, String desc) {
+		return dict_dao.getListForPage(dict, extraParams, pageNo, pageSize, sort, desc);
 	}
 
 }
