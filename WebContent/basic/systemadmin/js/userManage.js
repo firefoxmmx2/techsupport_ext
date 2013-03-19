@@ -513,6 +513,9 @@ if (!techsupport.systemmanage.UserWindow) {
 					this, ct, position);
 			// 表单区域
 			this.formPanel = new Ext.form.FormPanel({
+				layoutConfig : {
+					forceFit : true
+				},
 				defaults : {
 					xtype : 'textfield'
 				},
@@ -532,7 +535,7 @@ if (!techsupport.systemmanage.UserWindow) {
 							id : 'useraccount',
 							name : 'useraccount',
 							fieldLabel : '用户帐号',
-							allowBlank:false,
+							allowBlank : false,
 							blankText : '用户帐号必须输入',
 							validationEvent : 'blur',
 							validator : function(val) {
@@ -621,8 +624,9 @@ if (!techsupport.systemmanage.UserWindow) {
 							fieldLabel : '用户类别',
 							xtype : 'checkboxgroup',
 							itemCls : 'x-check-group-alt',
-							columns : 1
-							
+							columns : 1,
+							items : [{}]
+
 						}, {
 							id : 'userorder',
 							name : 'userorder',
@@ -645,11 +649,41 @@ if (!techsupport.systemmanage.UserWindow) {
 									displayField : 'displayName'
 								})]
 			});
-			
+
 			// 加载用户类型内容项
-			
+			Ext.Ajax.request({
+						url : context_path
+								+ '/sysadminDefault/querylist_dict.action',
+						success : function(response, option) {
+							var oldUsertypeField = uw.formPanel
+									.findById("usertype");
+
+							var newUsertypeField = new Ext.form.CheckboxGroup({
+										id : 'usertypeNew',
+										name : 'usertype',
+										fieldLabel : '用户类别',
+										height : 70,
+										itemCls : 'x-check-group-alt',
+										columns : 1,
+										items : [new Ext.form.Checkbox({
+															name : '1',
+															boxLabel : '测试1'
+														}),
+												new Ext.form.Checkbox({
+															name : '2',
+															boxLabel : '测试2'
+														})]
+									});
+
+							uw.formPanel.insert(8, newUsertypeField);
+							uw.formPanel.remove(oldUsertypeField);
+							uw.doLayout();
+							uw.center();
+						}
+					});
 			// 添加表单到窗口面板
 			this.add(this.formPanel);
+			
 			// 详情模式
 			if (this.mode == 'detail') {
 				Ext.each(this.formPanel.find(), function(item, index, all) {
@@ -665,7 +699,8 @@ if (!techsupport.systemmanage.UserWindow) {
 				useraccountField.un('blur');
 				var passwdField = this.formPanel.findById('password');
 				passwdField.un('blur');
-				var passwdRepeatField = this.formPanel.findById('passwordRepeat');
+				var passwdRepeatField = this.formPanel
+						.findById('passwordRepeat');
 				passwdRepeatField.un('blur');
 
 				// 关闭按钮
@@ -709,9 +744,9 @@ if (!techsupport.systemmanage.UserWindow) {
 				var isValidField = this.formPanel.findById('isvalid');
 				isValidField.hide();
 				// 隐藏序号
-				var userOrderField=this.formPanel.findById('userorder');
+				var userOrderField = this.formPanel.findById('userorder');
 				userOrderField.hide();
-				
+
 				// 确认按钮
 				this.addButton(new Ext.Button({
 							xtype : 'button',
