@@ -47,7 +47,7 @@ public class DictAction extends PageAction {
 		this.dict = dict;
 	}
 
-	@Resource(name="dictService")
+	@Resource(name="dictServiceImpl")
 	public void setDictService(IDictService dictService) {
 		this.dictService = dictService;
 	}
