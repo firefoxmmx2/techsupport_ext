@@ -18,10 +18,6 @@ import com.aisino2.sysadmin.service.IDict_itemService;
  * @author ffmmx
  *
  */
-/**
- * @author hooxin
- *
- */
 @Component
 @Scope("prototype")
 public class DictAction extends PageAction {
