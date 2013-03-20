@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aisino2.sysadmin.dao.IDictDao;
 import com.aisino2.sysadmin.domain.Dict;
@@ -16,14 +17,17 @@ import com.aisino2.sysadmin.service.IDictService;
 public class DictServiceImpl implements IDictService {
 	private IDictDao dict_dao;
 	
+	@Transactional
 	public void insertDict(Dict dict) {
 		dict_dao.insertDict(dict);
 	}
 
+	@Transactional
 	public void deleteDict(Dict dict) {
 		dict_dao.deleteDict(dict);
 	}
 
+	@Transactional
 	public void updateDict(Dict dict) {
 		dict_dao.updateDict(dict);
 	}
@@ -54,6 +58,16 @@ public class DictServiceImpl implements IDictService {
 	public Pager getListForPage(Dict dict, Map<String, Object> extraParams,
 			int pageNo, int pageSize, String sort, String desc) {
 		return dict_dao.getListForPage(dict, extraParams, pageNo, pageSize, sort, desc);
+	}
+
+	@Transactional
+	@Override
+	public void removeDicts(List<Dict> lDicts) {
+		if(lDicts == null || lDicts.isEmpty())
+			throw new RuntimeException("需要被删除的字典为空");
+		for (Dict dict : lDicts) {
+			this.deleteDict(dict);
+		}
 	}
 
 }

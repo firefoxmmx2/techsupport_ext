@@ -38,5 +38,10 @@ public interface IDictService {
 	   * @return
 	   */
 	List<Dict> getChildrenDictionary(Dict dict);
-	  
+	 
+	/**
+	 * 删除字典（多个）
+	 * @param lDicts 需要被删除的字典
+	 */
+	void removeDicts(List<Dict> lDicts);
 }
