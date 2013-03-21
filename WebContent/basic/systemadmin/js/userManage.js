@@ -653,11 +653,25 @@ if (!techsupport.systemmanage.UserWindow) {
 			// 加载用户类型内容项
 			Ext.Ajax.request({
 						url : context_path
-								+ '/sysadminDefault/querylist_dict.action',
+								+ '/sysadminDefault/querylist_dictItem.action',
+						params:{'dictItem.dict_code':''},
 						success : function(response, option) {
+							
+							var data = Ext.decode(response.reponseText);
+							
 							var oldUsertypeField = uw.formPanel
 									.findById("usertype");
-
+							//复选框列表
+							var lCheckboxs = [];
+							for (var i = 0; i < data.lDictItems.length; i++) {
+								var checkbox = new Ext.form.Checkbox({
+									name:'usertype',
+									boxLabel:data.lDictItems[i].display_name,
+									value:data.lDictItems[i].fact_value
+								});
+								lCheckboxs.push(checkbox);
+							}
+							//延迟创建的新的用户类别字段,用于替换老的初始化占位用的
 							var newUsertypeField = new Ext.form.CheckboxGroup({
 										id : 'usertypeNew',
 										name : 'usertype',
@@ -665,14 +679,7 @@ if (!techsupport.systemmanage.UserWindow) {
 										height : 70,
 										itemCls : 'x-check-group-alt',
 										columns : 1,
-										items : [new Ext.form.Checkbox({
-															name : '1',
-															boxLabel : '测试1'
-														}),
-												new Ext.form.Checkbox({
-															name : '2',
-															boxLabel : '测试2'
-														})]
+										items : lCheckboxs
 									});
 
 							uw.formPanel.insert(8, newUsertypeField);
