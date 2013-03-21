@@ -536,9 +536,10 @@ if (!techsupport.systemmanage.UserWindow) {
 							name : 'useraccount',
 							fieldLabel : '用户帐号',
 							allowBlank : false,
-							blankText : '用户帐号必须输入',
 							validationEvent : 'blur',
 							validator : function(val) {
+								if(!val)
+									return '用户帐号必须输入';
 								if (uw.initRecord) {
 									if (val == uw.initRecord.data[this.name])
 										return true;
@@ -653,11 +654,12 @@ if (!techsupport.systemmanage.UserWindow) {
 			// 加载用户类型内容项
 			Ext.Ajax.request({
 						url : context_path
-								+ '/sysadminDefault/querylist_dictItem.action',
-						params:{'dictItem.dict_code':''},
+								+ '/sysadminDefault/find_dictItem.action',
+						params:{'dictItem.dict_code':USER_TYPE_DICT_CODE},
+						method:"post",
 						success : function(response, option) {
 							
-							var data = Ext.decode(response.reponseText);
+							var data = response.responseJSON;
 							
 							var oldUsertypeField = uw.formPanel
 									.findById("usertype");
@@ -667,7 +669,7 @@ if (!techsupport.systemmanage.UserWindow) {
 								var checkbox = new Ext.form.Checkbox({
 									name:'usertype',
 									boxLabel:data.lDictItems[i].display_name,
-									value:data.lDictItems[i].fact_value
+									inputValue:data.lDictItems[i].fact_value
 								});
 								lCheckboxs.push(checkbox);
 							}
