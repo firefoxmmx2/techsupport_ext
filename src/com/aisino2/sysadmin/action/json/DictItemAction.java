@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.aisino2.sysadmin.action.PageAction;
 import com.aisino2.sysadmin.domain.Dict_item;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.service.IDict_itemService;
 
 /**
@@ -46,7 +47,7 @@ public class DictItemAction extends PageAction {
 		this.lDictItems = lDictItems;
 	}
 
-	@Resource(name = "dict_itemService")
+	@Resource(name = "dict_itemServiceImpl")
 	public void setDict_itemService(IDict_itemService dict_itemService) {
 		this.dict_itemService = dict_itemService;
 	}
@@ -57,9 +58,12 @@ public class DictItemAction extends PageAction {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public String querylist() throws Exception {
 		try {
-
+			Pager pager = this.dict_itemService.getListForPage(dictItem, this.start, this.limit, this.dir, this.sort);
+			lDictItems = pager.getDatas();
+			this.total = pager.getTotalCount();
 		} catch (Exception e) {
 			log.error(e);
 			this.returnNo = 1;
@@ -161,6 +165,29 @@ public class DictItemAction extends PageAction {
 			log.error(e);
 			this.returnNo = 1;
 			this.returnMessage = "删除字典项发生错误";
+			if (log.isDebugEnabled()) {
+				log.debug(e, e.fillInStackTrace());
+				this.returnMessageDebug = e.getMessage();
+			}
+			throw e;
+		}
+		return SUCCESS;
+	}
+	
+	/**
+	 * 查询字典项 列表无限制
+	 * @return 
+	 * @throws Exception
+	 */
+	public String find() throws Exception{
+		try {
+			if (dictItem == null)
+				throw new RuntimeException("查询字典项参数传输发生错误");
+			lDictItems = this.dict_itemService.getListDict_item(dictItem);
+		} catch (Exception e) {
+			log.error(e);
+			this.returnNo = 1;
+			this.returnMessage = "查询字典项发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
 				this.returnMessageDebug = e.getMessage();

@@ -26,14 +26,17 @@ public interface IDictDao {
 	/** @param 字典(t_dict) 多条查询 */
 	List<Dict> getListDict(Dict dict);
 	
-	  /**
-	   * 根据上级字典编码DictCode取得下级字典
-	   * @param dictionary
-	   * @return
-	   */
-	List<Dict> getChildrenDictionary(Dict dict);
-	List<Dict> getDictionaryAll(Dict dict);
-	  
-	  int deleteDictionaryItemByDictionary(Dict dict);
-	  
+
+	/**
+	 * 置顶
+	 * @param dict 需要置顶字典，必要属性字典代码和字典序号
+	 */
+	void top(Dict dict);
+	
+	/**
+	 * 置于最底
+	 * @param dict 需要置底字典，必要属性字典代码和字典序号
+	 */
+	void bottom(Dict dict);
+	
 }

@@ -65,13 +65,13 @@ public interface IDict_itemService {
 	 * 下移
 	 * @param dictItem
 	 */
-	void shiftDown(Dict_item dictItem);
+	void down(Dict_item dictItem);
 	
 	/**
 	 * 上移
 	 * @param dictItem
 	 */
-	void shiftUp(Dict_item dictItem);
+	void up(Dict_item dictItem);
 	/**
 	 * 置顶
 	 * @param dictItem

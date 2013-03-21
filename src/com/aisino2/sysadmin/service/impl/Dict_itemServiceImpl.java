@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.IDict_itemDao;
@@ -23,6 +24,7 @@ public class Dict_itemServiceImpl implements IDict_itemService {
 		this.dict_item_dao = dict_item_dao;
 	}
 
+	@Transactional
 	public void insertDict_item(Dict_item dict_item) {
 		if (dict_item == null)
 			throw new RuntimeException("添加的字典项为空");
@@ -36,6 +38,7 @@ public class Dict_itemServiceImpl implements IDict_itemService {
 		dict_item_dao.insertDict_item(dict_item);
 	}
 
+	@Transactional
 	public void deleteDict_item(Dict_item dict_item) {
 		if (dict_item == null || !Util.isNotEmpty(dict_item.getItem_id())) {
 			throw new RuntimeException("删除字典项的字典项ID为空");
@@ -43,6 +46,7 @@ public class Dict_itemServiceImpl implements IDict_itemService {
 		dict_item_dao.deleteDict_item(dict_item);
 	}
 
+	@Transactional
 	public void updateDict_item(Dict_item dict_item) {
 		if (dict_item == null || !Util.isNotEmpty(dict_item.getItem_id())) {
 			throw new RuntimeException("修改字典项的字典项ID为空");
@@ -78,8 +82,9 @@ public class Dict_itemServiceImpl implements IDict_itemService {
 		return this.dict_item_dao.getListDict_item(dict_item);
 	}
 
+	@Transactional
 	@Override
-	public void shiftDown(Dict_item dictItem) {
+	public void down(Dict_item dictItem) {
 		dictItem = this.getDict_item(dictItem);
 		dictItem.setSib_order(dictItem.getSib_order() + 1);
 
@@ -92,8 +97,9 @@ public class Dict_itemServiceImpl implements IDict_itemService {
 		this.updateDict_item(dictItem);
 	}
 
+	@Transactional
 	@Override
-	public void shiftUp(Dict_item dictItem) {
+	public void up(Dict_item dictItem) {
 		dictItem = this.getDict_item(dictItem);
 		dictItem.setSib_order(dictItem.getSib_order() - 1);
 
@@ -106,16 +112,19 @@ public class Dict_itemServiceImpl implements IDict_itemService {
 		this.updateDict_item(dictItem);
 	}
 
+	@Transactional
 	@Override
 	public void top(Dict_item dictItem) {
 		this.dict_item_dao.top(dictItem);
 	}
 
+	@Transactional
 	@Override
 	public void bottom(Dict_item dictItem) {
 		this.dict_item_dao.bottom(dictItem);
 	}
 
+	@Transactional
 	@Override
 	public void removeDictItems(List<Dict_item> lDictItems) {
 		if (lDictItems == null || lDictItems.isEmpty()) {

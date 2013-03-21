@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aisino2.sysadmin.dao.IDictDao;
 import com.aisino2.sysadmin.domain.Dict;
+import com.aisino2.sysadmin.domain.Dict_item;
 import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.service.IDictService;
 
@@ -41,13 +42,6 @@ public class DictServiceImpl implements IDictService {
 		return dict_dao.getListDict(dict);
 	}
 
-	public List<Dict> getDictionaryAll(Dict dict) {
-		return dict_dao.getDictionaryAll(dict);
-	}
-
-	public List<Dict> getChildrenDictionary(Dict dict) {
-		return dict_dao.getChildrenDictionary(dict);
-	}
 
 	@Resource(name="dictDaoImpl")
 	public void setDict_dao(IDictDao dict_dao) {
@@ -68,6 +62,48 @@ public class DictServiceImpl implements IDictService {
 		for (Dict dict : lDicts) {
 			this.deleteDict(dict);
 		}
+	}
+
+	@Transactional
+	@Override
+	public void top(Dict dict) {
+		this.dict_dao.top(dict);
+	}
+
+	@Transactional
+	@Override
+	public void bottom(Dict dict) {
+		this.dict_dao.bottom(dict);
+	}
+
+	@Transactional
+	@Override
+	public void up(Dict dict) {
+		dict = this.getDict(dict);
+		dict.setSib_order(dict.getSib_order() - 1);
+
+		List<Dict> list = this.getListDict(dict);
+		for (Dict item : list) {
+			item.setSib_order(item.getSib_order() + 1);
+			this.updateDict(item);
+		}
+
+		this.updateDict(dict);
+	}
+
+	@Transactional
+	@Override
+	public void down(Dict dict) {
+		dict = this.getDict(dict);
+		dict.setSib_order(dict.getSib_order() + 1);
+
+		List<Dict> list = this.getListDict(dict);
+		for (Dict item : list) {
+			item.setSib_order(item.getSib_order() - 1);
+			this.updateDict(item);
+		}
+
+		this.updateDict(dict);
 	}
 
 }

@@ -65,6 +65,7 @@ public class DictAction extends PageAction {
 			Pager pager = dictService.getListForPage(dict, this.queryExtraCond,
 					this.start, this.limit, this.dir, this.sort);
 			lDicts = pager.getDatas();
+			this.total = pager.getTotalCount();
 		} catch (Exception e) {
 			log.error(e);
 			this.returnNo = 1;

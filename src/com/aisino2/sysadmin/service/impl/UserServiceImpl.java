@@ -22,14 +22,16 @@ public class UserServiceImpl implements IUserService {
 		this.user_dao = user_dao;
 	}
 
+	@Transactional
 	public void insertUser(User user) {
 		this.user_dao.insertUser(user);
 	}
 
+	@Transactional
 	public void deleteUser(User user) {
 		this.user_dao.deleteUser(user);
 	}
-
+	@Transactional
 	public void updateUser(User user) {
 		this.user_dao.updateUser(user);
 	}
@@ -58,7 +60,7 @@ public class UserServiceImpl implements IUserService {
 	public User checkCAUser(User user) {
 		return this.user_dao.checkCAUser(user);
 	}
-
+	@Transactional
 	public boolean updatePwd(User user) {
 		 this.user_dao.updatePwd(user);
 		 return true;

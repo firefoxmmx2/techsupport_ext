@@ -25,23 +25,33 @@ public interface IDictService {
 	/** @param 字典(t_dict) 多条查询 */
 	List<Dict> getListDict(Dict dict);
 	
-	
-	 /**
-	   * 根据字典的dictCode等于“mzgjxzqh9”取得字典代码为'dm_mz','dm_gj(lgy)','dm_xzqh'”的字典，此方法用于离线控件
-	   * @param dictionary
-	   * @return
-	   */
-	List<Dict> getDictionaryAll(Dict dict);
-	  /**
-	   * 根据字典编码DictCode取得下级字典
-	   * @param dictionary
-	   * @return
-	   */
-	List<Dict> getChildrenDictionary(Dict dict);
-	 
 	/**
 	 * 删除字典（多个）
 	 * @param lDicts 需要被删除的字典
 	 */
 	void removeDicts(List<Dict> lDicts);
+	
+	/**
+	 * 置顶
+	 * @param dict 需要被置顶的字典，必须属性字典代码和字典序号
+	 */
+	void top(Dict dict);
+	
+	/**
+	 * 置底
+	 * @param dict 需要被置底的字典，必须属性字典代码和字典序号
+	 */
+	void bottom(Dict dict);
+	
+	/**
+	 * 上移
+	 * @param dict 需要上移的字典
+	 */
+	void up(Dict dict);
+	
+	/**
+	 * 下移
+	 * @param dict 需要下移的字典
+	 */
+	void down(Dict dict);
 }
