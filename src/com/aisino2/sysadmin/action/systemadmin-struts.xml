@@ -50,6 +50,10 @@
 		<action name="*_dict" class="dictAction">
 			<result type="json"></result>
 		</action>
+		<!-- 字典项 -->
+		<action name="*_dictItem" class="dictItemAction">
+			<result type="json"></result>
+		</action>
 	</package>
 	
 </struts>    
