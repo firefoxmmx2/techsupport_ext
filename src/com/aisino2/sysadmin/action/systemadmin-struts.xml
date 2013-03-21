@@ -47,11 +47,11 @@
 			</result>
 		</action>
 <!-- 		字典 -->
-		<action name="*_dict" class="dictAction">
+		<action name="*_dict" class="dictAction" method="{1}">
 			<result type="json"></result>
 		</action>
 		<!-- 字典项 -->
-		<action name="*_dictItem" class="dictItemAction">
+		<action name="*_dictItem" class="dictItemAction" method="{1}">
 			<result type="json"></result>
 		</action>
 	</package>
