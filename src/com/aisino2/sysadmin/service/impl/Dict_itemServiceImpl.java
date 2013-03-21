@@ -24,14 +24,29 @@ public class Dict_itemServiceImpl implements IDict_itemService {
 	}
 
 	public void insertDict_item(Dict_item dict_item) {
+		if (dict_item == null)
+			throw new RuntimeException("添加的字典项为空");
+		if (!Util.isNotEmpty(dict_item.getFact_value()))
+			throw new RuntimeException("添加的字典项的实际值为空");
+		if (!Util.isNotEmpty(dict_item.getDict_code()))
+			throw new RuntimeException("添加的字典项的字典代码为空");
+		if (!Util.isNotEmpty(dict_item.getDisplay_name()))
+			throw new RuntimeException("添加的字典项的显示值为空");
+
 		dict_item_dao.insertDict_item(dict_item);
 	}
 
 	public void deleteDict_item(Dict_item dict_item) {
+		if (dict_item == null || !Util.isNotEmpty(dict_item.getItem_id())) {
+			throw new RuntimeException("删除字典项的字典项ID为空");
+		}
 		dict_item_dao.deleteDict_item(dict_item);
 	}
 
 	public void updateDict_item(Dict_item dict_item) {
+		if (dict_item == null || !Util.isNotEmpty(dict_item.getItem_id())) {
+			throw new RuntimeException("修改字典项的字典项ID为空");
+		}
 		dict_item_dao.updateDict_item(dict_item);
 	}
 
@@ -41,10 +56,11 @@ public class Dict_itemServiceImpl implements IDict_itemService {
 				|| !(Util.isNotEmpty(dict_item.getDict_code()) && Util
 						.isNotEmpty(dict_item.getFact_value())))
 			throw new RuntimeException("查询单个字典项ITEMID或者FACTVALUE和DICTCODE为空");
-		if(dict_item.getItem_id()!=null && dict_item.getItem_id()!=0)
+		if (dict_item.getItem_id() != null && dict_item.getItem_id() != 0)
 			return this.dict_item_dao.getDict_item(dict_item);
 		else
-			return this.dict_item_dao.getDict_item(dict_item.getDict_code(), dict_item.getFact_value());
+			return this.dict_item_dao.getDict_item(dict_item.getDict_code(),
+					dict_item.getFact_value());
 	}
 
 	public Pager getListForPage(Dict_item dictItem, int pageNo, int pageSize,
@@ -65,42 +81,49 @@ public class Dict_itemServiceImpl implements IDict_itemService {
 	@Override
 	public void shiftDown(Dict_item dictItem) {
 		dictItem = this.getDict_item(dictItem);
-		dictItem.setSib_order(dictItem.getSib_order()+1);
-		
-		
-		List<Dict_item> list=this.getListDict_item(dictItem);
+		dictItem.setSib_order(dictItem.getSib_order() + 1);
+
+		List<Dict_item> list = this.getListDict_item(dictItem);
 		for (Dict_item item : list) {
-			item.setSib_order(item.getSib_order()-1);
+			item.setSib_order(item.getSib_order() - 1);
 			this.updateDict_item(item);
 		}
-		
+
 		this.updateDict_item(dictItem);
 	}
 
 	@Override
 	public void shiftUp(Dict_item dictItem) {
 		dictItem = this.getDict_item(dictItem);
-		dictItem.setSib_order(dictItem.getSib_order()-1);
-		
-		List<Dict_item> list=this.getListDict_item(dictItem);
+		dictItem.setSib_order(dictItem.getSib_order() - 1);
+
+		List<Dict_item> list = this.getListDict_item(dictItem);
 		for (Dict_item item : list) {
-			item.setSib_order(item.getSib_order()+1);
+			item.setSib_order(item.getSib_order() + 1);
 			this.updateDict_item(item);
 		}
-		
+
 		this.updateDict_item(dictItem);
 	}
 
 	@Override
 	public void top(Dict_item dictItem) {
-		// TODO Auto-generated method stub
-
+		this.dict_item_dao.top(dictItem);
 	}
 
 	@Override
 	public void bottom(Dict_item dictItem) {
-		// TODO Auto-generated method stub
+		this.dict_item_dao.bottom(dictItem);
+	}
 
+	@Override
+	public void removeDictItems(List<Dict_item> lDictItems) {
+		if (lDictItems == null || lDictItems.isEmpty()) {
+			throw new RuntimeException("需要被删除的字典项为空");
+		}
+		for (Dict_item item : lDictItems) {
+			this.deleteDict_item(item);
+		}
 	}
 
 }

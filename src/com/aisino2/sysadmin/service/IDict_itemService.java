@@ -82,4 +82,10 @@ public interface IDict_itemService {
 	 * @param dictItem
 	 */
 	void bottom(Dict_item dictItem);
+	
+	/**
+	 * 删除字典项(多个)
+	 * @param lDictItems 被删除的字典项
+	 */
+	void  removeDictItems(List<Dict_item> lDictItems);
 }
