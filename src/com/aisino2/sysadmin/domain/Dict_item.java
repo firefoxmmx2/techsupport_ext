@@ -62,56 +62,11 @@ public class Dict_item implements Serializable {
 	/** @ --字典项名称简拼--item_simplepin--String--50-- */
 	private String item_simplepin;
 
-	/** @ 字典项简拼查询 */
-	private String query_simplepin;
-	
-	/** @ --查询所有子节点-- */
-	private String like_factValue;
-	
-	/** @ --查询不含本节点的其他所有节点-- */
-	private String exclude_factValue;
-	
-	/** @ --指定排序字段-- 0-按fact_value排序 1-按sib_order排序*/
-	private String orderBySib_order;
 
-	
-	/** 移动方式 */
-	private String way;
-
-	public String getLike_factValue() {
-		return like_factValue;
-	}
-
-	public void setLike_factValue(String like_factValue) {
-		this.like_factValue = like_factValue;
-	}
-
-	public String getQuery_simplepin() {
-		return query_simplepin;
-	}
-
-	public void setQuery_simplepin(String query_simplepin) {
-		this.query_simplepin = query_simplepin;
-	}
-
+	@Column
 	/** @ --字典项名称全拼--item_allpin--String--200-- */
 	private String item_allpin;
-
-	/** 分页排序 */
-	private String pageSort;
-	/**
-	 * 字典id
-	 */
-	private Integer Dict_id;
 	
-
-	public Integer getDict_id() {
-		return Dict_id;
-	}
-
-	public void setDict_id(Integer dict_id) {
-		Dict_id = dict_id;
-	}
 
 	/** @ 字典项ID(item_id) */
 	public Integer getItem_id() {
@@ -221,36 +176,5 @@ public class Dict_item implements Serializable {
 		this.item_allpin = item_allpin;
 	}
 
-	/** 分页排序 */
-	public String getPageSort() {
-		return pageSort;
-	}
 
-	public void setPageSort(String pageSort) {
-		this.pageSort = pageSort;
-	}
-
-	public String getWay() {
-		return way;
-	}
-
-	public void setWay(String way) {
-		this.way = way;
-	}
-
-	public String getExclude_factValue() {
-		return exclude_factValue;
-	}
-
-	public void setExclude_factValue(String exclude_factValue) {
-		this.exclude_factValue = exclude_factValue;
-	}
-	
-	public String getOrderBySib_order() {
-		return orderBySib_order;
-	}
-
-	public void setOrderBySib_order(String orderBySib_order) {
-		this.orderBySib_order = orderBySib_order;
-	}
 }
