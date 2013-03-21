@@ -21,6 +21,11 @@ import com.aisino2.core.util.PinYinUtil;
 @Table(name="t_dict")
 public class Dict implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1008329811744516620L;
+
 	/** @param 字典(t_dict) */
 	
 	@Id
@@ -71,8 +76,17 @@ public class Dict implements Serializable {
 	
 	@OneToMany(cascade=CascadeType.ALL,targetEntity=Dict_item.class)
 	@JoinColumn(name="dict_code",insertable=false,updatable=false)
-	private List<Dict_item> dict_item_list;
+	private List<Dict_item> lDictItems;
 	
+	
+
+	public List<Dict_item> getlDictItems() {
+		return lDictItems;
+	}
+
+	public void setlDictItems(List<Dict_item> lDictItems) {
+		this.lDictItems = lDictItems;
+	}
 
 	/** @ 字典编码(dict_code) */
 	public String getDict_code() {
@@ -188,14 +202,6 @@ public class Dict implements Serializable {
 
 	public void setDict_id(Integer dict_id) {
 		this.dict_id = dict_id;
-	}
-
-	public List<Dict_item> getDict_item_list() {
-		return dict_item_list;
-	}
-
-	public void setDict_item_list(List<Dict_item> dict_item_list) {
-		this.dict_item_list = dict_item_list;
 	}
 
 }
