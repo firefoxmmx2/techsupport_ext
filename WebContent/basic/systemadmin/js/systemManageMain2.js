@@ -282,7 +282,7 @@ if (!techsupport.systemmanage.SystemMain) {
 						},
 						tree_level : 99,
 						pagesize : 25,
-						dir : "nodeorder",
+						dir : "asc",
 						addURL : context_path
 								+ '/sysadminDefault/add_systemmanage.action',
 						modifyURL : context_path
@@ -528,7 +528,7 @@ if (!techsupport.systemmanage.SystemMain) {
 																start : 0,
 																limit : this.ownerCt.pagesize,
 																dir : this.ownerCt.dir,
-																desc : this.ownerCt.desc
+																sort : this.ownerCt.sort
 															}
 														});
 												// 点击动作

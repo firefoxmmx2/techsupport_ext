@@ -9,7 +9,7 @@ public interface IUserService {
 	/** @param 用户(t_user) 增加 */
 	void insertUser(User user);
 
-	/** @param 用户(t_user) 删除 */
+	/** @param 用户(t_user) 除 */
 	void deleteUser(User user);
 
 	/** @param 用户(t_user) 修改 */
@@ -32,13 +32,7 @@ public interface IUserService {
 	   * userType可选
 	   * 
 	   * @param user */
-	  User checkUser(User user);
-	  /** 
-	   * 根据CA取得用户或查看用户
-	   * userType可选
-	   * 
-	   * @param user */
-	  User checkCAUser(User user);
+	  boolean checkUser(User user);
 	  /**
 	   *  根据id更新用户
 	   * @param user
@@ -95,21 +89,6 @@ public interface IUserService {
 		*/
 	Integer getNextNodeorder(User user);
 	
-	/**
-	 * 通过从业人员编号(即员工用户账号)获得所属企业编码及所属企业名称
-	 * 默认一个员工用户只能属于一个行业
-	 * @param user（usertype）
-	 * @return user
-	 */
-	User getQybmByCyrybh(User user);
-	
-	 /**
-	   * 通过企业编码取的企业名称
-	   * @param qybm
-	   * @return qymc
-		*/
-	String getQymcByQybm(String qybm);
-
 	/**
 	 * 移除多个用户(物理)
 	 * @param needRemovedUsers 将要被删除的用户

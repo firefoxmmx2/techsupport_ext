@@ -33,13 +33,7 @@ public interface IUserDao {
 	 * userType可选
 	 * 
 	 * @param user */
-	User checkUser(User user);
-	/** 
-	 * 根据CA取得用户或查看用户
-	 * userType可选
-	 * 
-	 * @param user */
-	User checkCAUser(User user);
+	boolean checkUser(User user);
 	
 	//	 修改密码
 	void updatePwd(User user);

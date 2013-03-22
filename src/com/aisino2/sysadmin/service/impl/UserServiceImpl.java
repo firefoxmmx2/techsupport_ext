@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.IUserDao;
 import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
@@ -33,11 +34,21 @@ public class UserServiceImpl implements IUserService {
 	}
 	@Transactional
 	public void updateUser(User user) {
-		this.user_dao.updateUser(user);
+		User originalUser = this.getUser(user);
+		Util.copyProperties(originalUser, user);
+		
+		this.user_dao.updateUser(originalUser);
 	}
 
 	public User getUser(User user) {
-		return this.user_dao.getUser(null);
+		if(user == null)
+			throw new RuntimeException("查询单个用户的参数为空");
+		if(Util.isNotEmpty(user.getUserid()))
+			return this.user_dao.getUser(user);
+		else if(Util.isNotEmpty(user.getUseraccount()) && Util.isNotEmpty(user.getPassword()))
+			return this.user_dao.getPasswordByUseraccount(user);
+		else
+			return null;
 	}
 
 	public User getPasswordByUseraccount(User user) {
@@ -53,13 +64,10 @@ public class UserServiceImpl implements IUserService {
 		return this.user_dao.getListUser(user);
 	}
 
-	public User checkUser(User user) {
+	public boolean checkUser(User user) {
 		return this.user_dao.checkUser(user);
 	}
 
-	public User checkCAUser(User user) {
-		return this.user_dao.checkCAUser(user);
-	}
 	@Transactional
 	public boolean updatePwd(User user) {
 		 this.user_dao.updatePwd(user);
@@ -99,15 +107,6 @@ public class UserServiceImpl implements IUserService {
 		return this.user_dao.getNextNodeorder(user);
 	}
 
-	public User getQybmByCyrybh(User user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getQymcByQybm(String qybm) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Transactional
 	@Override

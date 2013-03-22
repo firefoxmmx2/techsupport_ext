@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Projections;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Component;
 
@@ -75,29 +78,24 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 
 			public Pager doInHibernate(Session sess) throws HibernateException,
 					SQLException {
-				StringBuffer hql = new StringBuffer("select count(t) from User t");
-
-				Map<String, Object> para_map = get_para_and_hql(user, hql);
-				hql = (StringBuffer) para_map.get("hql");
-				List<Object> para_list = (List<Object>) para_map.get("para");
-
 				Pager pager = new Pager();
+				pager.setPageNo(pageNo);
+				pager.setPageSize(pageSize);
+
+				Criteria q = sess.createCriteria(User.class);
 				
-				Query q = sess.createQuery(hql.toString());
-				q.setCacheable(true);
+				//condition
+				Example example = Example.create(user).enableLike()
+						.ignoreCase().excludeZeroes();
+				q.add(example);
+				
+				//count
+				q.setProjection(Projections.rowCount());
 				pager.setTotalCount(((Long)q.uniqueResult()).intValue());
-				hql = new StringBuffer("select new User(t.userid,t.departid,t.useraccount,t.username,t.password,"
-						+ "t.userorder,t.isvalid,t.usertype,t.idnum,t.mobilephone,"
-						+ "t.jzlbdm,t.jzlbmc) from User t");
-				q=sess.createQuery(hql.toString());
-				// page
-				q.setFirstResult((pageNo - 1) * pageSize);
-				q.setMaxResults(pageSize);
-
-				// para
-				for (int i = 0; i < para_list.size(); i++)
-					q.setParameter(i, para_list.get(i));
-
+				//page
+				q.setProjection(null);
+				q.setFirstResult(pager.getPageNo());
+				q.setMaxResults(pager.getPageSize());
 				
 				pager.setDatas(q.list());
 
@@ -119,19 +117,21 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 				para_list.toArray());
 	}
 
-	public User checkUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public boolean checkUser(User user) {
+		String hql = "select count(1) from User where useraccount=?";
+		Long count = (Long) this.getHibernateTemplate()
+				.find(hql, user.getUseraccount()).get(0);
+		if (count > 0)
+			return true;
+		else
+			return false;
 
-	public User checkCAUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public void updatePwd(User user) {
-		// TODO Auto-generated method stub
-
+		String hql = "update User set password=? where userid=?";
+		this.getHibernateTemplate().bulkUpdate(hql, user.getPassword(),
+				user.getUserid());
 	}
 
 	public Integer getNextNodeorder(User user) {

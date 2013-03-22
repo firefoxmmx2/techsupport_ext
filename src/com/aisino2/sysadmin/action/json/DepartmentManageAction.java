@@ -45,7 +45,7 @@ public class DepartmentManageAction extends PageAction {
 	public String querylist() throws Exception {
 		try {
 			Pager pager = department_service.getListForPage(department,
-					this.start, this.limit, this.dir, this.sort);
+					this.start, this.limit, this.sort, this.dir);
 			this.total = pager.getTotalCount();
 			department_list = (List<Department>) pager.getDatas();
 

@@ -2,6 +2,8 @@ package com.aisino2.sysadmin.action.json;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,7 @@ public class UserManageAction extends PageAction {
 	
 	private IUserService userService;
 	
+	@Resource(name="userServiceImpl")
 	public void setUserService(IUserService userService) {
 		this.userService = userService;
 	}
@@ -134,6 +137,26 @@ public class UserManageAction extends PageAction {
 	 * @throws Exception
 	 */
 	public String check() throws Exception{
+		try {
+			if(user == null)
+				throw new RuntimeException("用户检查参数传输错误");
+			boolean result = userService.checkUser(user);
+			if(result)
+				returnNo = 0;
+			else{
+				returnNo = 1;
+				returnMessage = "用户帐号已经存在";
+			}
+		} catch (Exception e) {
+			log.error(e);
+			returnNo = -1;
+			returnMessage = "用户检查发生错误";
+			if (log.isDebugEnabled()) {
+				log.debug(e,e.fillInStackTrace());
+				returnMessageDebug = e.getMessage();
+			}
+			throw e;
+		}
 		return SUCCESS;
 	}
 	
@@ -145,9 +168,7 @@ public class UserManageAction extends PageAction {
 	@SuppressWarnings("unchecked")
 	public String querylist() throws Exception{
 		try {
-			if(user==null)
-				throw new RuntimeException("用户分页查询参数传输错误");
-			Pager pager=userService.getListForPage(this.user, this.pageNo, this.pageSize, this.dir, this.sort);
+			Pager pager=userService.getListForPage(this.user, this.start, this.limit, this.sort, this.dir);
 			this.total=pager.getTotalCount();
 			userList=pager.getDatas();
 			

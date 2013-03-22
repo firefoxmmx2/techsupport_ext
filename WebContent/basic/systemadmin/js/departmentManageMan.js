@@ -187,6 +187,7 @@
 			removePrefix : 'department_list[i]',
 			//详情弹出窗口容器
 			detailWindowCt : Ext.getBody(),
+			
 			/** 初始化组件内容 */
 			initComponent : function(ct,position) {
 				var self = this;
@@ -347,7 +348,7 @@
 											start:0,
 											limit:this.ownerCt.pagesize,
 											dir:this.ownerCt.dir,
-											desc:this.ownerCt.desc
+											sort:this.ownerCt.sort
 										}
 									}
 							);

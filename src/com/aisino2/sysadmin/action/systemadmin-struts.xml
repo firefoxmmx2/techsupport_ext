@@ -6,11 +6,18 @@
 	<package name="sysadmin" namespace="/sysadminDefault" extends="json-default">
 		<!-- 用户管理 -->
 		<action name="*_user" class="userManageAction" method="{1}">
-			<result type="json"></result>
+			<result type="json">
+				<param name="excludeproperties"> 
+				.*hibernateLazyInitializer 
+				</param> 
+			</result>
 		</action>
 <!-- 		机构管理 -->
 		<action name="*_departmentmanage" class="departmentManageAction" method="{1}">
 			<result type="json">
+				<param name="excludeProperties"> 
+				.*hibernateLazyInitializer 
+				</param> 
 				<param name="ignoreHierarchy">false</param>
 			</result>
 		</action>
@@ -22,6 +29,9 @@
 		<action name="*_systemmanage" class="systemManageAction" method="{1}">
 			<result type="json">
 				<param name="ignoreHierarchy">false</param>
+				<param name="excludeProperties"> 
+				.*hibernateLazyInitializer 
+				</param> 
 			</result>
 		</action>
 		<action name="*_tree" class="treeMappingAction" method="{1}">
@@ -48,11 +58,19 @@
 		</action>
 <!-- 		字典 -->
 		<action name="*_dict" class="dictAction" method="{1}">
-			<result type="json"></result>
+			<result type="json">
+				<param name="excludeproperties">
+					.*hibernateLazyInitializer
+				</param>
+			</result>
 		</action>
 		<!-- 字典项 -->
 		<action name="*_dictItem" class="dictItemAction" method="{1}">
-			<result type="json"></result>
+			<result type="json">
+				<param name="excludeproperties">
+					.*hibernateLazyInitializer
+				</param>
+			</result>
 		</action>
 	</package>
 	

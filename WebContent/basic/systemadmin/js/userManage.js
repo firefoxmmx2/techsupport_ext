@@ -14,7 +14,6 @@ if (!techsupport.systemmanage.UserManager) {
 			forceFit : true
 		},
 		pagesize : 25,
-		dir : "userorder",
 		defaults : {
 			bodyStyle : 'padding:4px;',
 			split : true
@@ -129,9 +128,7 @@ if (!techsupport.systemmanage.UserManager) {
 						url : this.queryURL,
 						baseParams : {
 							start : 0,
-							limit : this.pagesize,
-							dir : this.dir,
-							sort : this.sort
+							limit : this.pagesize
 						},
 						remoteSort : true,
 						totalProperty : 'total',
@@ -268,8 +265,7 @@ if (!techsupport.systemmanage.UserManager) {
 											params : {
 												start : 0,
 												limit : this.ownerCt.pagesize,
-												dir : this.ownerCt.dir,
-												desc : this.ownerCt.desc
+												'user.departid':node.id
 											}
 										});
 							}
@@ -314,26 +310,6 @@ if (!techsupport.systemmanage.UserManager) {
 				}, '-', {
 					xtype : 'button',
 					text : '删除',
-					handler : function() {
-					}
-				}, '-', '-', {
-					xtype : 'button',
-					text : '置顶',
-					handler : function() {
-					}
-				}, '-', {
-					xtype : 'button',
-					text : '上移',
-					handler : function() {
-					}
-				}, '-', {
-					xtype : 'button',
-					text : '下移',
-					handler : function() {
-					}
-				}, '-', {
-					xtype : 'button',
-					text : '置底',
 					handler : function() {
 					}
 				}],
@@ -429,6 +405,13 @@ if (!techsupport.systemmanage.UserManager) {
 														text : '查询',
 														handler : function() {
 															// 查询的具体
+															um.gridStore.load({
+																params:{
+																	start:0,
+																	limit:um.pagesize,
+																	'user.departid':um.currentNodeId
+																}
+															});
 														}
 													}), Ext.create({
 														xtype : 'button',
@@ -680,6 +663,7 @@ if (!techsupport.systemmanage.UserWindow) {
 										fieldLabel : '用户类别',
 										height : 70,
 										itemCls : 'x-check-group-alt',
+										autoScroll:true,
 										columns : 1,
 										items : lCheckboxs
 									});
