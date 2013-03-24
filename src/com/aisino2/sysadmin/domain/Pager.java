@@ -39,7 +39,7 @@ public class Pager {
 	 */
 	public int getStartRecord() {
 		if(pageNo > 0 && pageSize > 0)
-			return (pageNo - 1) * pageSize;
+			return pageNo * pageSize;
 		return 0;
 	}
 	

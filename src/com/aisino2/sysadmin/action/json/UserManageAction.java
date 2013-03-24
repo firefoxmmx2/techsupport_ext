@@ -61,6 +61,7 @@ public class UserManageAction extends PageAction {
 				log.debug(e,e.fillInStackTrace());
 				this.returnMessageDebug=e.getMessage();
 			}
+			throw e;
 		}
 		
 		
@@ -84,7 +85,7 @@ public class UserManageAction extends PageAction {
 				log.debug(e,e.fillInStackTrace());
 				this.returnMessageDebug=e.getMessage();
 			}
-			
+			throw e;
 		}
 		return SUCCESS;
 	}
@@ -107,6 +108,7 @@ public class UserManageAction extends PageAction {
 				log.debug(e,e.fillInStackTrace());
 				this.returnMessageDebug=e.getMessage();
 			}
+			throw e;
 		}
 		return SUCCESS;
 	}
@@ -128,6 +130,7 @@ public class UserManageAction extends PageAction {
 				log.debug(e,e.fillInStackTrace());
 				this.returnMessageDebug=e.getMessage();
 			}
+			throw e;
 		}
 		return SUCCESS;
 	}
@@ -168,10 +171,14 @@ public class UserManageAction extends PageAction {
 	@SuppressWarnings("unchecked")
 	public String querylist() throws Exception{
 		try {
+			if(this.user == null)
+				this.user = new User();
 			Pager pager=userService.getListForPage(this.user, this.start, this.limit, this.sort, this.dir);
 			this.total=pager.getTotalCount();
 			userList=pager.getDatas();
 			
+			if("detaillist".equals(mode))
+				return "detaillist";
 		} catch (Exception e) {
 			this.returnNo=1;
 			this.returnMessage="用户列表查询出错";
@@ -180,6 +187,7 @@ public class UserManageAction extends PageAction {
 				this.returnMessageDebug=e.getMessage();
 				log.debug(e,e.fillInStackTrace());
 			}
+			throw e;
 		}
 		return SUCCESS;
 	}

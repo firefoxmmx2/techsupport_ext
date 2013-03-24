@@ -16,11 +16,11 @@
 			title_base : "系统",
 			dir : "nodeorder",
 			
-			addURL : context_path+'/sysadminDefault/add_systemmanage.action',
-			modifyURL : context_path+'/sysadminDefault/modify_systemmanage.action',
-			queryURL : context_path+'/sysadminDefault/querylist_systemmanage.action',
-			detailURL : context_path+'/sysadminDefault/query_systemmanage.action',
-			removeURL : context_path+'/sysadminDefault/remove_systemmanage.action',
+			addURL : context_path+'/sysadminDefault/add_system.action',
+			modifyURL : context_path+'/sysadminDefault/modify_system.action',
+			queryURL : context_path+'/sysadminDefault/querylist_system.action',
+			detailURL : context_path+'/sysadminDefault/query_system.action',
+			removeURL : context_path+'/sysadminDefault/remove_system.action',
 			
 			actionPrefix : 'system.',
 			removePrefix : 'systemList[i]',
@@ -94,7 +94,7 @@
 				});
 				//复习重新设定父类属性加载器属性
 				this.treeloader = new Ext.tree.TreeLoader({
-					url:context_path+'/sysadminDefault/querySystemNodes_systemmanage.action', //设置为系统管理查询节点的链接
+					url:context_path+'/sysadminDefault/querySystemNodes_system.action', //设置为系统管理查询节点的链接
 					method:'post',
 					listeners:{
 						beforeload:{
@@ -234,7 +234,7 @@
 					    	  validator:function(val){
 					    		  //验证系统代码是否可用
 					    		  var result = false;
-					    		  Ext.Ajax.request({url:context_path+'/sysadminDefault/check_systemcode_systemmanage.action',
+					    		  Ext.Ajax.request({url:context_path+'/sysadminDefault/check_systemcode_system.action',
 					    			  params:{'system.systemcode':val},
 					    			  async:false,
 					    			  success:function(response,opt){

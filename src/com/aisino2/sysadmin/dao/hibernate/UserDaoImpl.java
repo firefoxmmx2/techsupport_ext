@@ -11,10 +11,14 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Example.PropertySelector;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Component;
 
+import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.IUserDao;
 import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
@@ -83,20 +87,23 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 				pager.setPageSize(pageSize);
 
 				Criteria q = sess.createCriteria(User.class);
-				
-				//condition
-				Example example = Example.create(user).enableLike()
-						.ignoreCase().excludeZeroes();
+
+				// condition
+				Example example = Example.create(user).ignoreCase()
+						.excludeZeroes().enableLike(MatchMode.START);
 				q.add(example);
-				
-				//count
+				if (Util.isNotEmpty(user.getUseraccount())) {
+					q.add(Restrictions.eq("useraccount", user.getUseraccount()));
+				}
+				// count
 				q.setProjection(Projections.rowCount());
-				pager.setTotalCount(((Long)q.uniqueResult()).intValue());
-				//page
+				pager.setTotalCount(((Long) q.uniqueResult()).intValue());
+				// page
 				q.setProjection(null);
-				q.setFirstResult(pager.getPageNo());
+				q.setFirstResult(pager.getStartRecord());
 				q.setMaxResults(pager.getPageSize());
-				
+				q.setResultTransformer(Criteria.ROOT_ENTITY);
+
 				pager.setDatas(q.list());
 
 				return pager;
@@ -118,13 +125,13 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 	}
 
 	public boolean checkUser(User user) {
-		String hql = "select count(1) from User where useraccount=?";
+		String hql = "select count(t) from User t where t.useraccount=?";
 		Long count = (Long) this.getHibernateTemplate()
 				.find(hql, user.getUseraccount()).get(0);
 		if (count > 0)
-			return true;
-		else
 			return false;
+		else
+			return true;
 
 	}
 
@@ -135,7 +142,7 @@ public class UserDaoImpl extends TechSupportBaseDaoImpl implements IUserDao {
 	}
 
 	public Integer getNextNodeorder(User user) {
-		String hql = "select max(nvl(t.nodeorder,0))+1 from User t where 1=1";
+		String hql = "select max(nvl(t.userorder,0))+1 from User t where 1=1";
 		if (user.getDepartid() == null || user.getDepartid().equals(0)) {
 			hql += " and t.departid is null";
 			return (Integer) this.getHibernateTemplate().find(hql).get(0);

@@ -7,7 +7,7 @@ import com.aisino2.sysadmin.domain.User;
 
 public interface IUserService {
 	/** @param 用户(t_user) 增加 */
-	void insertUser(User user);
+	void insertUser(User user) throws Exception;
 
 	/** @param 用户(t_user) 除 */
 	void deleteUser(User user);

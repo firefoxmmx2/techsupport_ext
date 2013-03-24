@@ -62,7 +62,7 @@
 					    				  return true;
 					    		  }
 					    		  var result = false;
-					    		  Ext.Ajax.request({url:context_path+'/sysadminDefault/check_departcode_departmentmanage.action',
+					    		  Ext.Ajax.request({url:context_path+'/sysadminDefault/check_departcode_department.action',
 					    			  params:{'department.departcode':val},
 					    			  async:false,
 					    			  success:function(response,opt){
@@ -178,11 +178,11 @@
 			},
 			tree_level:99,
 			pagesize:25,
-			addURL:context_path+'/sysadminDefault/add_departmentmanage.action',
-			modifyURL:context_path+'/sysadminDefault/modify_departmentmanage.action',
-			removeURL:context_path+'/sysadminDefault/remove_departmentmanage.action',
-			queryURL:context_path+'/sysadminDefault/querylist_departmentmanage.action',
-			detailURL:context_path+'/sysadminDefault/query_departmentmanage.action',
+			addURL:context_path+'/sysadminDefault/add_department.action',
+			modifyURL:context_path+'/sysadminDefault/modify_department.action',
+			removeURL:context_path+'/sysadminDefault/remove_department.action',
+			queryURL:context_path+'/sysadminDefault/querylist_department.action',
+			detailURL:context_path+'/sysadminDefault/query_department.action',
 			actionPrefix : 'department.',
 			removePrefix : 'department_list[i]',
 			//详情弹出窗口容器
@@ -307,7 +307,7 @@
 					});
 				
 				this.treeloader = new Ext.tree.TreeLoader({
-					url:context_path+'/sysadminDefault/query_department_node_departmentmanage.action',
+					url:context_path+'/sysadminDefault/queryDepartmentNode_department.action',
 					method:'post',
 					listeners:{
 						beforeload:{

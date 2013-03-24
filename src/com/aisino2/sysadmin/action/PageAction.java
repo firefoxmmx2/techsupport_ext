@@ -22,8 +22,6 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 	public String sort;
 	public Integer start;
 	public Integer limit;
-	public Integer pageNo;
-	public Integer pageSize;
 	public Integer total;
 	
 	public HttpServletRequest request;
@@ -33,10 +31,18 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 	public Integer returnNo = 0;
 	public String returnMessageDebug;
 	public Map<String, Object> queryExtraCond = new HashMap<String, Object>();
+	public String mode;
 	
 //	日志
 	public static final Logger log = Logger.getLogger(PageAction.class);
+
 	
+	public String getMode() {
+		return mode;
+	}
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
 	public Map<String, Object> getQueryExtraCond() {
 		return queryExtraCond;
 	}
@@ -71,18 +77,6 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 	public void setReturnMessage(String returnMessage) {
 		this.returnMessage = returnMessage;
 	}
-	public Integer getPageNo() {
-		return pageNo;
-	}
-	public void setPageNo(Integer pageNo) {
-		this.pageNo = pageNo;
-	}
-	public Integer getPageSize() {
-		return pageSize;
-	}
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
-	}
 	@JSON(serialize=true)
 	public Integer getTotal() {
 		return total;
@@ -102,7 +96,7 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 		return start;
 	}
 	public void setStart(Integer start) {
-		this.start = start+1;
+		this.start = start;
 	}
 	@JSON(serialize=true)
 	public Integer getLimit() {

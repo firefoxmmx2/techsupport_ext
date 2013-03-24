@@ -13,7 +13,6 @@ if (!techsupport.systemmanage.UserManager) {
 		viewConfig : {
 			forceFit : true
 		},
-		pagesize : 25,
 		defaults : {
 			bodyStyle : 'padding:4px;',
 			split : true
@@ -26,90 +25,64 @@ if (!techsupport.systemmanage.UserManager) {
 		detailURL : context_path + '/sysadminDefault/query_user.action',
 		removeURL : context_path + '/sysadminDefault/remove_user.action',
 		actionPrefix : 'user.',
-		removePrefix : 'userList[i].',
+		removePrefix : 'userList[i]',
 		gridSelectionModel : new Ext.grid.CheckboxSelectionModel(),
 		// 操作
 		actions : {
 			// 添加用户
-			add : function(params, scope) {
+			add : function(params, window, scope) {
 				var _scope = this;
-				if (scope && typeof scope == "Object")
+				if (scope && typeof scope == "object")
 					_scope = scope;
 				Ext.Ajax.simpleSubmit({
-							url : _scope.addUrl,
+							url : _scope.addURL,
 							actionPrefix : _scope.actionPrefix,
-							params : params,
+							para : params,
 							successCallback : function(data) {
-								if (_scope.window)
-									_scope.window.close();
-								_scope.gridStore.load();
-
-								var currentNode = _scope.treePanel
-										.getNodeById(_scope.currentNodeId);
-								_scope.treeLoader.load(currentNode, function(
-												node) {
-											if (node.childNodes.length > 0) {
-												node.leaf = false;
-											} else
-												node.leaf = true;
-
-											node.expand();
+								if (window)
+									window.close();
+								_scope.gridStore.load({
+											params : {
+												'user.departid' : _scope.currentNodeId
+											}
 										});
 							}
 						});
 			},
 			// 修改用户
-			modify : function(params, scope) {
+			modify : function(params, window, scope) {
 				var _scope = this;
-				if (scope && typeof scope == "Object")
+				if (scope && typeof scope == "object")
 					_scope = scope;
 				Ext.Ajax.simpleSubmit({
-							url : _scope.addUrl,
+							url : _scope.modifyURL,
 							actionPrefix : _scope.actionPrefix,
-							params : params,
+							para : params,
 							successCallback : function(data) {
-								if (_scope.window)
-									_scope.window.close();
-								_scope.gridStore.load();
-
-								var currentNode = _scope.treePanel
-										.getNodeById(_scope.currentNodeId);
-								_scope.treeLoader.load(currentNode, function(
-												node) {
-											if (node.childNodes.length > 0) {
-												node.leaf = false;
-											} else
-												node.leaf = true;
-
-											node.expand();
+								if (window)
+									window.close();
+								_scope.gridStore.load({
+											params : {
+												'user.departid' : _scope.currentNodeId
+											}
 										});
 							}
 						});
 			},
 			// 删除用户
-			remove : function(params) {
+			remove : function(params, scope) {
 				var _scope = this;
-				if (scope && typeof scope == "Object")
+				if (scope && typeof scope == "object")
 					_scope = scope;
 				Ext.Ajax.simpleSubmit({
-							url : _scope.addUrl,
-							actionPrefix : _scope.actionPrefix,
-							params : params,
+							url : _scope.removeURL,
+							actionPrefix : _scope.removePrefix,
+							para : params,
 							successCallback : function(data) {
-								if (_scope.window)
-									_scope.window.close();
-								_scope.gridStore.load();
-
-								var currentNode = _scope.treePanel
-										.getNodeById(_scope.currentNodeId);
-								_scope.treeLoader.load(currentNode, function(
-												node) {
-											if (node.childNodes.length > 0) {
-												node.leaf = false;
-											} else
-												node.leaf = true;
-
-											node.expand();
+								_scope.gridStore.load({
+											params : {
+												'user.departid' : _scope.currentNodeId
+											}
 										});
 							}
 						});
@@ -169,53 +142,81 @@ if (!techsupport.systemmanage.UserManager) {
 					});
 
 			this.gridColumnModel = new Ext.grid.ColumnModel({
-						columns : [this.gridSelectionModel, {
-									id : 'userid',
-									header : this.title_base + 'ID',
-									dataIndex : 'userid',
-									width : 100
-								}, {
-									header : this.title_base + '名称',
-									dataIndex : 'username',
-									width : 200
-								}, {
-									header : this.title_base + '帐号',
-									dataIndex : 'useraccount',
-									width : 200
-								}, {
-									header : this.title_base + '密码',
-									dataIndex : 'password',
-									width : 200
-								}, {
-									header : this.title_base + '身份证',
-									dataIndex : 'idnum',
-									width : 200
-								}, {
-									header : this.title_base + '电话',
-									dataIndex : 'mobilephone',
-									width : 200
-								}, {
-									header : this.title_base + '邮箱',
-									dataIndex : 'email',
-									width : 200
-								}, {
-									header : this.title_base + '类别',
-									dataIndex : 'usertype',
-									width : 200
-								}, {
-									header : '有效状态',
-									dataIndex : 'isValid',
-									width : 200
-								}, {
-									header : '显示序列',
-									dataIndex : 'userorder',
-									width : 200
-								}],
-						defaults : {
-							sortable : false,
-							menuDisabled : true
+				columns : [this.gridSelectionModel, {
+					id : 'userid',
+					header : this.title_base + 'ID',
+					dataIndex : 'userid',
+					renderer : function(value, metaData, record, rowIndex,
+							colIndex, store) {
+						return '<a href="#">' + value + '</a>';
+					},
+					listeners : {
+						click : function(col, grid, rowIndex, evt) {
+							var userDetailWindow = new techsupport.systemmanage.UserWindow(
+									{
+										ownerCt : grid.ownerCt,
+										mode : 'detail',
+										initRecord : grid.getSelectionModel()
+												.getSelected()
+									});
+							userDetailWindow.center();
+							userDetailWindow.show();
 						}
-					});
+					},
+					width : 100
+				}, {
+					header : this.title_base + '名称',
+					dataIndex : 'username',
+					width : 200
+				}, {
+					header : this.title_base + '帐号',
+					dataIndex : 'useraccount',
+					width : 200
+				}, {
+					header : this.title_base + '密码',
+					dataIndex : 'password',
+					renderer : function(value, metaData, record, rowIndex,
+							colIndex, store) {
+						return "******"
+					},
+					width : 200
+				}, {
+					header : this.title_base + '身份证',
+					dataIndex : 'idnum',
+					width : 200
+				}, {
+					header : this.title_base + '电话',
+					dataIndex : 'mobilephone',
+					width : 200
+				}, {
+					header : this.title_base + '邮箱',
+					dataIndex : 'email',
+					width : 200
+				}, {
+					header : this.title_base + '类别',
+					dataIndex : 'usertype',
+					width : 200
+				}, {
+					header : '有效状态',
+					dataIndex : 'isvalid',
+					renderer : function(value, metaData, record, rowIndex,
+							colIndex, store) {
+						if (value == "Y")
+							return "是";
+						else
+							return "否";
+					},
+					width : 200
+				}, {
+					header : '显示序列',
+					dataIndex : 'userorder',
+					width : 200
+				}],
+				defaults : {
+					sortable : false,
+					menuDisabled : true
+				}
+			});
 
 			techsupport.systemmanage.UserManager.superclass.constructor.apply(
 					this, arguments);
@@ -226,7 +227,7 @@ if (!techsupport.systemmanage.UserManager) {
 			// -----------------------------------------------机构树加载节点---------------------------------------------------
 			this.treeLoader = new Ext.tree.TreeLoader({
 				url : context_path
-						+ '/sysadminDefault/query_department_node_departmentmanage.action',
+						+ '/sysadminDefault/queryDepartmentNode_department.action',
 				method : 'post',
 				listeners : {
 					beforeload : {
@@ -261,13 +262,16 @@ if (!techsupport.systemmanage.UserManager) {
 						listeners : {
 							click : function(node, evt) {
 								this.ownerCt.currentNodeId = node.id;
-								this.ownerCt.gridStore.load({
-											params : {
-												start : 0,
-												limit : this.ownerCt.pagesize,
-												'user.departid':node.id
-											}
-										});
+								if (node.id != "0") {
+									this.ownerCt.gridStore.load({
+												params : {
+													start : 0,
+													limit : this.ownerCt.pagesize,
+													'user.departid' : node.id
+												}
+											});
+								}
+
 							}
 						}
 					});
@@ -282,26 +286,46 @@ if (!techsupport.systemmanage.UserManager) {
 				},
 				sm : this.gridSelectionModel,
 				cm : this.gridColumnModel,
+				listeners:{
+//					双击打开修改窗口
+					rowdblclick:function(grid,rowIndex,evt){
+						var userModifyBtn = grid.getTopToolbar().findById("userModifyBtn");
+						userModifyBtn.handler();
+					}
+				},
 				tbar : [{
 					xtype : 'button',
 					text : '添加',
 					handler : function() {
+						if (um.currentNodeId == "0") {
+							Ext.MessageBox.alert("警告", "请选择下级机构");
+							return;
+						}
 						var userAddWindow = new techsupport.systemmanage.UserWindow(
 								{
-									ownerCt : this.ownerCt.ownerCt.ownerCt,
+									ownerCt : um,
 									mode : 'add'
 								});
 						userAddWindow.center();
 						userAddWindow.show();
 					}
 				}, '-', {
+					id:'userModifyBtn',
 					xtype : 'button',
 					text : '修改',
 					handler : function() {
+						var selectedRecord = um.gridSelectionModel
+								.getSelected();
+						if (!selectedRecord) {
+							Ext.MessageBox.alert("警告", "请选择需要修改的记录");
+							return;
+						}
+
 						var userModifyWindow = new techsupport.systemmanage.UserWindow(
 								{
-									ownerCt : this.ownerCt.ownerCt.ownerCt,
-									mode : 'modify'
+									ownerCt : um,
+									mode : 'modify',
+									initRecord : selectedRecord
 								});
 						userModifyWindow.center();
 						userModifyWindow.show();
@@ -311,10 +335,20 @@ if (!techsupport.systemmanage.UserManager) {
 					xtype : 'button',
 					text : '删除',
 					handler : function() {
+						var lSelections = um.gridSelectionModel.getSelections();
+						if (lSelections && lSelections.length) {
+							var lSelectionDatas = [];
+							for (var i = 0; i < lSelections.length; i++) {
+								lSelectionDatas.push(lSelections[i].data);
+							}
+
+							um.actions.remove(lSelectionDatas, um);
+						}
+
 					}
 				}],
 				bbar : [new Ext.AsinoPagingToolBar({
-							store : this.store,
+							store : this.gridStore,
 							displayInfo : true,
 							pageSize : this.pagesize
 						})]
@@ -325,108 +359,109 @@ if (!techsupport.systemmanage.UserManager) {
 			};
 			// ----------------------查询面板----------------------
 			this.queryPanel = Ext.create({
-						xtype : 'panel',
-						id : this.id + 'Query',
-						border : true,
-						width : '100%',
-						viewConfig : {
-							forceFit : true
-						},
-						items : [{
-							xtype : 'form',
-							id : this.id + "QueryCondition",
-							layout : 'column',
-							layoutConfig : {
-								padding : 4
-							},
-							viewConfig : {
-								forceFit : true
-							},
-							frame : false,
-							border : false,
-							defaults : {
-								border : false,
-								labelAlign : 'right'
-							},
-							items : [{
-										layout : 'form',
-										xtype : 'panel',
-										defaults : queryPanelItemsDefaults,
-										items : [{
-													name : 'username',
-													fieldLabel : this.title_base
-															+ '名称'
-												}]
-									}, {
-										layout : 'form',
-										xtype : 'panel',
-										defaults : queryPanelItemsDefaults,
-										items : [{
-													name : 'useraccount',
-													fieldLabel : this.title_base
-															+ '帐号'
-												}]
-									}, {
-										layout : 'form',
-										xtype : 'panel',
-										defaults : queryPanelItemsDefaults,
-										items : [{
+				xtype : 'panel',
+				id : this.id + 'Query',
+				border : true,
+				width : '100%',
+				viewConfig : {
+					forceFit : true
+				},
+				items : [{
+					xtype : 'form',
+					id : this.id + "QueryCondition",
+					layout : 'column',
+					layoutConfig : {
+						padding : 4
+					},
+					viewConfig : {
+						forceFit : true
+					},
+					frame : false,
+					border : false,
+					defaults : {
+						border : false,
+						labelAlign : 'right'
+					},
+					items : [{
+								layout : 'form',
+								xtype : 'panel',
+								defaults : queryPanelItemsDefaults,
+								items : [{
+											name : 'username',
+											fieldLabel : this.title_base + '名称'
+										}]
+							}, {
+								layout : 'form',
+								xtype : 'panel',
+								defaults : queryPanelItemsDefaults,
+								items : [{
+											name : 'useraccount',
+											fieldLabel : this.title_base + '帐号'
+										}]
+							}, {
+								layout : 'form',
+								xtype : 'panel',
+								defaults : queryPanelItemsDefaults,
+								items : [{
 											name : 'mobilephone',
 											fieldLabel : this.title_base
 													+ '电话号码'
 										}]
-									}, {
-										layout : 'form',
-										xtype : 'panel',
-										defaults : queryPanelItemsDefaults,
-										items : [{
-													name : 'email',
-													fieldLabel : this.title_base
-															+ '邮箱'
-												}]
-									}]
-						},
-								// 查询按钮面板，里面放置查询按钮和重置按钮
-								{
-									id : this.id + 'QueryBtnPanel',
-									xtype : 'panel',
-									layout : 'hbox',
-									layoutConfig : {
-										padding : '2 10 2 2',
-										pack : 'end'
-									},
-									border : false,
-									defaults : {
-										margins : '5 5 0 0',
-										width : 75
-									},
-									items : [Ext.create({
-														xtype : 'button',
-														text : '查询',
-														handler : function() {
-															// 查询的具体
-															um.gridStore.load({
-																params:{
-																	start:0,
-																	limit:um.pagesize,
-																	'user.departid':um.currentNodeId
-																}
-															});
-														}
-													}), Ext.create({
-														xtype : 'button',
-														text : '重置',
+							}, {
+								layout : 'form',
+								xtype : 'panel',
+								defaults : queryPanelItemsDefaults,
+								items : [{
+											name : 'email',
+											fieldLabel : this.title_base + '邮箱'
+										}]
+							}]
+				},
+						// 查询按钮面板，里面放置查询按钮和重置按钮
+						{
+							id : this.id + 'QueryBtnPanel',
+							xtype : 'panel',
+							layout : 'hbox',
+							layoutConfig : {
+								padding : '2 10 2 2',
+								pack : 'end'
+							},
+							border : false,
+							defaults : {
+								margins : '5 5 0 0',
+								width : 75
+							},
+							items : [Ext.create({
+								xtype : 'button',
+								text : '查询',
+								handler : function() {
+									// 查询的具体
+									// 参数
+									var params = {
+										limit : um.pagesize
+									};
+									
+									params[um.actionPrefix + 'departid'] = um.currentNodeId;
+									buildSubmitParam(params,
+											um.queryPanel.items.itemAt(0)
+													.getForm().getValues(),
+											um.actionPrefix);
+									Ext.apply(um.gridStore.baseParams,params);
+									um.gridStore.load();
+								}
+							}), Ext.create({
+										xtype : 'button',
+										text : '重置',
 
-														handler : function() {
-															Ext
-																	.getCmp(um.id
-																			+ "QueryCondition")
-																	.getForm()
-																	.reset();
-														}
-													})]
-								}]
-					});
+										handler : function() {
+											Ext
+													.getCmp(um.id
+															+ "QueryCondition")
+													.getForm().reset();
+										}
+									})]
+						}]
+			});
 			// ---------------------右边面板-----------------------
 			this.rightPanel = Ext.create({
 						xtype : 'panel',
@@ -490,6 +525,73 @@ if (!techsupport.systemmanage.UserWindow) {
 			techsupport.systemmanage.UserWindow.superclass.constructor.call(
 					this, config);
 		},
+		initData : function() {
+			var uw = this;
+			// 初始化数据
+			if (uw.initRecord) {
+				var data = uw.initRecord.data;
+				uw.formPanel.getForm().setValues(data);
+				var passwdRepeatField = uw.formPanel.findById('passwordRepeat');
+				passwdRepeatField.setValue(data.password);
+			}
+
+			
+			// 加载用户类型内容项
+			Ext.Ajax.request({
+						url : context_path
+								+ '/sysadminDefault/find_dictItem.action',
+						params : {
+							'dictItem.dict_code' : USER_TYPE_DICT_CODE
+						},
+						method : "post",
+						success : function(response, option) {
+
+							var data = response.responseJSON;
+
+							var oldUsertypeField = uw.formPanel
+									.findById("usertype");
+							// 复选框列表
+							var lCheckboxs = [];
+							for (var i = 0; i < data.lDictItems.length; i++) {
+								var checkbox = new Ext.form.Checkbox({
+											boxLabel : data.lDictItems[i].display_name,
+											inputValue : data.lDictItems[i].fact_value
+										});
+								lCheckboxs.push(checkbox);
+							}
+							// 延迟创建的新的用户类别字段,用于替换老的初始化占位用的
+							var newUsertypeField = new Ext.form.CheckboxGroup({
+										id : 'usertypeNew',
+										name : 'usertype',
+										fieldLabel : '用户类别',
+										height : 70,
+										itemCls : 'x-check-group-alt',
+										autoScroll : true,
+										allowBlank : false,
+										blankText : '用户类型必须选择',
+										columns : 1,
+										items : lCheckboxs
+									});
+
+							uw.formPanel.insert(10, newUsertypeField);
+							uw.formPanel.remove(oldUsertypeField);
+							uw.doLayout();
+							uw.center();
+
+							if (uw.initRecord) {
+								var data = uw.initRecord.data;
+								var usertypeField = uw.formPanel
+										.findById("usertypeNew");
+								usertypeField.setValue(data.usertype);
+								
+								if(uw.mode == 'detail'){
+									newUsertypeField.setDisabled(true);
+								}
+							}
+						}
+					});
+
+		},
 		initComponent : function(ct, position) {
 			var uw = this;
 			techsupport.systemmanage.UserWindow.superclass.initComponent.call(
@@ -500,7 +602,8 @@ if (!techsupport.systemmanage.UserWindow) {
 					forceFit : true
 				},
 				defaults : {
-					xtype : 'textfield'
+					xtype : 'textfield',
+					width : 200
 				},
 				items : [{
 							id : 'userid',
@@ -521,7 +624,7 @@ if (!techsupport.systemmanage.UserWindow) {
 							allowBlank : false,
 							validationEvent : 'blur',
 							validator : function(val) {
-								if(!val)
+								if (!val)
 									return '用户帐号必须输入';
 								if (uw.initRecord) {
 									if (val == uw.initRecord.data[this.name])
@@ -555,14 +658,19 @@ if (!techsupport.systemmanage.UserWindow) {
 							id : 'password',
 							name : 'password',
 							fieldLabel : '密码',
-							blankText : '密码必须输入',
+							inputType : 'password',
 							validationEvent : 'blue',
 							validator : function(val) {
+								if (!val)
+									return "密码必须输入";
 								var passwdRepeat = this.ownerCt
-										.find('passwordRepeat');
+										.findById('passwordRepeat');
 								if (val && passwdRepeat.getValue()) {
-									if (val == passwdRepeat.getValue())
+									if (val == passwdRepeat.getValue()) {
+										passwdRepeat.clearInvalid();
 										return true;
+									}
+
 									else
 										return "两次输入密码不一致";
 								}
@@ -571,14 +679,19 @@ if (!techsupport.systemmanage.UserWindow) {
 							id : 'passwordRepeat',
 							name : 'passwordRepeat',
 							fieldLabel : '重复密码',
-							blankText : '重复密码必须输入',
+							inputType : 'password',
+							submitValue : false,
 							validationEvent : 'blue',
 							validator : function(val) {
-								var passwd = this.ownerCt.find('password');
+								if (!val)
+									return "重复密码必须输入";
+								var passwd = this.ownerCt.findById('password');
 								if (val && passwd.getValue()) {
-									if (val == passwd.getValue())
+									if (val == passwd.getValue()) {
+										passwd.clearInvalid();
 										return true;
-									else
+
+									} else
 										return "两次输入密码不一致";
 								}
 							}
@@ -603,6 +716,27 @@ if (!techsupport.systemmanage.UserWindow) {
 							vtype : 'email',
 							emailText : '输入的电子邮件不正确'
 						}, {
+							id : 'userorder',
+							name : 'userorder',
+							fieldLabel : '序号',
+							allowBlank : true
+						}, new Ext.form.ComboBox({
+									id : 'isvalid',
+									hiddenName : 'isvalid',
+									fieldLabel : '是否可用',
+									triggerAction : 'all',
+									mode : 'local',
+									store : new Ext.data.ArrayStore({
+												id : 0,
+												fields : ['factValue',
+														'displayName'],
+												data : [['Y', '是'], ['N', '否']],
+												autoLoad : true
+											}),
+									valueField : 'factValue',
+									displayField : 'displayName',
+									editable : false
+								}), {
 							id : 'usertype',
 							name : 'usertype',
 							fieldLabel : '用户类别',
@@ -611,72 +745,19 @@ if (!techsupport.systemmanage.UserWindow) {
 							columns : 1,
 							items : [{}]
 
-						}, {
-							id : 'userorder',
-							name : 'userorder',
-							fieldLabel : '序号',
-							allowBlank : true
-						}, new Ext.form.ComboBox({
-									id : 'isvalid',
-									name : 'isvalid',
-									fieldLabel : '是否可用',
-									typeAhead : true,
-									trigerAction : 'all',
-									mode : 'local',
-									store : new Ext.data.ArrayStore({
-												id : 0,
-												fields : ['factValue',
-														'displayName'],
-												data : [['Y', '是'], ['N', '否']]
-											}),
-									valueField : 'factValue',
-									displayField : 'displayName'
+						}, new Ext.form.TextField({
+									id : 'departid',
+									name : 'departid',
+									fieldLabel : '机构ID',
+									allowBlank : false,
+									hidden : true
 								})]
 			});
 
-			// 加载用户类型内容项
-			Ext.Ajax.request({
-						url : context_path
-								+ '/sysadminDefault/find_dictItem.action',
-						params:{'dictItem.dict_code':USER_TYPE_DICT_CODE},
-						method:"post",
-						success : function(response, option) {
-							
-							var data = response.responseJSON;
-							
-							var oldUsertypeField = uw.formPanel
-									.findById("usertype");
-							//复选框列表
-							var lCheckboxs = [];
-							for (var i = 0; i < data.lDictItems.length; i++) {
-								var checkbox = new Ext.form.Checkbox({
-									name:'usertype',
-									boxLabel:data.lDictItems[i].display_name,
-									inputValue:data.lDictItems[i].fact_value
-								});
-								lCheckboxs.push(checkbox);
-							}
-							//延迟创建的新的用户类别字段,用于替换老的初始化占位用的
-							var newUsertypeField = new Ext.form.CheckboxGroup({
-										id : 'usertypeNew',
-										name : 'usertype',
-										fieldLabel : '用户类别',
-										height : 70,
-										itemCls : 'x-check-group-alt',
-										autoScroll:true,
-										columns : 1,
-										items : lCheckboxs
-									});
-
-							uw.formPanel.insert(8, newUsertypeField);
-							uw.formPanel.remove(oldUsertypeField);
-							uw.doLayout();
-							uw.center();
-						}
-					});
 			// 添加表单到窗口面板
 			this.add(this.formPanel);
-			
+			// 初始化数据
+			this.initData(this);
 			// 详情模式
 			if (this.mode == 'detail') {
 				Ext.each(this.formPanel.find(), function(item, index, all) {
@@ -688,7 +769,7 @@ if (!techsupport.systemmanage.UserWindow) {
 								item.setDisable(true);
 						});
 
-				var useraccountField = this.formPanel.findById('useraccout');
+				var useraccountField = this.formPanel.findById('useraccount');
 				useraccountField.un('blur');
 				var passwdField = this.formPanel.findById('password');
 				passwdField.un('blur');
@@ -707,28 +788,44 @@ if (!techsupport.systemmanage.UserWindow) {
 				// 修改模式
 			} else if (this.mode == 'modify') {
 				// 不让修改用户帐号
-				var useraccountField = this.formPanel.findById('useraccout');
+				var useraccountField = this.formPanel.findById('useraccount');
 				useraccountField.setReadOnly(true);
 				useraccountField.un('blur');
 
 				// 确认按钮
 				this.addButton({
-							xtype : 'button',
-							text : '确认',
-							handler : function() {
-								if (this.ownerCt.formPanel.getForm().isValid()) {
-									this.ownerCt.ownerCt.actions
-											.modify(this.ownerCt.formPanel
-													.getForm().getValues());
-								}
-							}
-						});
+					xtype : 'button',
+					text : '确认',
+					handler : function() {
+						if (uw.formPanel.getForm().isValid()) {
+							uw.ownerCt.actions.modify(
+									function(formValues) {
+										if (Ext.isArray(formValues.usertype)) {
+											var usertype = "";
+											for (var i = 0; i < formValues.usertype.length; i++) {
+												usertype += formValues.usertype[i]
+														+ ",";
+											}
+											if (usertype.length == 0) {
+												formValues.usertype = undefined;
+											} else
+												formValues.usertype = usertype
+														.substring(0,
+																usertype.length
+																		- 1);
+										}
+										return formValues;
+									}(uw.formPanel.getForm().getValues()), uw,
+									uw.ownerCt);
+						}
+					}
+				});
 				// 关闭按钮
 				this.addButton({
 							xtype : 'button',
 							text : '关闭',
 							handler : function() {
-								this.ownerCt.ownerCt.close();
+								uw.close();
 							}
 						});
 				// 添加模式
@@ -736,28 +833,51 @@ if (!techsupport.systemmanage.UserWindow) {
 				// 隐藏是否可用
 				var isValidField = this.formPanel.findById('isvalid');
 				isValidField.hide();
+				// 设置默认为可用状态
+				isValidField.setValue("Y");
 				// 隐藏序号
 				var userOrderField = this.formPanel.findById('userorder');
 				userOrderField.hide();
 
+				// 设置当前机构的id
+				var departIdFeild = this.formPanel.findById("departid");
+				departIdFeild.setValue(this.ownerCt.currentNodeId);
+
 				// 确认按钮
 				this.addButton(new Ext.Button({
-							xtype : 'button',
-							text : '确认',
-							handler : function() {
-								if (this.ownerCt.formPanel.getForm().isValid()) {
-									this.ownerCt.ownerCt.actions
-											.add(this.ownerCt.formPanel
-													.getForm().getValues());
-								}
-							}
-						}));
+					xtype : 'button',
+					text : '确认',
+					handler : function() {
+						if (uw.formPanel.getForm().isValid()) {
+							uw.ownerCt.actions.add(
+									function(formValues) {
+										if (Ext.isArray(formValues.usertype)) {
+											var usertype = "";
+											for (var i = 0; i < formValues.usertype.length; i++) {
+												usertype += formValues.usertype[i]
+														+ ",";
+											}
+											if (usertype.length == 0) {
+												formValues.usertype = undefined;
+											} else
+												formValues.usertype = usertype
+														.substring(0,
+																usertype.length
+																		- 1);
+										}
+
+										return formValues;
+									}(uw.formPanel.getForm().getValues()), uw,
+									uw.ownerCt);
+						}
+					}
+				}));
 				// 关闭按钮
 				this.addButton(new Ext.Button({
 							xtype : 'button',
 							text : '关闭',
 							handler : function() {
-								this.ownerCt.ownerCt.close();
+								uw.close();
 							}
 						}));
 			}

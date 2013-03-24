@@ -89,7 +89,7 @@ if (!techsupport.systemmanage.SystemWindow) {
 														$
 																.ajax({
 																	url : context_path
-																			+ '/sysadminDefault/checkSystemcode_systemmanage.action',
+																			+ '/sysadminDefault/checkSystemcode_system.action',
 																	data : {
 																		'system.systemcode' : val
 																	},
@@ -284,15 +284,15 @@ if (!techsupport.systemmanage.SystemMain) {
 						pagesize : 25,
 						dir : "asc",
 						addURL : context_path
-								+ '/sysadminDefault/add_systemmanage.action',
+								+ '/sysadminDefault/add_system.action',
 						modifyURL : context_path
-								+ '/sysadminDefault/modify_systemmanage.action',
+								+ '/sysadminDefault/modify_system.action',
 						queryURL : context_path
-								+ '/sysadminDefault/querylist_systemmanage.action',
+								+ '/sysadminDefault/querylist_system.action',
 						detailURL : context_path
-								+ '/sysadminDefault/query_systemmanage.action',
+								+ '/sysadminDefault/query_system.action',
 						removeURL : context_path
-								+ '/sysadminDefault/remove_systemmanage.action',
+								+ '/sysadminDefault/remove_system.action',
 						actionPrefix : 'system.',
 						removePrefix : 'systemList[i]',
 						// 详情弹出窗口容器
@@ -482,7 +482,7 @@ if (!techsupport.systemmanage.SystemMain) {
 							this.treeloader = new Ext.tree.TreeLoader(
 									{
 										url : context_path
-												+ '/sysadminDefault/querySystemNodes_systemmanage.action', // 设置为系统管理查询节点的链接
+												+ '/sysadminDefault/querySystemNodes_system.action', // 设置为系统管理查询节点的链接
 										method : 'post',
 										listeners : {
 											beforeload : {
@@ -608,6 +608,12 @@ if (!techsupport.systemmanage.SystemMain) {
 										},
 										sm : sm,
 										cm : columnModel,
+										listeners:{
+											rowdblclick:function(grid,rowIndex,evt){
+												var systemModifyBtn = grid.getTopToolbar().findById("systemModifyBtn");
+												systemModifyBtn.handler();
+											}
+										},
 										tbar : [
 												{
 													xtype : 'button',
@@ -657,6 +663,7 @@ if (!techsupport.systemmanage.SystemMain) {
 												},
 												'-',
 												{
+													id:'systemModifyBtn',
 													xtype : 'button',
 													text : '修改',
 													handler : function() {

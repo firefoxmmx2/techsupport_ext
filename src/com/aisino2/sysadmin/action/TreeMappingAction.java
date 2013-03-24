@@ -3,6 +3,8 @@ package com.aisino2.sysadmin.action;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.aisino2.sysadmin.common.Util;
+
 @Component
 @Scope("prototype")
 public class TreeMappingAction extends PageAction {
@@ -27,6 +29,11 @@ public class TreeMappingAction extends PageAction {
 		return systemTreeFalg;
 	}
 	
+	public String treeForm() throws Exception{
+		if(Util.isNotEmpty(treeFalg))
+			return treeFalg;
+		return "department"; 
+	}
 	public String getTreeFalg() {
 		return treeFalg;
 	}

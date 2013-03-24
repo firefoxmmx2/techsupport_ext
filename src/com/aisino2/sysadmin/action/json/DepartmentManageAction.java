@@ -68,7 +68,7 @@ public class DepartmentManageAction extends PageAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public String query_department_node() throws Exception {
+	public String queryDepartmentNode() throws Exception {
 		if (department == null)
 			department = new Department();
 		Integer departlevel = department.getDepartlevel();
