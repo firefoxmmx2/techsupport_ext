@@ -286,10 +286,11 @@ if (!techsupport.systemmanage.UserManager) {
 				},
 				sm : this.gridSelectionModel,
 				cm : this.gridColumnModel,
-				listeners:{
-//					双击打开修改窗口
-					rowdblclick:function(grid,rowIndex,evt){
-						var userModifyBtn = grid.getTopToolbar().findById("userModifyBtn");
+				listeners : {
+					// 双击打开修改窗口
+					rowdblclick : function(grid, rowIndex, evt) {
+						var userModifyBtn = grid.getTopToolbar()
+								.findById("userModifyBtn");
 						userModifyBtn.handler();
 					}
 				},
@@ -310,7 +311,7 @@ if (!techsupport.systemmanage.UserManager) {
 						userAddWindow.show();
 					}
 				}, '-', {
-					id:'userModifyBtn',
+					id : 'userModifyBtn',
 					xtype : 'button',
 					text : '修改',
 					handler : function() {
@@ -440,13 +441,13 @@ if (!techsupport.systemmanage.UserManager) {
 									var params = {
 										limit : um.pagesize
 									};
-									
+
 									params[um.actionPrefix + 'departid'] = um.currentNodeId;
 									buildSubmitParam(params,
 											um.queryPanel.items.itemAt(0)
 													.getForm().getValues(),
 											um.actionPrefix);
-									Ext.apply(um.gridStore.baseParams,params);
+									Ext.apply(um.gridStore.baseParams, params);
 									um.gridStore.load();
 								}
 							}), Ext.create({
@@ -511,8 +512,10 @@ if (!techsupport.systemmanage.UserWindow) {
 			this.width = config.width || 500;
 			this.closeAction = "close";
 			this.title = '用户';
-			this.viewConfig = {
-				forceFit : true
+			this.defaults = {
+				viewConfig : {
+					forceFit : true
+				}
 			};
 			// 设置是否为置顶窗口 , 可通过参数来改变
 			this.modal = config.modal || true,
@@ -535,7 +538,6 @@ if (!techsupport.systemmanage.UserWindow) {
 				passwdRepeatField.setValue(data.password);
 			}
 
-			
 			// 加载用户类型内容项
 			Ext.Ajax.request({
 						url : context_path
@@ -583,8 +585,8 @@ if (!techsupport.systemmanage.UserWindow) {
 								var usertypeField = uw.formPanel
 										.findById("usertypeNew");
 								usertypeField.setValue(data.usertype);
-								
-								if(uw.mode == 'detail'){
+
+								if (uw.mode == 'detail') {
 									newUsertypeField.setDisabled(true);
 								}
 							}
@@ -598,9 +600,6 @@ if (!techsupport.systemmanage.UserWindow) {
 					this, ct, position);
 			// 表单区域
 			this.formPanel = new Ext.form.FormPanel({
-				layoutConfig : {
-					forceFit : true
-				},
 				defaults : {
 					xtype : 'textfield',
 					width : 200

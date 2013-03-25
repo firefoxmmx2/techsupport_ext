@@ -91,7 +91,7 @@ Ext.Ajax.simpleSubmit = function(config){
 /**
  * 中文翻页条封装
  * */
-Ext.AsinoPagingToolBar = Ext.extend(Ext.PagingToolbar,{
+Ext.ux.AsinoPagingToolBar = Ext.AsinoPagingToolBar = Ext.extend(Ext.PagingToolbar,{
 	constructor:function(config){
 		this.afterPageText = config.afterPageText || '共{0}页';
         this.beforePageText = config.beforePageText || '当前页';
@@ -106,8 +106,12 @@ Ext.AsinoPagingToolBar = Ext.extend(Ext.PagingToolbar,{
 		Ext.AsinoPagingToolBar.superclass.constructor.apply(this, arguments);
 
 	}
-	
-}); 
+});
+/**
+ * 注册Ext.ux.AsinoPagingToolBar别名
+ */
+Ext.reg("aisinopagebar",Ext.ux.AsinoPagingToolBar);
+
 /***
  * 扩展验证方法类型
  */
