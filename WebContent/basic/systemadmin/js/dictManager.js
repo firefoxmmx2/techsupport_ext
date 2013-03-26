@@ -4,6 +4,9 @@
 
 Ext.ns("techsupport.systemmanage");
 
+/**
+ * 字典管理
+ */
 if (!techsupport.systemmanage.DictManager) {
 	techsupport.systemmanage.DictManager = Ext.extend(Ext.Panel, {
 		id : 'dictManager',
@@ -28,7 +31,7 @@ if (!techsupport.systemmanage.DictManager) {
 
 			techsupport.systemmanage.DictManager.superclass.constructor.call(
 					this, {
-						style:'height:100%',
+						style : 'height:100%',
 						renderTo : config.renderTo,
 						pagesize : config.pagesize || 25,
 						id : config.id || "dictManager",
@@ -271,7 +274,7 @@ if (!techsupport.systemmanage.DictManager) {
 			techsupport.systemmanage.DictManager.superclass.afterRender.apply(
 					this, arguments);
 			// 设置内容表格高度
-			 this.gridBodyHeight = this.getHeight() - this.getFrameHeight()
+			this.gridBodyHeight = this.getHeight() - this.getFrameHeight()
 					- this.gridPanel.getFrameHeight()
 					- this.queryPanel.getHeight() - 2;
 			this.gridPanel.body.setHeight(this.gridBodyHeight);
@@ -279,6 +282,100 @@ if (!techsupport.systemmanage.DictManager) {
 	});
 }
 
+/**
+ * 字典窗口
+ */
 if (!techsupport.systemmanage.DictWindow) {
-	techsupport.systemmanage.DictWindow = Ext.extend(Ext.Window, {});
+	techsupport.systemmanage.DictWindow = Ext.extend(Ext.Window, {
+				constructor : function(config) {
+					techsupport.systemmanage.DictWindow.superclass.constructor
+							.call(this, {
+										id : config.id || 'dictWindow',
+										width : config.width || 500,
+										height : config.height,
+										closeAction : 'close',
+										title : '字典',
+										defaults : {
+											viewConfig : {
+												forceFit : true
+											}
+										},
+										modal : true,
+										initRecord : config.initRecord,
+										ownerCt : config.ownerCt,
+										mode : config.mode || 'detail'
+									});
+				},
+				initComponent : function() {
+					var dw = this;
+					techsupport.systemmanage.DictWindow.superclass.initComponent
+							.call(this);
+
+					Ext.apply(this, {
+								formPanel : Ext.create('form', {
+											id : this.id + "Form",
+											defaults : {
+												xtype : 'textfield'
+											},
+											items : [{
+														id : 'dict_code',
+														name : 'dict_code',
+														fieldLabel : '字典代码',
+														maxLength:30
+													}, {
+														id : 'dict_name',
+														name : 'dict_name',
+														fieldLabel : '字典名称',
+														maxLength:50
+													}, {
+														id : 'sib_order',
+														name : 'sib_order',
+														fieldLabel : '字典序号',
+														maxLength:5
+													}, {
+														id : 'maint_flag',
+														name : 'maint_flag',
+														fieldLabel : '维护标记',
+														maxLength:1
+													}, {
+														id : 'dict_type',
+														hiddenName : 'dict_type',
+														fieldLabel : '字典类型',
+														xtype:'combo',
+														triggerAction:'all',
+														mode:'local',
+														editable:false,
+														store:{
+															xtype:'arraystore',
+															id:0,
+															fields:['value','display'],
+															data:[[0,'普通字典'],[1,'树形字典']]
+														},
+														valueField:'value',
+														displayField:'display'
+													}, {
+														id : 'dict_versionid',
+														name : 'dict_versionid',
+														fieldLabel : '字典版本'
+													}]
+										})
+							});
+
+					this.add(this.formPanel);
+
+//					添加模式
+					if (this.mode == 'add') {
+
+						
+//						添加 添加的确认按钮，保存时候出发
+						this.addButton({xtype:'button',text:'确认',handler:function(){}});
+						this.addButton({xtype:'button',text:'关闭',handler:function(){}});
+//						修改模式
+					} else if (this.mode == 'modify') {
+
+					} else{ // 默认详情模式
+						
+					}
+				}
+			});
 }
