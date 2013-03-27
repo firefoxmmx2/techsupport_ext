@@ -306,6 +306,12 @@ if (!techsupport.systemmanage.DictWindow) {
 										mode : config.mode || 'detail'
 									});
 				},
+				init:function(){
+					var dw = this;
+					if(this.initRecord){
+						this.formPanel.getForm().loadRecord(this.initRecord);
+					}
+				},
 				initComponent : function() {
 					var dw = this;
 					techsupport.systemmanage.DictWindow.superclass.initComponent
@@ -363,18 +369,46 @@ if (!techsupport.systemmanage.DictWindow) {
 
 					this.add(this.formPanel);
 
+					//初始化数据
+					this.init();
+					
 //					添加模式
 					if (this.mode == 'add') {
-
-						
 //						添加 添加的确认按钮，保存时候出发
-						this.addButton({xtype:'button',text:'确认',handler:function(){}});
-						this.addButton({xtype:'button',text:'关闭',handler:function(){}});
+						this.addButton({xtype:'button',text:'确定',handler:function(){
+							if(dw.formPanel.getForm().isValid()){
+								var record = Ext.data.Record.create(ownerCt.gridStore.fields);
+								record = dw.formPanel.getForm().updateRecord(record);
+								dw.ownerCt.gridStore.add(record);
+								dw.ownerCt.gridStore.save();
+								dw.ownerCt.gridStore.load();
+							}
+							
+						}});
+						this.addButton({xtype:'button',text:'关闭',handler:function(){
+							dw.close();
+						}});
 //						修改模式
 					} else if (this.mode == 'modify') {
-
-					} else{ // 默认详情模式
+//						想gridStore里面保存修改的记录
+						this.addButton({xtype:'button',text:'确定',handler:function(){
 						
+							if(dw.formPanel.getForm().isValid()){
+								dw.formPanel.getForm().updateRecord(this.initRecord);
+								if(dw.gridStore.getModifiedRecords( ).length){
+									dw.ownerCt.gridStore.save();
+								}
+								
+							}
+						}});
+						this.addButton({xtype:'button',text:'关闭',handler:function(){
+							dw.close();
+						}});
+					} else{ // 默认详情模式
+						this.formPanel.setDisable(true);
+						this.addButton({xtype:'button',text:'关闭',handler:function(){
+							dw.close();
+						}});
 					}
 				}
 			});

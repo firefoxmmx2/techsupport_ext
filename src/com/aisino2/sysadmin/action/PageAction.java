@@ -32,11 +32,19 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 	public String returnMessageDebug;
 	public Map<String, Object> queryExtraCond = new HashMap<String, Object>();
 	public String mode;
-	
 //	日志
 	public static final Logger log = Logger.getLogger(PageAction.class);
 
 	
+	
+	/**
+	 * 返回是否成功
+	 * 当returnNo == 0 的时候表示正确,非0的时候表示错误
+	 * @return
+	 */
+	public boolean isSuccess() {
+		return returnNo == 0? true : false;
+	}
 	public String getMode() {
 		return mode;
 	}

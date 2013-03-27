@@ -62,6 +62,9 @@ public class DictAction extends PageAction {
 	@SuppressWarnings("unchecked")
 	public String querylist() throws Exception {
 		try {
+			if (dict == null) {
+				dict = new Dict();
+			}
 			Pager pager = dictService.getListForPage(dict, this.queryExtraCond,
 					this.start, this.limit, this.dir, this.sort);
 			lDicts = pager.getDatas();
@@ -75,7 +78,6 @@ public class DictAction extends PageAction {
 				this.returnMessageDebug = e.getMessage();
 			}
 			
-			throw e;
 		}
 		return SUCCESS;
 	}
@@ -99,7 +101,6 @@ public class DictAction extends PageAction {
 				log.debug(e,e.fillInStackTrace());
 				this.returnMessageDebug = e.getMessage();
 			}
-			throw e;
 		}
 		return SUCCESS;
 	}
@@ -123,7 +124,6 @@ public class DictAction extends PageAction {
 				log.debug(e,e.fillInStackTrace());
 				this.returnMessageDebug = e.getMessage();
 			}
-			throw e;
 		}
 		return SUCCESS;
 	}
@@ -147,7 +147,6 @@ public class DictAction extends PageAction {
 				log.debug(e,e.fillInStackTrace());
 				this.returnMessageDebug = e.getMessage();
 			}
-			throw e;
 		}
 		return SUCCESS;
 	}
@@ -171,7 +170,6 @@ public class DictAction extends PageAction {
 				log.debug(e,e.fillInStackTrace());
 				this.returnMessageDebug = e.getMessage();
 			}
-			throw e;
 		}
 		return SUCCESS;
 	}
