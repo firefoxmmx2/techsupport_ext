@@ -69,6 +69,9 @@ public class DictAction extends PageAction {
 					this.start, this.limit, this.dir, this.sort);
 			lDicts = pager.getDatas();
 			this.total = pager.getTotalCount();
+			if ("detalilist".equals(mode)) {
+				return "detaillist";
+			}
 		} catch (Exception e) {
 			log.error(e);
 			this.returnNo = 1;

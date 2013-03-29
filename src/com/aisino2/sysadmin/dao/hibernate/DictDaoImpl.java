@@ -8,10 +8,13 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Component;
 
+import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.IDictDao;
 import com.aisino2.sysadmin.domain.Dict;
 import com.aisino2.sysadmin.domain.Pager;
@@ -78,12 +81,16 @@ public class DictDaoImpl extends TechSupportBaseDaoImpl implements IDictDao {
 					public Pager doInHibernate(Session session)
 							throws HibernateException, SQLException {
 						Pager pager = new Pager();
-
+						pager.setPageNo(pageNo);
+						pager.setPageSize(pageSize);
+						
 						Criteria q = session.createCriteria(Dict.class, "t");
 						// condition
-						Example ex = Example.create(dict).enableLike()
+						Example ex = Example.create(dict).enableLike(MatchMode.START)
 								.ignoreCase().excludeZeroes();
 						q.add(ex);
+						if(Util.isNotEmpty(dict.getDict_code()))
+							q.add(Restrictions.eq("dict_code", dict.getDict_code()));
 						// count
 						q.setProjection(Projections.rowCount());
 						pager.setTotalCount(((Long) q.uniqueResult())
@@ -91,8 +98,8 @@ public class DictDaoImpl extends TechSupportBaseDaoImpl implements IDictDao {
 
 						// page
 						q.setProjection(null);
-						q.setFirstResult((pageNo - 1) * pageSize);
-						q.setMaxResults(pageSize);
+						q.setFirstResult(pager.getStartRecord());
+						q.setMaxResults(pager.getPageSize());
 
 						pager.setDatas(q.list());
 						return pager;

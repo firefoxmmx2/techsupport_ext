@@ -27,8 +27,21 @@ if (!techsupport.systemmanage.DictManager) {
 		gridSelectionModel : new Ext.grid.CheckboxSelectionModel(),
 		gridStore : null,
 		gridColumnModel : null,
+		pagesize : 25,
+		dictTypeStore : Ext.create({
+					xtype : 'arraystore',
+					id : 0,
+					fields : ['value', 'display'],
+					data : [['01', '普通字典'], ['02', '树形字典']]
+				}),
+		maintFlagStore : Ext.create({
+					xtype : 'arraystore',
+					id : 0,
+					fields : ['value', 'display'],
+					data : [['0', '维护'], ['1', '不维护']]
+				}),
 		constructor : function(config) {
-
+			var dm = this;
 			techsupport.systemmanage.DictManager.superclass.constructor.call(
 					this, {
 						style : 'height:100%',
@@ -38,35 +51,47 @@ if (!techsupport.systemmanage.DictManager) {
 						// 字典内容表格列
 						gridColumnModel : config.gridColumnModel
 								|| new Ext.grid.ColumnModel({
-											columns : [this.gridSelectionModel,
-													{
-														header : '字典代码',
-														dataIndex : 'dict_code'
-													}, {
-														header : '字典名称',
-														dataIndex : 'dict_name'
-													}, {
-														header : '字典序号',
-														dataIndex : 'sib_order'
-													}, {
-														header : '维护标记',
-														dataIndex : 'maint_flag'
-													}, {
-														header : '字典类型',
-														dataIndex : 'dict_type'
-													}, {
-														header : '字典版本',
-														dataIndex : 'dict_versionid'
-													}],
-											defaults : {
-												sortable : true,
-												menuDisabled : true,
-												autoFill : true
-											}
-										}),
+									columns : [this.gridSelectionModel, {
+										header : '字典代码',
+										dataIndex : this.actionPrefix
+												+ 'dict_code'
+									}, {
+										header : '字典名称',
+										dataIndex : this.actionPrefix
+												+ 'dict_name'
+									}, {
+										header : '字典序号',
+										dataIndex : this.actionPrefix
+												+ 'sib_order'
+									}, {
+										header : '维护标记',
+										dataIndex : this.actionPrefix
+												+ 'maint_flag',
+										renderer : function(value) {
+												return value!=undefined? dm.maintFlagStore
+													.getById(value).data.display : value;
+										}
+									}, {
+										header : '字典类型',
+										dataIndex : this.actionPrefix
+												+ 'dict_type',
+										renderer : function(value) {
+											return value? dm.dictTypeStore
+													.getById(value).data.display : value;
+										}
+									}, {
+										header : '字典版本',
+										dataIndex : this.actionPrefix
+												+ 'dict_versionid'
+									}],
+									defaults : {
+										sortable : true,
+										menuDisabled : true,
+										autoFill : true
+									}
+								}),
 						// 内容数据
-						gridStore : config.gridStore
-								|| new Ext.data.JsonStore({
+						gridStore : config.gridStore || new Ext.data.Store({
 									proxy : new Ext.data.HttpProxy({
 												api : {
 													read : this.queryURL,
@@ -76,47 +101,60 @@ if (!techsupport.systemmanage.DictManager) {
 												}
 											}),
 									reader : new Ext.data.JsonReader({
-										root : "lDicts",
-										idProperty : 'dict_code',
-										totalProperty : 'total',
-										fields : [{
-													name : 'dict_code',
+												root : "lDicts",
+												idProperty : 'dict_code',
+												totalProperty : 'total',
+												messageProperty:'returnMessage',
+												fields : [{
+													name : this.actionPrefix
+															+ 'dict_code',
 													mapping : 'dict_code'
 												}, {
-													name : 'dict_name',
+													name : this.actionPrefix
+															+ 'dict_name',
 													mapping : 'dict_name'
 												}, {
-													name : 'super_dict_code',
+													name : this.actionPrefix
+															+ 'super_dict_code',
 													mapping : 'super_dict_code'
 												}, {
-													name : 'sib_order',
+													name : this.actionPrefix
+															+ 'sib_order',
 													mapping : 'sib_order'
 												}, {
-													name : 'leaf_flag',
+													name : this.actionPrefix
+															+ 'leaf_flag',
 													mapping : 'leaf_flag'
 												}, {
-													name : 'maint_flag',
+													name : this.actionPrefix
+															+ 'maint_flag',
 													mapping : 'maint_flag'
 												}, {
-													name : 'dict_type',
+													name : this.actionPrefix
+															+ 'dict_type',
 													mapping : 'dict_type'
 												}, {
-													name : 'dict_simplepin',
+													name : this.actionPrefix
+															+ 'dict_simplepin',
 													mapping : 'dict_simplepin'
 												}, {
-													name : 'dict_allpin',
+													name : this.actionPrefix
+															+ 'dict_allpin',
 													mapping : 'dict_allpin'
 												}, {
-													name : 'dict_itemtablename',
+													name : this.actionPrefix
+															+ 'dict_itemtablename',
 													mapping : 'dict_itemtablename'
 												}, {
-													name : 'dict_versionid',
+													name : this.actionPrefix
+															+ 'dict_versionid',
 													mapping : 'dict_versionid'
 												}, {
-													name : 'dict_id',
+													name : this.actionPrefix
+															+ 'dict_id',
 													mapping : "dict_id"
 												}]
-									}),
+											}),
 									writer : new Ext.data.JsonWriter({
 												encode : true
 											}),
@@ -138,76 +176,81 @@ if (!techsupport.systemmanage.DictManager) {
 						width : '100%',
 						autoHeight : true,
 						items : [{
-									xtype : 'form',
-									layout : 'column',
-									border : false,
-									frame : false,
-									defaults : {
-										labelAlign : 'right',
-										layout : 'form',
-										xtype : 'panel',
-										border : false
+							xtype : 'form',
+							layout : 'column',
+							border : false,
+							frame : false,
+							defaults : {
+								labelAlign : 'right',
+								layout : 'form',
+								xtype : 'panel',
+								border : false
 
-									},
-									items : [{
+							},
+							items : [{
 
-												items : [{
-															xtype : 'textfield',
-															name : 'dict_code',
-															fieldLabel : '字典代码',
-															maxLength : 40
+								items : [{
+											xtype : 'textfield',
+											name : this.actionPrefix
+													+ 'dict_code',
+											fieldLabel : '字典代码',
+											maxLength : 40
 
-														}]
-											}, {
-												items : [{
-															xtype : 'textfield',
-															name : 'dict_name',
-															fieldLabel : '字典名称',
-															maxLength : 50
-														}]
-											}, {
-												items : [{
-															xtype : 'textfield',
-															name : 'dict_type',
-															fieldLabel : '字典类型',
-															maxLength : 50
-														}]
-											}]
-
-								}, {
-									xtype : 'panel',
-									layout : 'hbox',
-									layoutConfig : {
-										padding : '2 10 2 2',
-										pack : 'end'
-									},
-									defaults : {
-										margins : '5 5 0 0',
-										width : 75
-									},
-									border : false,
-									frame : false,
-									items : [{
-										xtype : 'button',
-										text : '查询',
-										handler : function() {
-											var params = dm.queryPanel.items
-													.itemAt(0).getForm()
-													.getValues();
-											buildSubmitParam(
-													dm.gridStore.baseParams,
-													params);
-											dm.gridStore.load();
-										}
-									}, {
-										xtype : 'button',
-										text : '重置',
-										handler : function() {
-											dm.queryPanel.items.itemAt(0)
-													.getForm().reset();
-										}
-									}]
+										}]
+							}, {
+								items : [{
+											xtype : 'textfield',
+											name : this.actionPrefix
+													+ 'dict_name',
+											fieldLabel : '字典名称',
+											maxLength : 50
+										}]
+							}, {
+								items : [{
+									xtype : 'combo',
+									hiddenName : this.actionPrefix
+											+ 'dict_type',
+									fieldLabel : '字典类型',
+									triggerAction : 'all',
+									mode : 'local',
+									editable : false,
+									store : this.dictTypeStore,
+									valueField : 'value',
+									displayField : 'display'
 								}]
+							}]
+
+						}, {
+							xtype : 'panel',
+							layout : 'hbox',
+							layoutConfig : {
+								padding : '2 10 2 2',
+								pack : 'end'
+							},
+							defaults : {
+								margins : '5 5 0 0',
+								width : 75
+							},
+							border : false,
+							frame : false,
+							items : [{
+								xtype : 'button',
+								text : '查询',
+								handler : function() {
+									var params = dm.queryPanel.items.itemAt(0)
+											.getForm().getValues();
+									Ext.apply(dm.gridStore.baseParams, params);
+									dm.gridStore.load();
+								}
+							}, {
+								xtype : 'button',
+								text : '重置',
+								handler : function() {
+									dm.queryPanel.items.itemAt(0).getForm()
+											.reset();
+								}
+							}]
+						}]
 
 					});
 			this.add(this.queryPanel);
@@ -224,7 +267,12 @@ if (!techsupport.systemmanage.DictManager) {
 					handler : function() {
 						var dictAddWindow = new techsupport.systemmanage.DictWindow(
 								{
-									ownerCt : dm
+									ownerCt : dm,
+									mode : 'add',
+									store : dm.gridStore,
+									actionPrefix : dm.actionPrefix,
+									maintFlagStore : dm.maintFlagStore,
+									dictTypeStore : dm.dictTypeStore
 								});
 
 						dictAddWindow.center();
@@ -241,7 +289,12 @@ if (!techsupport.systemmanage.DictManager) {
 							var dictModifyWindow = new techsupport.systemmanage.DictWindow(
 									{
 										ownerCt : dm,
-										initRecord : selectedRecord
+										initRecord : selectedRecord,
+										mode : 'modify',
+										store : dm.gridStore,
+										actionPrefix : dm.actionPrefix,
+										maintFlagStore : dm.maintFlagStore,
+										dictTypeStore : dm.dictTypeStore
 									});
 							dictModifyWindow.center();
 							dictModifyWindow.show();
@@ -287,129 +340,174 @@ if (!techsupport.systemmanage.DictManager) {
  */
 if (!techsupport.systemmanage.DictWindow) {
 	techsupport.systemmanage.DictWindow = Ext.extend(Ext.Window, {
-				constructor : function(config) {
-					techsupport.systemmanage.DictWindow.superclass.constructor
-							.call(this, {
-										id : config.id || 'dictWindow',
-										width : config.width || 500,
-										height : config.height,
-										closeAction : 'close',
-										title : '字典',
-										defaults : {
-											viewConfig : {
-												forceFit : true
-											}
-										},
-										modal : true,
-										initRecord : config.initRecord,
-										ownerCt : config.ownerCt,
-										mode : config.mode || 'detail'
-									});
-				},
-				init:function(){
-					var dw = this;
-					if(this.initRecord){
-						this.formPanel.getForm().loadRecord(this.initRecord);
-					}
-				},
-				initComponent : function() {
-					var dw = this;
-					techsupport.systemmanage.DictWindow.superclass.initComponent
-							.call(this);
-
-					Ext.apply(this, {
-								formPanel : Ext.create('form', {
-											id : this.id + "Form",
-											defaults : {
-												xtype : 'textfield'
-											},
-											items : [{
-														id : 'dict_code',
-														name : 'dict_code',
-														fieldLabel : '字典代码',
-														maxLength:30
-													}, {
-														id : 'dict_name',
-														name : 'dict_name',
-														fieldLabel : '字典名称',
-														maxLength:50
-													}, {
-														id : 'sib_order',
-														name : 'sib_order',
-														fieldLabel : '字典序号',
-														maxLength:5
-													}, {
-														id : 'maint_flag',
-														name : 'maint_flag',
-														fieldLabel : '维护标记',
-														maxLength:1
-													}, {
-														id : 'dict_type',
-														hiddenName : 'dict_type',
-														fieldLabel : '字典类型',
-														xtype:'combo',
-														triggerAction:'all',
-														mode:'local',
-														editable:false,
-														store:{
-															xtype:'arraystore',
-															id:0,
-															fields:['value','display'],
-															data:[[0,'普通字典'],[1,'树形字典']]
-														},
-														valueField:'value',
-														displayField:'display'
-													}, {
-														id : 'dict_versionid',
-														name : 'dict_versionid',
-														fieldLabel : '字典版本'
-													}]
-										})
-							});
-
-					this.add(this.formPanel);
-
-					//初始化数据
-					this.init();
-					
-//					添加模式
-					if (this.mode == 'add') {
-//						添加 添加的确认按钮，保存时候出发
-						this.addButton({xtype:'button',text:'确定',handler:function(){
-							if(dw.formPanel.getForm().isValid()){
-								var record = Ext.data.Record.create(ownerCt.gridStore.fields);
-								record = dw.formPanel.getForm().updateRecord(record);
-								dw.ownerCt.gridStore.add(record);
-								dw.ownerCt.gridStore.save();
-								dw.ownerCt.gridStore.load();
+		constructor : function(config) {
+			techsupport.systemmanage.DictWindow.superclass.constructor.call(
+					this, {
+						id : config.id || 'dictWindow',
+						width : config.width || 360,
+						height : config.height,
+						closeAction : 'close',
+						title : '字典',
+						defaults : {
+							padding : '2 2 2 2',
+							viewConfig : {
+								forceFit : true
 							}
-							
-						}});
-						this.addButton({xtype:'button',text:'关闭',handler:function(){
-							dw.close();
-						}});
-//						修改模式
-					} else if (this.mode == 'modify') {
-//						想gridStore里面保存修改的记录
-						this.addButton({xtype:'button',text:'确定',handler:function(){
-						
-							if(dw.formPanel.getForm().isValid()){
-								dw.formPanel.getForm().updateRecord(this.initRecord);
-								if(dw.gridStore.getModifiedRecords( ).length){
-									dw.ownerCt.gridStore.save();
+						},
+						modal : true,
+						initRecord : config.initRecord,
+						ownerCt : config.ownerCt,
+						mode : config.mode || 'detail',
+						renderTo : config.renderTo || Ext.getBody(),
+						store : config.store,
+						dictTypeStore : config.dictTypeStore,
+						maintFlagStore : config.maintFlagStore,
+						actionPrefix:config.actionPrefix || dw.ownerCt.actionPrefix
+					});
+		},
+		init : function() {
+			var dw = this;
+			if (this.initRecord) {
+				this.formPanel.getForm().loadRecord(this.initRecord);
+			}
+		},
+		initComponent : function() {
+			var dw = this;
+			techsupport.systemmanage.DictWindow.superclass.initComponent
+					.call(this);
+
+			this.formPanel = Ext.create({
+						xtype : 'form',
+						id : this.id + "Form",
+						labelAlign : 'right',
+						defaults : {
+							xtype : 'textfield',
+							width : 200
+						},
+						items : [{
+									id : 'dict_code',
+									name : this.actionPrefix + 'dict_code',
+									fieldLabel : '字典代码',
+									maxLength : 30
+								}, {
+									id : 'dict_name',
+									name : this.actionPrefix + 'dict_name',
+									fieldLabel : '字典名称',
+									maxLength : 50
+								}, {
+									id : 'sib_order',
+									name : this.actionPrefix + 'sib_order',
+									fieldLabel : '字典序号',
+									maxLength : 5
+								}, {
+									id : 'maint_flag',
+									xtype : 'combo',
+									hidenName : this.actionPrefix
+											+ 'maint_flag',
+									fieldLabel : '维护标记',
+									triggerAction : 'all',
+									mode : 'local',
+									editable : false,
+									store : this.maintFlagStore,
+									valueField : 'value',
+									displayField : 'display'
+								}, {
+									id : 'dict_type',
+									hiddenName : this.actionPrefix
+											+ 'dict_type',
+									fieldLabel : '字典类型',
+									xtype : 'combo',
+									triggerAction : 'all',
+									mode : 'local',
+									editable : false,
+									store : this.dictTypeStore,
+									valueField : 'value',
+									displayField : 'display'
+								}, {
+									id : 'dict_versionid',
+									name : this.actionPrefix + 'dict_versionid',
+									fieldLabel : '字典版本'
+								}]
+					})
+
+			this.add(this.formPanel);
+
+			// 初始化数据
+			this.init();
+
+			// 添加模式
+			if (this.mode == 'add') {
+				// 添加 添加的确认按钮，保存时候出发
+				this.addButton({
+							xtype : 'button',
+							text : '确定',
+							handler : function() {
+								if (dw.formPanel.getForm().isValid()) {
+									var data = dw.formPanel.getForm()
+											.getValues();
+									var fields = dw.store.fields.keys;
+									var columns = [];
+									var recordData = [];
+									for (var i = 0; i < fields.length; i++) {
+										if (data[fields[i]]) {
+											recordData.push(data[fields[i]]);
+											columns.push(fields[i]);
+										}
+
+									}
+									var NewRecord = Ext.data.Record.create(
+											columns,
+											dw.actionPrefix + 'dict_code');
+									var record = new NewRecord(data);
+									dw.store.add(record);
+									record.commit();
+									dw.store.load();
 								}
-								
+
 							}
-						}});
-						this.addButton({xtype:'button',text:'关闭',handler:function(){
-							dw.close();
-						}});
-					} else{ // 默认详情模式
-						this.formPanel.setDisable(true);
-						this.addButton({xtype:'button',text:'关闭',handler:function(){
-							dw.close();
-						}});
-					}
-				}
-			});
+						});
+				this.addButton({
+							xtype : 'button',
+							text : '关闭',
+							handler : function() {
+								dw.close();
+							}
+						});
+				// 修改模式
+			} else if (this.mode == 'modify') {
+				// 想gridStore里面保存修改的记录
+				this.addButton({
+							xtype : 'button',
+							text : '确定',
+							handler : function() {
+
+								if (dw.formPanel.getForm().isValid()) {
+									dw.formPanel.getForm()
+											.updateRecord(this.initRecord);
+									if (dw.gridStore.getModifiedRecords().length) {
+										dw.store.save();
+									}
+
+								}
+							}
+						});
+				this.addButton({
+							xtype : 'button',
+							text : '关闭',
+							handler : function() {
+								dw.close();
+							}
+						});
+			} else { // 默认详情模式
+				this.formPanel.setDisable(true);
+				this.addButton({
+							xtype : 'button',
+							text : '关闭',
+							handler : function() {
+								dw.close();
+							}
+						});
+			}
+		}
+	});
 }

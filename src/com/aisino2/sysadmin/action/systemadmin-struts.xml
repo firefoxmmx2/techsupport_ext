@@ -12,18 +12,19 @@
 			</result>
 			<result name="detaillist" type="json"></result>
 		</action>
-		<!-- 		机构管理 -->
-		<action name="*_department" class="departmentManageAction" method="{1}">
+		<!-- 机构管理 -->
+		<action name="*_department" class="departmentManageAction"
+			method="{1}">
 			<result type="json">
 				<param name="excludeProperties">.*hibernateLazyInitializer</param>
 				<param name="ignoreHierarchy">false</param>
 			</result>
 		</action>
-		<!-- 		角色管理 -->
+		<!-- 角色管理 -->
 		<action name="*_role" class="roleManageAction" method="{1}">
 			<result type="json"></result>
 		</action>
-		<!-- 		系统管理 -->
+		<!-- 系统管理 -->
 		<action name="*_system" class="systemManageAction" method="{1}">
 			<result type="json">
 				<param name="ignoreHierarchy">false</param>
@@ -31,23 +32,28 @@
 			</result>
 		</action>
 		<action name="*_tree" class="treeMappingAction" method="{1}">
-			<!-- 			跳转机构管理界面 -->
-			<result name="department">/basic/systemadmin/departmentManageMan.jsp</result>
-			<!-- 			跳转用户管理界面 -->
+			<!-- 跳转机构管理界面 -->
+			<result name="department">/basic/systemadmin/departmentManageMan.jsp
+			</result>
+			<!-- 跳转用户管理界面 -->
 			<result name="user">/basic/systemadmin/userManageMan.jsp</result>
-			<!-- 			跳转角色管理界面 -->
+			<!-- 跳转角色管理界面 -->
 			<result name="role">/basic/systemadmin/roleManageMan.jsp</result>
-			<!-- 			跳转系统管理界面 -->
+			<!-- 跳转系统管理界面 -->
 			<result name="system">/basic/systemadmin/systemManageMan.jsp</result>
-			<!-- 			跳转到功能管理界面 -->
+			<!-- 跳转到功能管理界面 -->
 			<result name="function">/basic/systemadmin/functionManageMan.jsp</result>
 			<!-- 跳转到字典管理界面 -->
 			<result name="dict">/basic/systemadmin/dictManager.jsp</result>
 		</action>
-		<!-- 		字典 -->
+		<!-- 字典 -->
 		<action name="*_dict" class="dictAction" method="{1}">
 			<result type="json">
-				<param name="excludeproperties">.*hibernateLazyInitializer</param>
+				<param name="excludeproperties">.*hibernateLazyInitializer,.*lDictItems</param>
+				<param name="ignoreHierarchy">false</param>
+			</result>
+			<result name="detaillist" type="json">
+				<param name="ignoreHierarchy">false</param>
 			</result>
 		</action>
 		<!-- 字典项 -->
