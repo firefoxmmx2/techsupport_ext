@@ -402,7 +402,7 @@ if (!techsupport.systemmanage.DictWindow) {
 								}, {
 									id : 'maint_flag',
 									xtype : 'combo',
-									hidenName : this.actionPrefix
+									hiddenName : this.actionPrefix
 											+ 'maint_flag',
 									fieldLabel : '维护标记',
 									triggerAction : 'all',
