@@ -8,7 +8,7 @@ import com.aisino2.sysadmin.domain.Pager;
 
 public interface IDictService {
 	/** @param 字典(t_dict) 增加 */
-	void insertDict(Dict dict);
+	Dict insertDict(Dict dict);
 
 	/** @param 字典(t_dict) 删除 */
 	void deleteDict(Dict dict);
@@ -54,4 +54,11 @@ public interface IDictService {
 	 * @param dict 需要下移的字典
 	 */
 	void down(Dict dict);
+	
+	/**
+	 * 检查字典代码是否可用
+	 * @param dictcode 字典代码
+	 * @return
+	 */
+	boolean checkDictcode(String dictcode);
 }

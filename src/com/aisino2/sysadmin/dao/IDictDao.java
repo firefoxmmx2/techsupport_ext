@@ -39,4 +39,15 @@ public interface IDictDao {
 	 */
 	void bottom(Dict dict);
 	
+	/**
+	 * 获取下一个序列
+	 * @return
+	 */
+	int getNextOrder();
+	
+	/**
+	 * 获取一个新的dictId
+	 * @return
+	 */
+	int getDictId();
 }

@@ -1,17 +1,27 @@
 package com.aisino2.sysadmin.action.json;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+import net.sf.json.JSONString;
+import net.sf.json.util.JSONStringer;
+import net.sf.json.util.JSONUtils;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.aisino2.core.util.json.JsonUtil;
 import com.aisino2.sysadmin.action.PageAction;
+import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.domain.Dict;
 import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.service.IDictService;
-import com.aisino2.sysadmin.service.IDict_itemService;
+import com.hp.hpl.sparta.xpath.ThisNodeTest;
 
 /**
  * 字典
@@ -62,6 +72,9 @@ public class DictAction extends PageAction {
 	@SuppressWarnings("unchecked")
 	public String querylist() throws Exception {
 		try {
+			dict = (Dict) JSONObject.toBean(
+					JSONObject.fromObject(this.request.getParameter("qDict")),
+					Dict.class);
 			if (dict == null) {
 				dict = new Dict();
 			}
@@ -77,10 +90,10 @@ public class DictAction extends PageAction {
 			this.returnNo = 1;
 			this.returnMessage = "字典列表查询出错";
 			if (log.isDebugEnabled()) {
-				log.debug(e,e.fillInStackTrace());
+				log.debug(e, e.fillInStackTrace());
 				this.returnMessageDebug = e.getMessage();
 			}
-			
+
 		}
 		return SUCCESS;
 	}
@@ -93,15 +106,18 @@ public class DictAction extends PageAction {
 	 */
 	public String query() throws Exception {
 		try {
-			if(dict == null)
+			dict = (Dict) JSONObject.toBean(
+					JSONObject.fromObject(this.request.getParameter("qDict")),
+					Dict.class);
+			if (dict == null)
 				throw new RuntimeException("查询字典详情参数传递发生错误");
 			dict = dictService.getDict(dict);
 		} catch (Exception e) {
 			log.error(e);
 			this.returnNo = 1;
 			this.returnMessage = "查询字典详情发生错误";
-			if(log.isDebugEnabled()){
-				log.debug(e,e.fillInStackTrace());
+			if (log.isDebugEnabled()) {
+				log.debug(e, e.fillInStackTrace());
 				this.returnMessageDebug = e.getMessage();
 			}
 		}
@@ -116,7 +132,10 @@ public class DictAction extends PageAction {
 	 */
 	public String add() throws Exception {
 		try {
-			if(dict == null)
+			dict = (Dict) JSONObject.toBean(
+					JSONObject.fromObject(this.request.getParameter("aDict")),
+					Dict.class);
+			if (dict == null)
 				throw new RuntimeException("添加字典参数传递发生错误");
 			dictService.insertDict(dict);
 		} catch (Exception e) {
@@ -124,7 +143,7 @@ public class DictAction extends PageAction {
 			this.returnNo = 1;
 			this.returnMessage = "添加字典发生错误";
 			if (log.isDebugEnabled()) {
-				log.debug(e,e.fillInStackTrace());
+				log.debug(e, e.fillInStackTrace());
 				this.returnMessageDebug = e.getMessage();
 			}
 		}
@@ -139,7 +158,10 @@ public class DictAction extends PageAction {
 	 */
 	public String modify() throws Exception {
 		try {
-			if(dict == null)
+			dict = (Dict) JSONObject.toBean(
+					JSONObject.fromObject(this.request.getParameter("mDict")),
+					Dict.class);
+			if (dict == null)
 				throw new RuntimeException("修改字典参数传递发生错误");
 			dictService.updateDict(dict);
 		} catch (Exception e) {
@@ -147,7 +169,7 @@ public class DictAction extends PageAction {
 			this.returnNo = 1;
 			this.returnMessage = "修改字典发生错误";
 			if (log.isDebugEnabled()) {
-				log.debug(e,e.fillInStackTrace());
+				log.debug(e, e.fillInStackTrace());
 				this.returnMessageDebug = e.getMessage();
 			}
 		}
@@ -155,14 +177,17 @@ public class DictAction extends PageAction {
 	}
 
 	/**
-	 * 删除字典(多个)
+	 * 删除字典
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
 	public String remove() throws Exception {
 		try {
-			if(lDicts == null || lDicts.size() == 0)
+			lDicts = (List<Dict>) JSONArray.toList(
+					JSONArray.fromObject(this.request.getParameter("rlDicts")),
+					Dict.class);
+			if (lDicts == null || lDicts.size() == 0)
 				throw new RuntimeException("删除字典参数传递发生错误");
 			dictService.removeDicts(lDicts);
 		} catch (Exception e) {
@@ -170,11 +195,36 @@ public class DictAction extends PageAction {
 			this.returnNo = 1;
 			this.returnMessage = "删除字典发生错误";
 			if (log.isDebugEnabled()) {
-				log.debug(e,e.fillInStackTrace());
+				log.debug(e, e.fillInStackTrace());
 				this.returnMessageDebug = e.getMessage();
 			}
 		}
 		return SUCCESS;
 	}
 
+	public String checkDictcode() throws Exception {
+		try {
+			dict = (Dict) JSONObject.toBean(
+					JSONObject.fromObject(this.request.getParameter("cDict")),
+					Dict.class);
+			if (dict == null || !Util.isNotEmpty(dict.getDict_code())) {
+				throw new RuntimeException("检查字典代码参数传输错误");
+			}
+			boolean result = dictService.checkDictcode(dict.getDict_code());
+			if (result) {
+				returnNo = 0;
+			} else {
+				returnNo = 1;
+			}
+		} catch (Exception e) {
+			log.error(e);
+			returnNo = 2; // 这里的2表示异常
+			returnMessage = "检查字典代码发生错误";
+			if (log.isDebugEnabled()) {
+				log.debug(e, e.fillInStackTrace());
+				returnMessageDebug = e.getMessage();
+			}
+		}
+		return SUCCESS;
+	}
 }

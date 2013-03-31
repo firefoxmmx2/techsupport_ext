@@ -69,8 +69,8 @@ public class Dict implements Serializable {
 	private String dict_versionid;
 
 	/** @ --字典id--dict_id--Integer--8-- */
-	@Column
-	@GeneratedValue(generator="SEQ_GEN_DICT_ID",strategy=GenerationType.AUTO)
+	@Column(nullable=false)
+	@GeneratedValue(generator="SEQ_GEN_DICT_ID",strategy=GenerationType.SEQUENCE)
 	@SequenceGenerator(name="SEQ_GEN_DICT_ID",sequenceName="dict_id")
 	private Integer dict_id;
 	

@@ -1,11 +1,13 @@
 package com.aisino2.sysadmin.dao.hibernate;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
@@ -38,7 +40,7 @@ public class DictDaoImpl extends TechSupportBaseDaoImpl implements IDictDao {
 	}
 
 	public Dict getDict(Dict dict) {
-		return this.getHibernateTemplate().get(Dict.class, dict.getDict_id());
+		return this.getHibernateTemplate().get(Dict.class, dict.getDict_code());
 	}
 
 	public List<Dict> getListDict(Dict dict) {
@@ -127,6 +129,29 @@ public class DictDaoImpl extends TechSupportBaseDaoImpl implements IDictDao {
 		this.getHibernateTemplate().bulkUpdate(hql,dict.getDict_code(),dict.getSib_order());
 		// 移动到最前
 		this.getHibernateTemplate().bulkUpdate(maxHql,dict.getDict_code());
+	}
+
+	@Override
+	public int getNextOrder() {
+		String hql = "select max(nvl(t.sib_order,0)) + 1 from Dict t";
+		int order  = (Integer)this.getHibernateTemplate().find(hql).get(0);
+		
+		return order;
+	}
+
+	@Override
+	public int getDictId() {
+		return this.getHibernateTemplate().execute(new HibernateCallback<Integer>() {
+
+			@Override
+			public Integer doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				String sql = "select dict_id.nextval from dual";
+				SQLQuery q =  session.createSQLQuery(sql);
+				
+				return ((BigDecimal) q.uniqueResult()).intValue();
+			}
+		});
 	}
 
 }

@@ -17,11 +17,6 @@ if (!techsupport.systemmanage.DictManager) {
 			},
 			bodyStyle : 'padding:4px;'
 		},
-		addURL : context_path + '/sysadminDefault/add_dict.action',
-		modifyURL : context_path + '/sysadminDefault/modify_dict.action',
-		queryURL : context_path + '/sysadminDefault/querylist_dict.action',
-		detailURL : context_path + '/sysadminDefault/query_dict.action',
-		removeURL : context_path + '/sysadminDefault/remove_dict.action',
 		actionPrefix : 'dict.',
 		removePrefix : 'lDicts[i]',
 		gridSelectionModel : new Ext.grid.CheckboxSelectionModel(),
@@ -40,6 +35,108 @@ if (!techsupport.systemmanage.DictManager) {
 					fields : ['value', 'display'],
 					data : [['0', '维护'], ['1', '不维护']]
 				}),
+		actions : {
+			addURL : context_path + '/sysadminDefault/add_dict.action',
+			modifyURL : context_path + '/sysadminDefault/modify_dict.action',
+			queryURL : context_path + '/sysadminDefault/querylist_dict.action',
+			detailURL : context_path + '/sysadminDefault/query_dict.action',
+			removeURL : context_path + '/sysadminDefault/remove_dict.action',
+			add : function(data, store, window) {
+				Ext.Ajax.request({
+							url : this.addURL,
+							params : {
+								aDict : Ext.encode(data)
+							},
+							success : function(response, options) {
+								if (response.responseJSON) {
+									var data = response.responseJSON;
+
+									if (data.success) {
+										if (data.returnMessage)
+											Ext.example.msg("成功",
+													data.returnMessage);
+										window.close();
+										store.load();
+									} else {
+										if (data.returnMessage) {
+											Ext.example.msg("错误",
+													data.returnMessage);
+											if (data.returnMessageDebug) {
+												Ext.example
+														.msg(
+																"具体",
+																data.returnMessageDebug);
+											}
+										}
+									}
+								}
+							}
+						});
+			},
+			modify : function(data, store, window) {
+				Ext.Ajax.request({
+							url : this.modifyURL,
+							params : {
+								mDict : Ext.encode(data)
+							},
+							success : function(response, options) {
+								if (response.responseJSON) {
+									var data = response.responseJSON;
+
+									if (data.success) {
+										if (data.returnMessage)
+											Ext.example.msg("成功",
+													data.returnMessage);
+										window.close();
+										store.load();
+									} else {
+										if (data.returnMessage) {
+											Ext.example.msg("错误",
+													data.returnMessage);
+											if (data.returnMessageDebug) {
+												Ext.example
+														.msg(
+																"具体",
+																data.returnMessageDebug);
+											}
+										}
+									}
+								}
+							}
+						});
+			},
+			remove : function(data, store) {
+				Ext.Ajax.request({
+							url : this.removeURL,
+							params : {
+								rlDicts : Ext.encode(data)
+							},
+							success : function(response, options) {
+								if (response.responseJSON) {
+									var data = response.responseJSON;
+
+									if (data.success) {
+										if (data.returnMessage)
+											Ext.example.msg("成功",
+													data.returnMessage);
+										store.load();
+									} else {
+										if (data.returnMessage) {
+											Ext.example.msg("错误",
+													data.returnMessage);
+											if (data.returnMessageDebug) {
+												Ext.example
+														.msg(
+																"具体",
+																data.returnMessageDebug);
+											}
+										}
+									}
+								}
+							}
+						});
+			}
+		},
 		constructor : function(config) {
 			var dm = this;
 			techsupport.systemmanage.DictManager.superclass.constructor.call(
@@ -53,36 +150,56 @@ if (!techsupport.systemmanage.DictManager) {
 								|| new Ext.grid.ColumnModel({
 									columns : [this.gridSelectionModel, {
 										header : '字典代码',
-										dataIndex : this.actionPrefix
-												+ 'dict_code'
+										dataIndex : 'dict_code',
+										renderer : function(value) {
+											if (value)
+												return '<a href="#">' + value
+														+ '</a>'
+										},
+										listeners : {
+											click : function(col, grid,
+													rowIndex, evt) {
+												var dictDetailWindow = new techsupport.systemmanage.DictWindow(
+														{
+															ownerCt : grid.ownerCt,
+															mode : 'detail',
+															initRecord : grid
+																	.getSelectionModel()
+																	.getSelected(),
+															dictTypeStore : grid.ownerCt.dictTypeStore,
+															maintFlagStore : grid.ownerCt.maintFlagStore
+														});
+												dictDetailWindow.center();
+												dictDetailWindow.show();
+											}
+										}
 									}, {
 										header : '字典名称',
-										dataIndex : this.actionPrefix
-												+ 'dict_name'
+										dataIndex : 'dict_name'
 									}, {
 										header : '字典序号',
-										dataIndex : this.actionPrefix
-												+ 'sib_order'
+										dataIndex : 'sib_order'
 									}, {
 										header : '维护标记',
-										dataIndex : this.actionPrefix
-												+ 'maint_flag',
+										dataIndex : 'maint_flag',
 										renderer : function(value) {
-												return value!=undefined? dm.maintFlagStore
-													.getById(value).data.display : value;
+											return value != undefined
+													? dm.maintFlagStore
+															.getById(value).data.display
+													: value;
 										}
 									}, {
 										header : '字典类型',
-										dataIndex : this.actionPrefix
-												+ 'dict_type',
+										dataIndex : 'dict_type',
 										renderer : function(value) {
-											return value? dm.dictTypeStore
-													.getById(value).data.display : value;
+											return value
+													? dm.dictTypeStore
+															.getById(value).data.display
+													: value;
 										}
 									}, {
 										header : '字典版本',
-										dataIndex : this.actionPrefix
-												+ 'dict_versionid'
+										dataIndex : 'dict_versionid'
 									}],
 									defaults : {
 										sortable : true,
@@ -93,75 +210,44 @@ if (!techsupport.systemmanage.DictManager) {
 						// 内容数据
 						gridStore : config.gridStore || new Ext.data.Store({
 									proxy : new Ext.data.HttpProxy({
-												api : {
-													read : this.queryURL,
-													create : this.addURL,
-													update : this.modifyURL,
-													desctroy : this.removeURL
-												}
+												url : this.actions.queryURL
 											}),
 									reader : new Ext.data.JsonReader({
 												root : "lDicts",
 												idProperty : 'dict_code',
 												totalProperty : 'total',
-												messageProperty:'returnMessage',
+												messageProperty : 'returnMessage',
 												fields : [{
-													name : this.actionPrefix
-															+ 'dict_code',
-													mapping : 'dict_code'
-												}, {
-													name : this.actionPrefix
-															+ 'dict_name',
-													mapping : 'dict_name'
-												}, {
-													name : this.actionPrefix
-															+ 'super_dict_code',
-													mapping : 'super_dict_code'
-												}, {
-													name : this.actionPrefix
-															+ 'sib_order',
-													mapping : 'sib_order'
-												}, {
-													name : this.actionPrefix
-															+ 'leaf_flag',
-													mapping : 'leaf_flag'
-												}, {
-													name : this.actionPrefix
-															+ 'maint_flag',
-													mapping : 'maint_flag'
-												}, {
-													name : this.actionPrefix
-															+ 'dict_type',
-													mapping : 'dict_type'
-												}, {
-													name : this.actionPrefix
-															+ 'dict_simplepin',
-													mapping : 'dict_simplepin'
-												}, {
-													name : this.actionPrefix
-															+ 'dict_allpin',
-													mapping : 'dict_allpin'
-												}, {
-													name : this.actionPrefix
-															+ 'dict_itemtablename',
-													mapping : 'dict_itemtablename'
-												}, {
-													name : this.actionPrefix
-															+ 'dict_versionid',
-													mapping : 'dict_versionid'
-												}, {
-													name : this.actionPrefix
-															+ 'dict_id',
-													mapping : "dict_id"
-												}]
-											}),
-									writer : new Ext.data.JsonWriter({
-												encode : true
+															name : 'dict_code',
+															mapping : 'dict_code'
+														}, {
+															name : 'dict_name',
+															mapping : 'dict_name'
+														}, {
+															name : 'super_dict_code',
+															mapping : 'super_dict_code'
+														}, {
+															name : 'sib_order',
+															mapping : 'sib_order'
+														}, {
+															name : 'maint_flag',
+															mapping : 'maint_flag'
+														}, {
+															name : 'dict_type',
+															mapping : 'dict_type'
+														}, {
+															name : 'dict_versionid',
+															mapping : 'dict_versionid'
+														}, {
+															name : 'dict_id',
+															mapping : "dict_id"
+														}]
 											}),
 									baseParams : {
 										start : 0,
 										limit : this.pagesize
-									}
+									},
+									autoSave : false
 								})
 					});
 		},
@@ -176,81 +262,84 @@ if (!techsupport.systemmanage.DictManager) {
 						width : '100%',
 						autoHeight : true,
 						items : [{
-							xtype : 'form',
-							layout : 'column',
-							border : false,
-							frame : false,
-							defaults : {
-								labelAlign : 'right',
-								layout : 'form',
-								xtype : 'panel',
-								border : false
+									xtype : 'form',
+									layout : 'column',
+									border : false,
+									frame : false,
+									defaults : {
+										labelAlign : 'right',
+										layout : 'form',
+										xtype : 'panel',
+										border : false
 
-							},
-							items : [{
+									},
+									items : [{
 
-								items : [{
-											xtype : 'textfield',
-											name : this.actionPrefix
-													+ 'dict_code',
-											fieldLabel : '字典代码',
-											maxLength : 40
+												items : [{
+															xtype : 'textfield',
+															name : 'dict_code',
+															fieldLabel : '字典代码',
+															maxLength : 40
 
-										}]
-							}, {
-								items : [{
-											xtype : 'textfield',
-											name : this.actionPrefix
-													+ 'dict_name',
-											fieldLabel : '字典名称',
-											maxLength : 50
-										}]
-							}, {
-								items : [{
-									xtype : 'combo',
-									hiddenName : this.actionPrefix
-											+ 'dict_type',
-									fieldLabel : '字典类型',
-									triggerAction : 'all',
-									mode : 'local',
-									editable : false,
-									store : this.dictTypeStore,
-									valueField : 'value',
-									displayField : 'display'
+														}]
+											}, {
+												items : [{
+															xtype : 'textfield',
+															name : 'dict_name',
+															fieldLabel : '字典名称',
+															maxLength : 50
+														}]
+											}, {
+												items : [{
+															xtype : 'combo',
+															hiddenName : 'dict_type',
+															fieldLabel : '字典类型',
+															triggerAction : 'all',
+															mode : 'local',
+															editable : false,
+															store : this.dictTypeStore,
+															valueField : 'value',
+															displayField : 'display'
+														}]
+											}]
+
+								}, {
+									xtype : 'panel',
+									layout : 'hbox',
+									layoutConfig : {
+										padding : '2 10 2 2',
+										pack : 'end'
+									},
+									defaults : {
+										margins : '5 5 0 0',
+										width : 75
+									},
+									border : false,
+									frame : false,
+									items : [{
+										xtype : 'button',
+										text : '查询',
+										handler : function() {
+											var params = {
+												qDict : Ext
+														.encode(dm.queryPanel.items
+																.itemAt(0)
+																.getForm()
+																.getValues())
+											};
+											Ext.apply(dm.gridStore.baseParams,
+													params);
+											dm.gridStore.load();
+										}
+									}, {
+										xtype : 'button',
+										text : '重置',
+										handler : function() {
+											dm.queryPanel.items.itemAt(0)
+													.getForm().reset();
+										}
+									}]
 								}]
-							}]
-
-						}, {
-							xtype : 'panel',
-							layout : 'hbox',
-							layoutConfig : {
-								padding : '2 10 2 2',
-								pack : 'end'
-							},
-							defaults : {
-								margins : '5 5 0 0',
-								width : 75
-							},
-							border : false,
-							frame : false,
-							items : [{
-								xtype : 'button',
-								text : '查询',
-								handler : function() {
-									var params = dm.queryPanel.items.itemAt(0)
-											.getForm().getValues();
-									Ext.apply(dm.gridStore.baseParams, params);
-									dm.gridStore.load();
-								}
-							}, {
-								xtype : 'button',
-								text : '重置',
-								handler : function() {
-									dm.queryPanel.items.itemAt(0).getForm()
-											.reset();
-								}
-							}]
-						}]
 
 					});
 			this.add(this.queryPanel);
@@ -270,7 +359,7 @@ if (!techsupport.systemmanage.DictManager) {
 									ownerCt : dm,
 									mode : 'add',
 									store : dm.gridStore,
-									actionPrefix : dm.actionPrefix,
+									actions : dm.actions,
 									maintFlagStore : dm.maintFlagStore,
 									dictTypeStore : dm.dictTypeStore
 								});
@@ -283,7 +372,7 @@ if (!techsupport.systemmanage.DictManager) {
 					id : this.getId() + 'ModifyBtn',
 					text : '修改',
 					handler : function() {
-						var selectedRecord = dm.gridSelectionModel()
+						var selectedRecord = dm.gridSelectionModel
 								.getSelected();
 						if (selectedRecord) {
 							var dictModifyWindow = new techsupport.systemmanage.DictWindow(
@@ -292,7 +381,7 @@ if (!techsupport.systemmanage.DictManager) {
 										initRecord : selectedRecord,
 										mode : 'modify',
 										store : dm.gridStore,
-										actionPrefix : dm.actionPrefix,
+										actions : dm.actions,
 										maintFlagStore : dm.maintFlagStore,
 										dictTypeStore : dm.dictTypeStore
 									});
@@ -306,13 +395,15 @@ if (!techsupport.systemmanage.DictManager) {
 					xtype : 'button',
 					text : '删除',
 					handler : function() {
-						var selections = dm.gridSelectionModel()
-								.getSelections();
+						var selections = dm.gridSelectionModel.getSelections();
 						if (selections) {
-							dm.gridStore.remove(selections);
-							dm.gridStore.save();
+							var lNeedRemoves = [];
+							for (var i = 0; i < selections.length; i++) {
+								lNeedRemoves.push(selections[i].data);
+							}
+							dm.actions.remove(lNeedRemoves, dm.gridStore);
 						} else {
-							Ext.MessageBox.alert("警告", "请选择需要修改的记录");
+							Ext.MessageBox.alert("警告", "请选择需要删除的记录");
 						}
 					}
 				}],
@@ -362,7 +453,7 @@ if (!techsupport.systemmanage.DictWindow) {
 						store : config.store,
 						dictTypeStore : config.dictTypeStore,
 						maintFlagStore : config.maintFlagStore,
-						actionPrefix:config.actionPrefix || dw.ownerCt.actionPrefix
+						actions : config.actions
 					});
 		},
 		init : function() {
@@ -377,58 +468,89 @@ if (!techsupport.systemmanage.DictWindow) {
 					.call(this);
 
 			this.formPanel = Ext.create({
-						xtype : 'form',
-						id : this.id + "Form",
-						labelAlign : 'right',
-						defaults : {
-							xtype : 'textfield',
-							width : 200
-						},
-						items : [{
-									id : 'dict_code',
-									name : this.actionPrefix + 'dict_code',
-									fieldLabel : '字典代码',
-									maxLength : 30
-								}, {
-									id : 'dict_name',
-									name : this.actionPrefix + 'dict_name',
-									fieldLabel : '字典名称',
-									maxLength : 50
-								}, {
-									id : 'sib_order',
-									name : this.actionPrefix + 'sib_order',
-									fieldLabel : '字典序号',
-									maxLength : 5
-								}, {
-									id : 'maint_flag',
-									xtype : 'combo',
-									hiddenName : this.actionPrefix
-											+ 'maint_flag',
-									fieldLabel : '维护标记',
-									triggerAction : 'all',
-									mode : 'local',
-									editable : false,
-									store : this.maintFlagStore,
-									valueField : 'value',
-									displayField : 'display'
-								}, {
-									id : 'dict_type',
-									hiddenName : this.actionPrefix
-											+ 'dict_type',
-									fieldLabel : '字典类型',
-									xtype : 'combo',
-									triggerAction : 'all',
-									mode : 'local',
-									editable : false,
-									store : this.dictTypeStore,
-									valueField : 'value',
-									displayField : 'display'
-								}, {
-									id : 'dict_versionid',
-									name : this.actionPrefix + 'dict_versionid',
-									fieldLabel : '字典版本'
-								}]
-					})
+				xtype : 'form',
+				id : this.id + "Form",
+				labelAlign : 'right',
+				defaults : {
+					xtype : 'textfield',
+					width : 200
+				},
+				items : [{
+					id : 'dict_code',
+					name : 'dict_code',
+					fieldLabel : '字典代码',
+					validator : function(value) {
+						if (!value)
+							return '字典代码必须输入';
+						if (dw.initRecord
+								&& dw.initRecord.data.dict_code == value)
+							return true;
+						var result = '该字典代码已经存在';
+						var params = {
+							cDict : Ext.encode({
+										'dict_code' : value
+									})
+						};
+						$.ajax({
+							url : context_path
+									+ '/sysadminDefault/checkDictcode_dict.action',
+							data : params,
+							async : false,
+							dataType : 'json',
+							success : function(data, options) {
+								if (data.success)
+									result = true;
+							}
+						});
+						return result;
+					},
+					validationEvent : 'blur',
+					maxLength : 30
+				}, {
+					id : 'dict_name',
+					name : 'dict_name',
+					allowBlank : false,
+					blankText : '字典名称必须输入',
+					fieldLabel : '字典名称',
+					maxLength : 50
+				}, {
+					id : 'sib_order',
+					name : 'sib_order',
+					fieldLabel : '字典序号',
+					maxLength : 5
+				}, {
+					id : 'maint_flag',
+					xtype : 'combo',
+					hiddenName : 'maint_flag',
+					allowBlank : false,
+					blankText : '维护标记必须输入',
+					fieldLabel : '维护标记',
+					triggerAction : 'all',
+					mode : 'local',
+					editable : false,
+					store : this.maintFlagStore,
+					valueField : 'value',
+					displayField : 'display'
+				}, {
+					id : 'dict_type',
+					hiddenName : 'dict_type',
+					fieldLabel : '字典类型',
+					allowBlank : false,
+					blankText : '字典类型必须输入',
+					xtype : 'combo',
+					triggerAction : 'all',
+					mode : 'local',
+					editable : false,
+					store : this.dictTypeStore,
+					valueField : 'value',
+					displayField : 'display'
+				}, {
+					id : 'dict_versionid',
+					name : 'dict_versionid',
+					fieldLabel : '字典版本',
+					defaultValue : 1
+				}]
+			})
 
 			this.add(this.formPanel);
 
@@ -437,6 +559,10 @@ if (!techsupport.systemmanage.DictWindow) {
 
 			// 添加模式
 			if (this.mode == 'add') {
+				this.title += "添加";
+//				隐藏不需要的字段
+				sibFlagField = this.formPanel.findById('sib_order');
+				sibFlagField.hide();
 				// 添加 添加的确认按钮，保存时候出发
 				this.addButton({
 							xtype : 'button',
@@ -445,23 +571,7 @@ if (!techsupport.systemmanage.DictWindow) {
 								if (dw.formPanel.getForm().isValid()) {
 									var data = dw.formPanel.getForm()
 											.getValues();
-									var fields = dw.store.fields.keys;
-									var columns = [];
-									var recordData = [];
-									for (var i = 0; i < fields.length; i++) {
-										if (data[fields[i]]) {
-											recordData.push(data[fields[i]]);
-											columns.push(fields[i]);
-										}
-
-									}
-									var NewRecord = Ext.data.Record.create(
-											columns,
-											dw.actionPrefix + 'dict_code');
-									var record = new NewRecord(data);
-									dw.store.add(record);
-									record.commit();
-									dw.store.load();
+									dw.actions.add(data, dw.store, dw);
 								}
 
 							}
@@ -475,19 +585,14 @@ if (!techsupport.systemmanage.DictWindow) {
 						});
 				// 修改模式
 			} else if (this.mode == 'modify') {
+				this.title += "修改";
 				// 想gridStore里面保存修改的记录
 				this.addButton({
 							xtype : 'button',
 							text : '确定',
 							handler : function() {
-
 								if (dw.formPanel.getForm().isValid()) {
-									dw.formPanel.getForm()
-											.updateRecord(this.initRecord);
-									if (dw.gridStore.getModifiedRecords().length) {
-										dw.store.save();
-									}
-
+									dw.actions.modify(data, store, dw);
 								}
 							}
 						});
@@ -499,7 +604,13 @@ if (!techsupport.systemmanage.DictWindow) {
 							}
 						});
 			} else { // 默认详情模式
-				this.formPanel.setDisable(true);
+				this.title += "详情";
+				Ext.each(this.formPanel.find(),function(item,idx,all){
+					if(item.setReadOnly)
+						item.setReadOnly(true);
+					else if(item.setDisable)
+						item.setDisable(true);
+				});
 				this.addButton({
 							xtype : 'button',
 							text : '关闭',

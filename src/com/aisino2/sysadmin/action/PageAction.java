@@ -99,14 +99,12 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 	public void setReturnNo(Integer returnNo) {
 		this.returnNo = returnNo;
 	}
-	@JSON(serialize=true)
 	public Integer getStart() {
 		return start;
 	}
 	public void setStart(Integer start) {
 		this.start = start;
 	}
-	@JSON(serialize=true)
 	public Integer getLimit() {
 		return limit;
 	}
