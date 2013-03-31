@@ -353,6 +353,8 @@ if (!techsupport.systemmanage.DictManager) {
 				tbar : [{
 					xtype : 'button',
 					text : '添加',
+					cls:'x-btn-text-icon',
+					iconCls:'icon-add',
 					handler : function() {
 						var dictAddWindow = new techsupport.systemmanage.DictWindow(
 								{
@@ -367,10 +369,12 @@ if (!techsupport.systemmanage.DictManager) {
 						dictAddWindow.center();
 						dictAddWindow.show();
 					}
-				}, {
+				},'-', {
 					xtype : 'button',
 					id : this.getId() + 'ModifyBtn',
 					text : '修改',
+					iconCls:'icon-save',
+					cls:'x-btn-text-icon',
 					handler : function() {
 						var selectedRecord = dm.gridSelectionModel
 								.getSelected();
@@ -391,9 +395,11 @@ if (!techsupport.systemmanage.DictManager) {
 							Ext.MessageBox.alert("警告", "请选择需要修改的记录");
 						}
 					}
-				}, {
+				},'-', {
 					xtype : 'button',
 					text : '删除',
+					cls:'x-btn-text-icon',
+					iconCls:'icon-delete',
 					handler : function() {
 						var selections = dm.gridSelectionModel.getSelections();
 						if (selections) {
