@@ -1,0 +1,21 @@
+/**
+ * 	filename: base.css
+ *  description: 基本样式库
+ */
+
+
+.icon-add {
+	background-image: url('../../images/add.png');
+}
+.icon-save {
+	background-image: url('../../images/save.gif');
+}
+.icon-delete {
+	background-image: url('../../images/delete.png');
+}
+.icon-user {
+	background-image: url('../../images/user_add.gif');
+}
+.icon-stop {
+	background-image: url('../../images/stop.pnp');
+}
