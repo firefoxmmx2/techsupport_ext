@@ -11,7 +11,7 @@
 	href="<%=javascript_home%>/../page_template/layout/css/main_window_style1.css" />
 <!-- LIBS -->
 <script type="text/javascript"
-	src="<%=javascript_home%>/ext/adapter/ext/ext-base.js"></script>
+	src="<%=javascript_home%>/ext/adapter/ext/ext-base-debug.js"></script>
 <!-- ENDLIBS -->
 
 <script type="text/javascript"
