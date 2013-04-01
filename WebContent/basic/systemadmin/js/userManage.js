@@ -295,7 +295,9 @@ if (!techsupport.systemmanage.UserManager) {
 					}
 				},
 				tbar : [{
-					xtype : 'button',
+					xtype : 'button'
+					,cls:'x-btn-text-icon'
+					,iconCls:'icon-add',
 					text : '添加',
 					handler : function() {
 						if (um.currentNodeId == "0") {
@@ -312,7 +314,9 @@ if (!techsupport.systemmanage.UserManager) {
 					}
 				}, '-', {
 					id : 'userModifyBtn',
-					xtype : 'button',
+					xtype : 'button'
+					,cls:'x-btn-text-icon',
+					iconCls:'icon-save',
 					text : '修改',
 					handler : function() {
 						var selectedRecord = um.gridSelectionModel
@@ -334,7 +338,9 @@ if (!techsupport.systemmanage.UserManager) {
 					}
 				}, '-', {
 					xtype : 'button',
-					text : '删除',
+					text : '删除'
+					,cls:'x-btn-text-icon',
+					iconCls:'icon-delete',
 					handler : function() {
 						var lSelections = um.gridSelectionModel.getSelections();
 						if (lSelections && lSelections.length) {

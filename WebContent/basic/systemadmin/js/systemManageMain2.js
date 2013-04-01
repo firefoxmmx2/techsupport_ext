@@ -617,7 +617,9 @@ if (!techsupport.systemmanage.SystemMain) {
 										tbar : [
 												{
 													xtype : 'button',
-													text : '添加',
+													text : '添加'
+													,cls:'x-btn-text-icon'
+													,iconCls:'icon-add',
 													handler : function() {
 														// 弹出添加窗口
 														// 判断是不是已经点击了左边的机构树
@@ -664,7 +666,9 @@ if (!techsupport.systemmanage.SystemMain) {
 												'-',
 												{
 													id:'systemModifyBtn',
-													xtype : 'button',
+													xtype : 'button'
+													,cls:'x-btn-text-icon',
+													iconCls:'icon-save',
 													text : '修改',
 													handler : function() {
 														// 弹出修改窗口
@@ -695,7 +699,9 @@ if (!techsupport.systemmanage.SystemMain) {
 												'-',
 												{
 													xtype : 'button',
-													text : '删除',
+													text : '删除'
+													,cls:'x-btn-text-icon',
+													iconCls:'icon-delete',
 													handler : function() {
 														// 执行删除动作
 														var records = self.gridpanel
@@ -731,7 +737,8 @@ if (!techsupport.systemmanage.SystemMain) {
 												'-',
 												{
 													xtype : 'button',
-													text : '置顶',
+													text : '置顶'
+													,cls:'x-btn-text-icon',
 													handler : function() {
 														// 执行置顶动作
 													}
@@ -739,7 +746,8 @@ if (!techsupport.systemmanage.SystemMain) {
 												'-',
 												{
 													xtype : 'button',
-													text : '上移',
+													text : '上移'
+													,cls:'x-btn-text-icon',
 													handler : function() {
 														// 执行上移动作
 													}
@@ -747,7 +755,8 @@ if (!techsupport.systemmanage.SystemMain) {
 												'-',
 												{
 													xtype : 'button',
-													text : '下移',
+													text : '下移'
+													,cls:'x-btn-text-icon',
 													handler : function() {
 														// 执行下移动作
 													}
@@ -755,7 +764,8 @@ if (!techsupport.systemmanage.SystemMain) {
 												'-',
 												{
 													xtype : 'button',
-													text : '置底',
+													text : '置底'
+													,cls:'x-btn-text-icon',
 													handler : function() {
 														// 执行置底动作
 													}
@@ -764,7 +774,8 @@ if (!techsupport.systemmanage.SystemMain) {
 												'-',
 												{
 													id : "saveDetailBtn",
-													xtype : 'button',
+													xtype : 'button'
+													,cls:'x-btn-text-icon',
 													text : '保存↑',
 													handler : function() {
 														/* 保存当前系统 */
