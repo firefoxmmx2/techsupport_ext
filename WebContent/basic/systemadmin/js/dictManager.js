@@ -567,7 +567,7 @@ if (!techsupport.systemmanage.DictWindow) {
 			if (this.mode == 'add') {
 				this.title += "添加";
 //				隐藏不需要的字段
-				sibFlagField = this.formPanel.findById('sib_order');
+				var sibFlagField = this.formPanel.findById('sib_order');
 				sibFlagField.hide();
 				// 添加 添加的确认按钮，保存时候出发
 				this.addButton({
