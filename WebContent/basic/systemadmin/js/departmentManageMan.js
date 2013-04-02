@@ -403,7 +403,9 @@
 					sm:sm,
 					cm:columnModel,
 					tbar:[
-							{xtype:'button',text:'添加',handler:function(){
+							{xtype:'button',
+							cls:'x-btn-text-icon',
+							iconCls:'icon-add',text:'添加',handler:function(){
 //								弹出添加窗口
 //								判断是不是已经点击了左边的机构树
 								if(self.current_treenode_id && self.current_treenode_id > 0){
@@ -433,7 +435,7 @@
 								}
 							}},
 							'-',
-							{xtype:'button',text:'修改',handler:function(){
+							{xtype:'button',cls:'x-btn-text-icon',iconCls:'icon-save',text:'修改',handler:function(){
 //								弹出修改窗口
 								var record = self.gridpanel.getSelectionModel().getSelected();
 								if(record){
@@ -452,7 +454,7 @@
 								
 							}},
 							'-',
-							{xtype:'button',text:'删除',handler:function(){
+							{xtype:'button',cls:'x-btn-text-icon',iconCls:'icon-delete',text:'删除',handler:function(){
 //								执行删除动作
 								var records = self.gridpanel.getSelectionModel().getSelections();
 								if(records && records.length > 0){
@@ -467,23 +469,23 @@
 									Ext.MessageBox.alert("提示","请选择需要修改的记录");
 							}},
 							'-',
-							{xtype:'button',text:'置顶',handler:function(){
+							{xtype:'button',cls:'x-btn-text-icon',text:'置顶',handler:function(){
 //								执行置顶动作
 							}},
 							'-',
-							{xtype:'button',text:'上移',handler:function(){
+							{xtype:'button',cls:'x-btn-text-icon',text:'上移',handler:function(){
 //								执行上移动作
 							}},
 							'-',
-							{xtype:'button',text:'下移',handler:function(){
+							{xtype:'button',cls:'x-btn-text-icon',text:'下移',handler:function(){
 //								执行下移动作
 							}},
 							'-',
-							{xtype:'button',text:'置底',handler:function(){
+							{xtype:'button',cls:'x-btn-text-icon',text:'置底',handler:function(){
 //								执行置底动作
 							}},
 							'-','-',
-							{id:"saveDetailBtn",xtype:'button',text:'保存↑',handler:function(){ 
+							{id:"saveDetailBtn",cls:'x-btn-text-icon',xtype:'button',text:'保存↑',handler:function(){ 
 								/* 保存当前机构 */
 								var record = this.ownerCt.ownerCt.ownerCt.ownerCt.detail_store.getAt(0);
 								this.ownerCt.ownerCt.ownerCt.ownerCt.detail_panel.getForm().updateRecord(record);
