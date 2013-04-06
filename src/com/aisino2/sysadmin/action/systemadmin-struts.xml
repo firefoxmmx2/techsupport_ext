@@ -45,6 +45,8 @@
 			<result name="function">/basic/systemadmin/functionManageMan.jsp</result>
 			<!-- 跳转到字典管理界面 -->
 			<result name="dict">/basic/systemadmin/dictManager.jsp</result>
+			<!-- 菜单管理 -->
+			<result name="menu">/basic/systemadmin/menuManager.jsp</result>
 		</action>
 		<!-- 字典 -->
 		<action name="*_dict" class="dictAction" method="{1}">
