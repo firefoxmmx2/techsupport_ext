@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aisino2.sysadmin.dao.IMenuDao;
 import com.aisino2.sysadmin.domain.Menu;
@@ -81,6 +82,17 @@ public class MenuServiceImpl implements IMenuService {
 
 	public List<Menu> getRoleCheckedMenuList(Menu menu) {
 		return this.menu_dao.getRoleCheckedMenuList(menu);
+	}
+
+	@Transactional
+	@Override
+	public void removeMenus(List<Menu> menuList) {
+		if (menuList == null || menuList.isEmpty()) {
+			throw new RuntimeException("菜单列表");
+		}
+		for (Menu menu : menuList) {
+			this.deleteMenu(menu);
+		}
 	}
 
 }

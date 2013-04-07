@@ -75,9 +75,25 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 		});
 	}
 
-	public List<Menu> getListMenu(Menu menu) {
+	@SuppressWarnings("unchecked")
+	public List<Menu> getListMenu(final Menu menu) {
+		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<Menu>>() {
 
-		return null;
+			@Override
+			public List<Menu> doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				Criteria q = session.createCriteria(Menu.class,"t");
+				q.setCacheable(true);
+				//condition
+				Example ex = Example.create(menu);
+				ex.enableLike();
+				ex.excludeZeroes();
+				ex.ignoreCase();
+				q.add(ex);
+				
+				return q.list();
+			}
+		});
 	}
 
 	public boolean checkMenu(Menu menu) {
