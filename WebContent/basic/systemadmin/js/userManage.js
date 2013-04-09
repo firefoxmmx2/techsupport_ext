@@ -14,10 +14,14 @@ if (!techsupport.systemmanage.UserManager) {
 			forceFit : true
 		},
 		defaults : {
-			bodyStyle : 'padding:4px;',
-			split : true
+			viewConfig : {
+				forceFit : true
+			},
+			border : false,
+			bodyStyle : 'padding:4px;'
 		},
-		style : "height:100%",
+		split : true,
+		border : true,
 		enableDD : false,
 		addURL : context_path + '/sysadminDefault/add_user.action',
 		modifyURL : context_path + '/sysadminDefault/modify_user.action',
@@ -89,141 +93,138 @@ if (!techsupport.systemmanage.UserManager) {
 			}
 		},
 		constructor : function(config) {
-			this.renderTo = config.renderTo;
-			this.width = config.width || "100%";
-			this.height = config.height || "100%";
-			this.pagesize = config.pagesize || 25;
-
-			this.gridStore = Ext.create({
-						xtype : 'jsonstore',
-						idProperty : 'userid',
-						root : 'userList',
-						url : this.queryURL,
-						baseParams : {
-							start : 0,
-							limit : this.pagesize
+			config = Ext.apply({
+				width : "100%",
+				height : "100%",
+				pagesize : 25,
+				gridStore : Ext.create({
+							xtype : 'jsonstore',
+							idProperty : 'userid',
+							root : 'userList',
+							url : this.queryURL,
+							baseParams : {
+								start : 0,
+								limit : this.pagesize
+							},
+							remoteSort : true,
+							totalProperty : 'total',
+							fields : [{
+										name : 'userid',
+										mapping : 'userid'
+									}, {
+										name : 'username',
+										mapping : 'username'
+									}, {
+										name : 'useraccount',
+										mapping : 'useraccount'
+									}, {
+										name : 'password',
+										mapping : 'password'
+									}, {
+										name : 'departid',
+										mapping : 'departid'
+									}, {
+										name : 'userorder',
+										mapping : 'userorder'
+									}, {
+										name : 'isvalid',
+										mapping : 'isvalid'
+									}, {
+										name : 'usertype',
+										mapping : 'usertype'
+									}, {
+										name : 'idnum',
+										mapping : 'idnum'
+									}, {
+										name : 'mobilephone',
+										mapping : 'mobilephone'
+									}, {
+										name : 'email',
+										mapping : 'email'
+									}]
+						}),
+				gridColumnModel : new Ext.grid.ColumnModel({
+					columns : [this.gridSelectionModel, {
+						id : 'userid',
+						header : this.title_base + 'ID',
+						dataIndex : 'userid',
+						renderer : function(value, metaData, record, rowIndex,
+								colIndex, store) {
+							return '<a href="#">' + value + '</a>';
 						},
-						remoteSort : true,
-						totalProperty : 'total',
-						fields : [{
-									name : 'userid',
-									mapping : 'userid'
-								}, {
-									name : 'username',
-									mapping : 'username'
-								}, {
-									name : 'useraccount',
-									mapping : 'useraccount'
-								}, {
-									name : 'password',
-									mapping : 'password'
-								}, {
-									name : 'departid',
-									mapping : 'departid'
-								}, {
-									name : 'userorder',
-									mapping : 'userorder'
-								}, {
-									name : 'isvalid',
-									mapping : 'isvalid'
-								}, {
-									name : 'usertype',
-									mapping : 'usertype'
-								}, {
-									name : 'idnum',
-									mapping : 'idnum'
-								}, {
-									name : 'mobilephone',
-									mapping : 'mobilephone'
-								}, {
-									name : 'email',
-									mapping : 'email'
-								}]
-					});
-
-			this.gridColumnModel = new Ext.grid.ColumnModel({
-				columns : [this.gridSelectionModel, {
-					id : 'userid',
-					header : this.title_base + 'ID',
-					dataIndex : 'userid',
-					renderer : function(value, metaData, record, rowIndex,
-							colIndex, store) {
-						return '<a href="#">' + value + '</a>';
-					},
-					listeners : {
-						click : function(col, grid, rowIndex, evt) {
-							var userDetailWindow = new techsupport.systemmanage.UserWindow(
-									{
-										ownerCt : grid.ownerCt,
-										mode : 'detail',
-										initRecord : grid.getSelectionModel()
-												.getSelected()
-									});
-							userDetailWindow.center();
-							userDetailWindow.show();
+						listeners : {
+							click : function(col, grid, rowIndex, evt) {
+								var userDetailWindow = new techsupport.systemmanage.UserWindow(
+										{
+											ownerCt : grid.ownerCt,
+											mode : 'detail',
+											initRecord : grid
+													.getSelectionModel()
+													.getSelected()
+										});
+								userDetailWindow.center();
+								userDetailWindow.show();
+							}
 						}
-					},
-					width : 100
-				}, {
-					header : this.title_base + '名称',
-					dataIndex : 'username',
-					width : 200
-				}, {
-					header : this.title_base + '帐号',
-					dataIndex : 'useraccount',
-					width : 200
-				}, {
-					header : this.title_base + '密码',
-					dataIndex : 'password',
-					renderer : function(value, metaData, record, rowIndex,
-							colIndex, store) {
-						return "******"
-					},
-					width : 200
-				}, {
-					header : this.title_base + '身份证',
-					dataIndex : 'idnum',
-					width : 200
-				}, {
-					header : this.title_base + '电话',
-					dataIndex : 'mobilephone',
-					width : 200
-				}, {
-					header : this.title_base + '邮箱',
-					dataIndex : 'email',
-					width : 200
-				}, {
-					header : this.title_base + '类别',
-					dataIndex : 'usertype',
-					width : 200
-				}, {
-					header : '有效状态',
-					dataIndex : 'isvalid',
-					renderer : function(value, metaData, record, rowIndex,
-							colIndex, store) {
-						if (value == "Y")
-							return "是";
-						else
-							return "否";
-					},
-					width : 200
-				}, {
-					header : '显示序列',
-					dataIndex : 'userorder',
-					width : 200
-				}],
-				defaults : {
-					sortable : false,
-					menuDisabled : true
-				}
-			});
-
-			techsupport.systemmanage.UserManager.superclass.constructor.apply(
-					this, arguments);
+					}, {
+						header : this.title_base + '名称',
+						dataIndex : 'username'
+					}, {
+						header : this.title_base + '帐号',
+						dataIndex : 'useraccount'
+					}, {
+						header : this.title_base + '密码',
+						dataIndex : 'password',
+						renderer : function(value, metaData, record, rowIndex,
+								colIndex, store) {
+							return "******"
+						}
+					}, {
+						header : this.title_base + '身份证',
+						dataIndex : 'idnum'
+					}, {
+						header : this.title_base + '电话',
+						dataIndex : 'mobilephone'
+					}, {
+						header : this.title_base + '邮箱',
+						dataIndex : 'email'
+					}, {
+						header : this.title_base + '类别',
+						dataIndex : 'usertype'
+					}, {
+						header : '有效状态',
+						dataIndex : 'isvalid',
+						renderer : function(value, metaData, record, rowIndex,
+								colIndex, store) {
+							if (value == "Y")
+								return "是";
+							else
+								return "否";
+						}
+					}, {
+						header : '显示序列',
+						dataIndex : 'userorder'
+					}],
+					defaults : {
+						sortable : false,
+						menuDisabled : true
+					}
+				})
+			}, config);
+			techsupport.systemmanage.UserManager.superclass.constructor.call(
+					this, config);
 		},
 		// -----------------------------------------------初始化页面的组件-------------------------------------------------
 		initComponent : function(ct, position) {
 			var um = this;
+			techsupport.systemmanage.UserManager.superclass.initComponent
+					.apply(this, arguments);
+
+			// --------------------查询面板内容的默认值------------------------
+			var queryPanelItemsDefaults = {
+				xtype : 'textfield'
+			};
+
 			// -----------------------------------------------机构树加载节点---------------------------------------------------
 			this.treeLoader = new Ext.tree.TreeLoader({
 				url : context_path
@@ -237,6 +238,7 @@ if (!techsupport.systemmanage.UserManager) {
 					}
 				}
 			});
+
 			// --------------------------------机构树面板（加载位置在用户管理布局的左边）---------------------------------
 			this.treePanel = new Ext.tree.TreePanel({
 						region : 'west',
@@ -259,6 +261,7 @@ if (!techsupport.systemmanage.UserManager) {
 							text : '顶端',
 							nodeType : 'async'
 						},
+						split : true,
 						listeners : {
 							click : function(node, evt) {
 								this.ownerCt.currentNodeId = node.id;
@@ -276,16 +279,17 @@ if (!techsupport.systemmanage.UserManager) {
 						}
 					});
 			// ------------------------------------用户展示的数据表格-------------------------------------
+
 			// -----------------------------嵌入到右边面板中---------------------------------------------
 			this.gridPanel = new Ext.grid.GridPanel({
 				id : this.id + "Grid",
 				store : this.gridStore,
 				border : false,
-				viewConfig : {
-					forceFit : true
-				},
 				sm : this.gridSelectionModel,
 				cm : this.gridColumnModel,
+				viewConfig:{
+					forceFit:true
+				},
 				listeners : {
 					// 双击打开修改窗口
 					rowdblclick : function(grid, rowIndex, evt) {
@@ -295,9 +299,9 @@ if (!techsupport.systemmanage.UserManager) {
 					}
 				},
 				tbar : [{
-					xtype : 'button'
-					,cls:'x-btn-text-icon'
-					,iconCls:'icon-add',
+					xtype : 'button',
+					cls : 'x-btn-text-icon',
+					iconCls : 'icon-add',
 					text : '添加',
 					handler : function() {
 						if (um.currentNodeId == "0") {
@@ -314,9 +318,9 @@ if (!techsupport.systemmanage.UserManager) {
 					}
 				}, '-', {
 					id : 'userModifyBtn',
-					xtype : 'button'
-					,cls:'x-btn-text-icon',
-					iconCls:'icon-save',
+					xtype : 'button',
+					cls : 'x-btn-text-icon',
+					iconCls : 'icon-save',
 					text : '修改',
 					handler : function() {
 						var selectedRecord = um.gridSelectionModel
@@ -338,9 +342,9 @@ if (!techsupport.systemmanage.UserManager) {
 					}
 				}, '-', {
 					xtype : 'button',
-					text : '删除'
-					,cls:'x-btn-text-icon',
-					iconCls:'icon-delete',
+					text : '删除',
+					cls : 'x-btn-text-icon',
+					iconCls : 'icon-delete',
 					handler : function() {
 						var lSelections = um.gridSelectionModel.getSelections();
 						if (lSelections && lSelections.length) {
@@ -360,28 +364,18 @@ if (!techsupport.systemmanage.UserManager) {
 							pageSize : this.pagesize
 						})]
 			});
-			// --------------------查询面板内容的默认值------------------------
-			var queryPanelItemsDefaults = {
-				xtype : 'textfield'
-			};
+
 			// ----------------------查询面板----------------------
 			this.queryPanel = Ext.create({
 				xtype : 'panel',
 				id : this.id + 'Query',
-				border : true,
-				width : '100%',
-				viewConfig : {
-					forceFit : true
-				},
+				autoHeight : true,
 				items : [{
 					xtype : 'form',
 					id : this.id + "QueryCondition",
 					layout : 'column',
 					layoutConfig : {
-						padding : 4
-					},
-					viewConfig : {
-						forceFit : true
+						padding : '4 4 4 4'
 					},
 					frame : false,
 					border : false,
@@ -470,38 +464,31 @@ if (!techsupport.systemmanage.UserManager) {
 						}]
 			});
 			// ---------------------右边面板-----------------------
-			this.rightPanel = Ext.create({
+			this.rightPanel = new Ext.Panel({
+						id : this.id + "RightPanel",
 						xtype : 'panel',
+						width:'79%',
 						title : this.title_base + '信息',
 						region : 'center',
-						layout : 'vbox',
-						viewConfig : {
-							forceFit : true
-						},
-						// 在右边面板中，从上到下放入，查询条件和数据显示用的表格
 						items : [this.queryPanel, this.gridPanel]
 					});
+			this.add(this.treePanel);
+			this.add(this.rightPanel);
 
-			// 在用户管理的顶层面板放入树形菜单和右边面板
-			this.items = [this.treePanel, this.rightPanel];
-
-			techsupport.systemmanage.UserManager.superclass.initComponent
-					.apply(this, arguments);
 		},
 		// 在页面本顶层面板组件渲染以后的调用的事件，用来调节数据表格的自动适应高度。
 		afterRender : function(ct, position) {
-			this.bodyHeight = this.getHeight() - this.getFrameHeight();
-			this.body.setHeight(this.bodyHeight);
-
 			techsupport.systemmanage.UserManager.superclass.afterRender.apply(
 					this, arguments);
-
+			this.setHeight(ct.getHeight());
+			this.rightPanel.setHeight(this.getInnerHeight());
 			this.treePanel.getRootNode().expand();
 			// 设置内容表格高度
 			this.gridBodyHeight = this.rightPanel.getInnerHeight()
 					- this.gridPanel.getFrameHeight()
-					- this.queryPanel.getHeight() - 9;
+					- this.queryPanel.getHeight() - 5;
 			this.gridPanel.body.setHeight(this.gridBodyHeight);
+
 		}
 	});
 }
