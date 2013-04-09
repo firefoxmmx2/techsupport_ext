@@ -1,13 +1,19 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <script type="text/javascript">
-	Ext.onReady(function(){
-		Ext.Loader.load(['basic/systemadmin/js/menuManager.js'],function(){
+	Ext.ns("techsupport.systemmanage");
+	Ext.onReady(function() {
+		var loadlist = [];
+		if (!techsupport.systemmanage.UserManager)
+			loadlist.push("basic/systemadmin/js/userManage.js");
+		loadlist.push("basic/systemadmin/js/menuManager.js");
+		Ext.Loader.load(loadlist, function() {
 			var menuManager = new techsupport.systemmanage.MenuManager({
-				renderTo:'menuManager'
+				renderTo : 'menuManagerCt'
 			});
 			menuManager.show();
 		});
 	});
 </script>
 
-<div id="menuManager"></div>
+<div id="menuManagerCt"></div>

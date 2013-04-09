@@ -8,7 +8,6 @@ Ext.ns('techsupport.systemmanage');
 if (!techsupport.systemmanage.UserManager) {
 	techsupport.systemmanage.UserManager = Ext.extend(Ext.Panel, {
 		title_base : "用户",
-		id : 'userManager',
 		layout : 'border',
 		viewConfig : {
 			forceFit : true

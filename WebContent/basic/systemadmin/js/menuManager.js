@@ -5,25 +5,21 @@
 Ext.ns("techsupport.systemmanage");
 
 if (!techsupport.systemmanage.MenuManager) {
-	Ext.Loader.load(['basic/systemadmin/js/userManage.js'], function() {
 
-		techsupport.systemmanage.MenuManager = Ext.extend(
-				techsupport.systemmanage.UserManager, {
-					addURL : context_path + '/sysadminDefault/add_user.action',
-					modifyURL : context_path
-							+ '/sysadminDefault/modify_user.action',
-					queryURL : context_path
-							+ '/sysadminDefault/querylist_user.action',
-					detailURL : context_path
-							+ '/sysadminDefault/query_user.action',
-					removeURL : context_path
-							+ '/sysadminDefault/remove_user.action',
-					actionPrefix : 'user.',
-					removePrefix : 'userList[i]',
-					title_base : "菜单",
-					id : 'menuManager',
-					constructor : function(config) {
-						this.gridStore = Ext.create({
+	techsupport.systemmanage.MenuManager = Ext.extend(
+			techsupport.systemmanage.UserManager, {
+				addURL : context_path + '/sysadminDefault/add_menu.action',
+				modifyURL : context_path
+						+ '/sysadminDefault/modify_menu.action',
+				queryURL : context_path
+						+ '/sysadminDefault/querylist_menu.action',
+				detailURL : context_path + '/sysadminDefault/query_menu.action',
+				removeURL : context_path
+						+ '/sysadminDefault/remove_menu.action',
+				title_base : "菜单",
+				constructor : function(config) {
+					config = Ext.apply({
+						gridStore : Ext.create({
 									xtype : 'jsonstore',
 									idProperty : 'menucode',
 									root : 'menuList',
@@ -62,9 +58,8 @@ if (!techsupport.systemmanage.MenuManager) {
 												name : 'isleaf',
 												mapping : 'isleaf'
 											}]
-								});
-
-						this.gridColumnModel = new Ext.grid.ColumnModel({
+								}),
+						gridColumnModel : new Ext.grid.ColumnModel({
 							columns : [this.gridSelectionModel, {
 								id : 'menucode',
 								header : this.title_base + '代码',
@@ -98,25 +93,22 @@ if (!techsupport.systemmanage.MenuManager) {
 								dataIndex : 'menulevel'
 							}, {
 								header : this.title_base + '全码',
-								dataIndex : 'menufullcode',
-								width : 200
+								dataIndex : 'menufullcode'
 							}, {
 								header : '序号',
-								dataIndex : 'nodeorder',
-								width : 200
+								dataIndex : 'nodeorder'
 							}, {
 								header : '所属系统',
-								dataIndex : 'system.name',
-								width : 200
+								dataIndex : 'system.name'
 							}],
 							defaults : {
 								sortable : false,
 								menuDisabled : true
 							}
-						});
-					}
-
-				});
-
-	});
+						})
+					}, config);
+					techsupport.systemmanage.MenuManager.superclass.constructor
+							.call(this, config);
+				}
+			});
 }
