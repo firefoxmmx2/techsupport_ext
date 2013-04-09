@@ -64,6 +64,18 @@
 				<param name="excludeproperties">.*hibernateLazyInitializer</param>
 			</result>
 		</action>
+		
+<!-- 		菜单 -->
+		<action name="*_menu" class="menuAction" method="{1}">
+			<result type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="excludeproperties">.*hibernateLazyInitializer,.*child_menu_list</param>
+				
+			</result>
+			<result name="detaillist" type="json">
+				<param name="ignoreHierarchy">false</param>
+			</result>
+		</action>
 	</package>
 
 </struts>

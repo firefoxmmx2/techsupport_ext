@@ -140,10 +140,17 @@ public class MenuAction extends PageAction {
 					Menu.class);
 			if (menu == null)
 				menu = new Menu();
-			Pager pager = this.menuService.getListForPage(menu, this.start,
-					this.limit, this.sort, this.dir);
-			menuList = pager.getDatas();
-			this.total = pager.getTotalCount();
+			if (menu.getParent()!=null && "0".equals(menu.getParent().getMenucode()))
+				menu.setParent(null);
+			if(this.start>=0&&this.limit>1){
+				Pager pager = this.menuService.getListForPage(menu, this.start,
+						this.limit, this.sort, this.dir);
+				menuList = pager.getDatas();
+				this.total = pager.getTotalCount();
+			}
+			else {
+				menuList = this.menuService.getListMenu(menu);
+			}
 
 		} catch (RuntimeException e) {
 			this.returnNo = 1;

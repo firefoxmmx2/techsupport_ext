@@ -20,9 +20,9 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 	private static final long serialVersionUID = 442165876833019790L;
 	public String dir;
 	public String sort;
-	public Integer start;
-	public Integer limit;
-	public Integer total;
+	public int start;
+	public int limit;
+	public int total;
 	
 	public HttpServletRequest request;
 	public HttpServletResponse response;
@@ -57,14 +57,12 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 	public void setQueryExtraCond(Map<String, Object> queryExtraCond) {
 		this.queryExtraCond = queryExtraCond;
 	}
-	@JSON(serialize=true)
 	public String getDir() {
 		return dir;
 	}
 	public void setDir(String dir) {
 		this.dir = dir;
 	}
-	@JSON(serialize=true)
 	public String getSort() {
 		return sort;
 	}
@@ -78,37 +76,34 @@ public class PageAction extends ActionSupport implements ServletRequestAware,Ser
 	public void setServletResponse(HttpServletResponse arg0) {
 		this.response = arg0;
 	}
-	@JSON(serialize=true)
 	public String getReturnMessage() {
 		return returnMessage;
 	}
 	public void setReturnMessage(String returnMessage) {
 		this.returnMessage = returnMessage;
 	}
-	@JSON(serialize=true)
 	public Integer getTotal() {
 		return total;
 	}
 	public void setTotal(Integer total) {
 		this.total = total;
 	}
-	@JSON(serialize=true)
-	public Integer getReturnNo() {
+	public int getReturnNo() {
 		return returnNo;
 	}
 	public void setReturnNo(Integer returnNo) {
 		this.returnNo = returnNo;
 	}
-	public Integer getStart() {
+	public int getStart() {
 		return start;
 	}
-	public void setStart(Integer start) {
+	public void setStart(int start) {
 		this.start = start;
 	}
-	public Integer getLimit() {
+	public int getLimit() {
 		return limit;
 	}
-	public void setLimit(Integer limit) {
+	public void setLimit(int limit) {
 		this.limit = limit;
 	}
 	public String getReturnMessageDebug() {

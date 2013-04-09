@@ -15,5 +15,4 @@
 		});
 	});
 </script>
-
-<div id="menuManagerCt"></div>
+<div id="menuManagerCt" style="width:100%;height:100%;"></div>

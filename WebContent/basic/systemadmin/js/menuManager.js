@@ -19,6 +19,7 @@ if (!techsupport.systemmanage.MenuManager) {
 				title_base : "菜单",
 				constructor : function(config) {
 					config = Ext.apply({
+						// 菜单数据集
 						gridStore : Ext.create({
 									xtype : 'jsonstore',
 									idProperty : 'menucode',
@@ -59,6 +60,7 @@ if (!techsupport.systemmanage.MenuManager) {
 												mapping : 'isleaf'
 											}]
 								}),
+						// 菜单数据表格列模型
 						gridColumnModel : new Ext.grid.ColumnModel({
 							columns : [this.gridSelectionModel, {
 								id : 'menucode',
@@ -109,6 +111,31 @@ if (!techsupport.systemmanage.MenuManager) {
 					}, config);
 					techsupport.systemmanage.MenuManager.superclass.constructor
 							.call(this, config);
+				},
+				initComponent : function(ct, position) {
+					techsupport.systemmanage.MenuManager.superclass.initComponent
+							.call(this, ct, position);
+					this.treeLoader = new Ext.tree.TreeLoader({
+								url : this.queryURL,
+								listeners : {
+									beforeload : {
+										fn : function(loader, node) {
+											loader.baseParams.qMenu = Ext.encode({
+												parent : {
+													menucode : node.id
+												}
+											});
+										}
+									}
+								}
+							});
+					this.treePanel.setTitle("菜单树");
+					this.treePanel.loader = this.treeLoader;
+					this.treePanel.collapseAll();
+					this.treePanel.setRootNode(new Ext.tree.AsyncTreeNode({
+						id:0,
+						text:'顶端'
+					}));
 				}
 			});
 }
