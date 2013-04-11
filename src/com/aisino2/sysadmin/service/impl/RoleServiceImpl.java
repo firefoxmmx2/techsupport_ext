@@ -7,9 +7,11 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.IRoleDao;
 import com.aisino2.sysadmin.domain.Function;
 import com.aisino2.sysadmin.domain.Menu;
+import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.Role;
 import com.aisino2.sysadmin.domain.Role_func;
 import com.aisino2.sysadmin.domain.User;
@@ -41,10 +43,6 @@ public class RoleServiceImpl implements IRoleService {
 		return role_dao.getRole(role);
 	}
 
-	public List getListForPage(Role map, int pageNo, int pageSize, String sort,
-			String desc) {
-		return role_dao.getListForPage(map, pageNo, pageSize, sort, desc);
-	}
 
 	public List<Role> getListRole(Role role) {
 		return role_dao.getListRole(role);
@@ -113,6 +111,28 @@ public class RoleServiceImpl implements IRoleService {
 	public void setRole_dao(IRoleDao role_dao) {
 		this.role_dao = role_dao;
 	}
-	
+
+	@Override
+	public void removeRoles(List<Role> roles) {
+		if(roles == null || roles.isEmpty())
+			throw new RuntimeException("需要删除的角色为空");
+		for (Role role : roles) {
+			this.deleteRole(role);
+		}
+		
+	}
+
+	@Override
+	public Pager getListForPage(Role map, Map<String, Object> extra,
+			int pageNo, int pageSize, String sort, String desc) {
+		return role_dao.getListForPage(map,extra, pageNo, pageSize, sort, desc);
+	}
+
+	@Override
+	public boolean checkRolename(String rolename) {
+		if(!Util.isNotEmpty(rolename))
+			throw new RuntimeException("需要校验的角色名称为空");
+		return role_dao.checkRolename(rolename);
+	}
 
 }
