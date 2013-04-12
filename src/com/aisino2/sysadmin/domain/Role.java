@@ -56,7 +56,7 @@ public class Role implements Serializable{
 	/** @ --机构ID--departid--Integer--9-- */
 	private Integer departid;
 
-	@Column
+	@Column(unique=true)
 	/** @ --角色名称--rolename--String--50-- */
 	private String rolename;
 
