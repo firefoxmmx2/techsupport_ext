@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyCollection;
 
 
 @Entity
@@ -89,7 +91,7 @@ public class Menu implements Serializable {
 
 
 	/** 子菜单 */
-	@OneToMany(cascade=CascadeType.ALL,targetEntity=Menu.class)
+	@OneToMany(cascade=CascadeType.ALL,targetEntity=Menu.class,fetch=FetchType.LAZY)
 	@JoinColumn(name="menucode",referencedColumnName="parentmenucode")
 	private List<Menu> child_menu_list;
 

@@ -1,5 +1,7 @@
 package com.aisino2.sysadmin.action.json;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,6 +17,7 @@ import com.aisino2.sysadmin.action.PageAction;
 import com.aisino2.sysadmin.domain.Menu;
 import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.service.IMenuService;
+import com.aisino2.sysadmin.tree.TreeNodeTool;
 
 /**
  * 菜单
@@ -30,6 +33,13 @@ public class MenuAction extends PageAction {
 	private Menu menu;
 	private List<Menu> menuList;
 	private IMenuService menuService;
+
+	private TreeNodeTool treeNodeTool;
+
+	@Resource(name = "treeNodeTool")
+	public void setTreeNodeTool(TreeNodeTool treeNodeTool) {
+		this.treeNodeTool = treeNodeTool;
+	}
 
 	@Resource(name = "menuServiceImpl")
 	public void setMenuService(IMenuService menuService) {
@@ -140,15 +150,15 @@ public class MenuAction extends PageAction {
 					Menu.class);
 			if (menu == null)
 				menu = new Menu();
-			if (menu.getParent()!=null && "0".equals(menu.getParent().getMenucode()))
+			if (menu.getParent() != null
+					&& "0".equals(menu.getParent().getMenucode()))
 				menu.setParent(null);
-			if(this.start>=0&&this.limit>1){
+			if (this.start >= 0 && this.limit > 1) {
 				Pager pager = this.menuService.getListForPage(menu, this.start,
 						this.limit, this.sort, this.dir);
 				menuList = pager.getDatas();
 				this.total = pager.getTotalCount();
-			}
-			else {
+			} else {
 				menuList = this.menuService.getListMenu(menu);
 			}
 
@@ -187,5 +197,43 @@ public class MenuAction extends PageAction {
 			}
 		}
 		return SUCCESS;
+	}
+
+	/**
+	 * 查询菜单树形节点
+	 * 
+	 * @return
+	 */
+	public String queryMenuTreeNode() throws IOException{
+		try {
+			menu = (Menu) JSONObject.toBean(
+					JSONObject.fromObject(this.request.getParameter("qMenu")),
+					Menu.class);
+			if (menu == null) {
+				menu = new Menu();
+			}
+			if (menu.getParent() != null
+					&& "0".equals(menu.getParent().getMenucode()))
+				menu.setParent(null);
+			menuList = this.menuService.getListMenu(menu);
+			StringBuffer buff = new StringBuffer();
+			String menuTreeNodesStr = "["
+					+ treeNodeTool.make_ext_tree_node(treeNodeTool
+							.parseToTreeNodeFromMenu(menuList, false, null),
+							buff) + "]";
+			this.response.setContentType("text/htmsl; charset=utf-8");
+			PrintWriter out = this.response.getWriter();
+			out.print(menuTreeNodesStr);
+			out.close();
+		} catch (RuntimeException e) {
+			log.error(e);
+			this.returnNo = 1;
+			this.returnMessage = "查询菜单树形节点发生错误";
+			if (log.isDebugEnabled()) {
+				this.returnMessageDebug = e.getMessage();
+				log.debug(e, e.fillInStackTrace());
+			}
+		}
+		return NONE;
 	}
 }

@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +60,13 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 				ex.enableLike();
 				ex.excludeZeroes();
 				ex.ignoreCase();
+				ex.excludeProperty("parent");
 				q.add(ex);
+				//必须带父菜单查询
+				if(Util.isNotEmpty(menu.getParent()))
+					q.add(Restrictions.eq("parent", menu.getParent()));
+				else
+					q.add(Restrictions.isNull("parent"));
 				//count
 				q.setProjection(Projections.rowCount());
 				pager.setTotalCount(((Long)q.uniqueResult()).intValue());
@@ -68,6 +75,7 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 				q.setMaxResults(pager.getPageSize());
 				//data
 				q.setProjection(null);
+				q.setResultTransformer(Criteria.ROOT_ENTITY);
 				pager.setDatas(q.list());
 				
 				return pager;
@@ -89,8 +97,14 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 				ex.enableLike();
 				ex.excludeZeroes();
 				ex.ignoreCase();
+				ex.excludeProperty("parent");
 				q.add(ex);
-				
+				//必须带父菜单查询
+				if(Util.isNotEmpty(menu.getParent()))
+					q.add(Restrictions.eq("parent", menu.getParent()));
+				else
+					q.add(Restrictions.isNull("parent"));
+				q.setResultTransformer(Criteria.ROOT_ENTITY);
 				return q.list();
 			}
 		});

@@ -17,6 +17,9 @@ if (!techsupport.systemmanage.MenuManager) {
 				removeURL : context_path
 						+ '/sysadminDefault/remove_menu.action',
 				title_base : "菜单",
+				treeLoaderUrl : context_path
+						+ '/sysadminDefault/queryMenuTreeNode_menu.action',
+				currentNodeId : "0",
 				constructor : function(config) {
 					config = Ext.apply({
 						// 菜单数据集
@@ -113,29 +116,61 @@ if (!techsupport.systemmanage.MenuManager) {
 							.call(this, config);
 				},
 				initComponent : function(ct, position) {
+					var mm = this;
 					techsupport.systemmanage.MenuManager.superclass.initComponent
 							.call(this, ct, position);
+					// 重新绑定树形菜单节点加载器
 					this.treeLoader = new Ext.tree.TreeLoader({
-								url : this.queryURL,
+								url : this.treeLoaderUrl,
 								listeners : {
 									beforeload : {
 										fn : function(loader, node) {
-											loader.baseParams.qMenu = Ext.encode({
-												parent : {
-													menucode : node.id
-												}
-											});
+											loader.baseParams.qMenu = Ext
+													.encode({
+																parent : {
+																	menucode : node.id
+																}
+															});
 										}
 									}
 								}
 							});
+					// 重新设置树形菜单
 					this.treePanel.setTitle("菜单树");
 					this.treePanel.loader = this.treeLoader;
 					this.treePanel.collapseAll();
 					this.treePanel.setRootNode(new Ext.tree.AsyncTreeNode({
-						id:0,
-						text:'顶端'
-					}));
+								id : "0",
+								text : '顶端'
+							}));
+					this.treePanel.un('click');
+					this.treePanel.on('click', function(node, evt) {
+								this.ownerCt.currentNodeId = node.id;
+							});
+					// 重新设置表格按钮
+					// 重新设置查询面板
+					var queryFormPanel = this.findById(this.id
+							+ "QueryCondition");
+					var queryBtnPanel = this
+							.findById(this.id + "QueryBtnPanel");
+					Ext.each(queryBtnPanel.findBy(function(item) {
+										return item.getText() == "查询"
+									}), function(item) {
+								item.setHandler(function() {
+											var params = {
+												qMenu : queryFormPanel
+														.getForm().getValues()
+											};
+											params.qMenu.parent = {
+												'menucode' : mm.currentNodeId
+											};
+											params.qMenu = Ext
+													.encode(params.qMenu);
+											Ext.apply(mm.gridStore.baseParams,
+													params);
+											mm.gridStore.load();
+										});
+							});
 				}
 			});
 }

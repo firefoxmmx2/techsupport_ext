@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.domain.Department;
 import com.aisino2.sysadmin.domain.Menu;
 import com.aisino2.sysadmin.domain.User;
@@ -217,15 +218,16 @@ public class TreeNodeTool {
 		for (Menu m : menu_list) {
 
 			TreeNode node = new TreeNode();
-			node.setId(m.getSystem().getSystemcode() + "__" + m.getMenucode());
+			node.setId(m.getMenucode());
 			node.setText(m.getMenuname());
 			node.setDisabled(false);
 			node.setClick_listener(click_listener);
+			
+			tree_node_list.add(node);
 			// 父节点
 			if (parent_menu != null) {
 				TreeNode parent_node = new TreeNode();
-				parent_node.setId(m.getSystem().getSystemcode() + "__"
-						+ parent_menu.getMenucode());
+				parent_node.setId(parent_menu.getMenucode());
 				parent_node.setText(parent_menu.getMenuname());
 				parent_node.setClick_listener(click_listener);
 				parent_node.setDisabled(false);
@@ -243,19 +245,25 @@ public class TreeNodeTool {
 
 			node.setAttributes(attributes_map);
 			// 子节点
-			List<Menu> temp_children_menu = menu_service.getTheUserChildMenu(m,
-					user);
-			m.setChild_menu_list(temp_children_menu);
+			List<Menu> temp_children_menu = null;
+			if(user!=null && Util.isNotEmpty(user.getUserid())){
+				temp_children_menu = menu_service.getTheUserChildMenu(m,
+						user);
+				m.setChild_menu_list(temp_children_menu);
+			}
+			
+			if("N".equals(m.getIsleaf()))
+				node.setIsleaf(false);
+			else
+				node.setIsleaf(true);
+			
 			if (is_recursive && m.getChild_menu_list() != null
 					&& m.getChild_menu_list().size() > 0) {
-				node.setIsleaf(false);
 				node.setChild_nodes(parse_to_tree_node_from_menu(
 						m.getChild_menu_list(), is_recursive, m, user));
 			}
-			else
-				node.setIsleaf(true);
 
-			tree_node_list.add(node);
+			
 		}
 		return tree_node_list;
 	}
@@ -320,6 +328,17 @@ public class TreeNodeTool {
 		}
 
 		return node;
+	}
+	
+	/**
+	 * 解析菜单为树形节点
+	 * @param menuList 菜单项
+	 * @param isRecursive 是否递归
+	 * @param parent 父菜单
+	 * @return 树形节点列表
+	 */
+	public List<TreeNode> parseToTreeNodeFromMenu(List<Menu> menuList,boolean isRecursive,Menu parent) {
+		return this.parse_to_tree_node_from_menu(menuList, isRecursive, parent, null);
 	}
 
 	@Resource(name = "menuServiceImpl")
