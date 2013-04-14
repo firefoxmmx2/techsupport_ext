@@ -6,13 +6,23 @@
 		var loadlist = [];
 		if (!techsupport.systemmanage.UserManager)
 			loadlist.push("basic/systemadmin/js/userManage.js");
-		loadlist.push("basic/systemadmin/js/menuManager.js");
-		Ext.Loader.load(loadlist, function() {
+		if(!techsupport.systemmanage.MenuManager){
+			loadlist.push("basic/systemadmin/js/menuManager.js");
+			Ext.Loader.load(loadlist, function() {
+				var menuManager = new techsupport.systemmanage.MenuManager({
+					renderTo : 'menuManagerCt'
+				});
+				menuManager.show();
+			});
+		}
+		else{
 			var menuManager = new techsupport.systemmanage.MenuManager({
 				renderTo : 'menuManagerCt'
 			});
 			menuManager.show();
-		});
+		}
+			
+		
 	});
 </script>
 <div id="menuManagerCt" style="width:100%;height:100%;"></div>

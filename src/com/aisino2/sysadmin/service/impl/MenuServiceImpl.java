@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.IMenuDao;
 import com.aisino2.sysadmin.domain.Menu;
 import com.aisino2.sysadmin.domain.Pager;
@@ -93,6 +94,14 @@ public class MenuServiceImpl implements IMenuService {
 		for (Menu menu : menuList) {
 			this.deleteMenu(menu);
 		}
+	}
+
+	@Override
+	public boolean checkMenucode(String menucode) {
+		if(!Util.isNotEmpty(menucode))
+			throw new RuntimeException("被验证的菜单代码不能为空");
+		
+		return this.menu_dao.checkMenucode(menucode);
 	}
 
 }

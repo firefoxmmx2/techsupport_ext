@@ -91,8 +91,8 @@ public class Menu implements Serializable {
 
 
 	/** 子菜单 */
-	@OneToMany(cascade=CascadeType.ALL,targetEntity=Menu.class,fetch=FetchType.LAZY)
-	@JoinColumn(name="menucode",referencedColumnName="parentmenucode")
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="menucode",referencedColumnName="parentmenucode",insertable=false,updatable=false)
 	private List<Menu> child_menu_list;
 
 	@ManyToOne(cascade=CascadeType.ALL,targetEntity=System.class)

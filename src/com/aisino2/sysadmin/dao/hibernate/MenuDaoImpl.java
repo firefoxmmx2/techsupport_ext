@@ -11,6 +11,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -57,7 +58,7 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 				q.setCacheable(true);
 				//condition
 				Example ex = Example.create(menu);
-				ex.enableLike();
+				ex.enableLike(MatchMode.ANYWHERE);
 				ex.excludeZeroes();
 				ex.ignoreCase();
 				ex.excludeProperty("parent");
@@ -94,7 +95,7 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 				q.setCacheable(true);
 				//condition
 				Example ex = Example.create(menu);
-				ex.enableLike();
+				ex.enableLike(MatchMode.ANYWHERE);
 				ex.excludeZeroes();
 				ex.ignoreCase();
 				ex.excludeProperty("parent");
@@ -249,5 +250,13 @@ public class MenuDaoImpl extends TechSupportBaseDaoImpl implements IMenuDao {
 		para_map.put("hql", hql);
 		para_map.put("para", para_list);
 		return para_map;
+	}
+
+	@Override
+	public boolean checkMenucode(String menucode) {
+		String hql = "select count(t) from Menu t where t.menucode = ?";
+		if((Long) this.getHibernateTemplate().find(hql, menucode).get(0) == 0)
+			return true;
+		return false;
 	}
 }

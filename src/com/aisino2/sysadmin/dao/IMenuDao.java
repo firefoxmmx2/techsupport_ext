@@ -71,4 +71,10 @@ public interface IMenuDao {
 	  /** @根据角色取得所有菜单 */
 	  List<Menu> getRoleCheckedMenuList(Menu menu);
 	  
+	  /**
+	   * 验证菜单代码是否可用
+	 * @param menucode 菜单代码
+	 * @return 可用 true,不可用 false
+	 */
+	boolean checkMenucode(String menucode);
 }
