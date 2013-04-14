@@ -127,3 +127,15 @@ Ext.apply(Ext.form.VTypes,{
 			return false;
 	}
 });
+
+Ext.override(Ext.BasicForm,{
+//	getValues:function(asString){
+//		var fs = Ext.BasicForm.call(this,asString);
+//		if(typeof fs == "object"){
+//			Ext.each(fs, function(item,idx,all){
+//			});
+//		}
+//		
+//		return fs;
+//	}
+});
