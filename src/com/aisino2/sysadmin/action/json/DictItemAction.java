@@ -66,7 +66,7 @@ public class DictItemAction extends PageAction {
 			this.total = pager.getTotalCount();
 		} catch (Exception e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "查询字典项列表错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -91,7 +91,7 @@ public class DictItemAction extends PageAction {
 			dictItem = this.dict_itemService.getDict_item(dictItem);
 		} catch (Exception e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "查询单个字典发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -115,7 +115,7 @@ public class DictItemAction extends PageAction {
 			this.dict_itemService.insertDict_item(dictItem);
 		} catch (Exception e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "添加字典项发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -139,7 +139,7 @@ public class DictItemAction extends PageAction {
 			this.dict_itemService.updateDict_item(dictItem);
 		} catch (Exception e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "修改字典项发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -163,7 +163,7 @@ public class DictItemAction extends PageAction {
 			this.dict_itemService.removeDictItems(lDictItems);
 		} catch (Exception e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "删除字典项发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -186,7 +186,7 @@ public class DictItemAction extends PageAction {
 			lDictItems = this.dict_itemService.getListDict_item(dictItem);
 		} catch (Exception e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "查询字典项发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());

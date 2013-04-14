@@ -72,7 +72,7 @@ public class RoleManageAction extends PageAction {
 			this.roleService.insertRole(role);
 		} catch (RuntimeException e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "添加角色发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -97,7 +97,7 @@ public class RoleManageAction extends PageAction {
 			this.roleService.updateRole(role);
 		} catch (RuntimeException e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "修改角色发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -123,7 +123,7 @@ public class RoleManageAction extends PageAction {
 			this.roleService.removeRoles(roleList);
 		} catch (RuntimeException e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "删除角色发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e,e.fillInStackTrace());
@@ -147,7 +147,7 @@ public class RoleManageAction extends PageAction {
 			role = this.roleService.getRole(role);
 		} catch (RuntimeException e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "查询角色详情发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -174,7 +174,7 @@ public class RoleManageAction extends PageAction {
 			roleList = pager.getDatas();
 		} catch (RuntimeException e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "查询角色列表发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());

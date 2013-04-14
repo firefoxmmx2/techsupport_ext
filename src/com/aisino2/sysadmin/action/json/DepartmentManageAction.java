@@ -50,7 +50,7 @@ public class DepartmentManageAction extends PageAction {
 			department_list = (List<Department>) pager.getDatas();
 
 		} catch (Exception e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "获取列表发生错误";
 			log.error(e);
 			if(log.isDebugEnabled()){
@@ -104,7 +104,7 @@ public class DepartmentManageAction extends PageAction {
 				throw new RuntimeException("机构详情参数传输错误");
 			department = department_service.getDepartment(department);
 		}catch (Exception e) {
-			returnNo = 1;
+			returnNo = -1;
 			returnMessage = "详情获取错误";
 			
 			log.error(e);
@@ -138,7 +138,7 @@ public class DepartmentManageAction extends PageAction {
 			returnNo = 0;
 			returnMessage="添加成功";
 		}catch (Exception e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "添加发生错误";
 			log.error(e);
 			if(log.isDebugEnabled()){
@@ -202,7 +202,7 @@ public class DepartmentManageAction extends PageAction {
 			returnNo=0;
 			returnMessage="修改成功";
 		}catch (Exception e) {
-			returnNo = 1;
+			returnNo = -1;
 			returnMessage = "修改发生错误";
 			log.error(e);
 			if(log.isDebugEnabled()){
@@ -228,7 +228,7 @@ public class DepartmentManageAction extends PageAction {
 			else
 				returnNo = 1;
 		}catch (Exception e) {
-			returnNo = 1;
+			returnNo = -1;
 			returnMessage = "效验机构代码发生了错误";
 			log.error(e);
 			if(log.isDebugEnabled()){

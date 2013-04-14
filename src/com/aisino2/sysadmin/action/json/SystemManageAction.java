@@ -31,6 +31,30 @@ public class SystemManageAction extends PageAction {
 	 */
 	private static final long serialVersionUID = 6479289252324243277L;
 	
+	public System getSystem() {
+		return system;
+	}
+
+	public void setSystem(System system) {
+		this.system = system;
+	}
+
+	public List<System> getSystemList() {
+		return systemList;
+	}
+
+	public void setSystemList(List<System> systemList) {
+		this.systemList = systemList;
+	}
+	@Resource(name="systemServiceImpl")
+	public void setSystemService(ISystemService systemService) {
+		this.systemService = systemService;
+	}
+	@Resource(name="treeNodeTool")
+	public void setTreeNodeTool(TreeNodeTool treeNodeTool) {
+		this.treeNodeTool = treeNodeTool;
+	}
+	
 	/**
 	 * 详情查询
 	 * @return
@@ -42,7 +66,7 @@ public class SystemManageAction extends PageAction {
 				throw new RuntimeException("系统详情参数传输错误");
 			system = systemService.getSystem(system);
 		}catch(Exception e){
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "系统详情发生错误";
 			log.error(e);
 			if(log.isDebugEnabled()){
@@ -70,7 +94,7 @@ public class SystemManageAction extends PageAction {
 			this.total = pager.getTotalCount();
 			this.systemList = (List<System>) pager.getDatas();
 		} catch (Exception e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "获取系统列表发生错误";
 			log.error(e);
 			if(log.isDebugEnabled()){
@@ -91,7 +115,7 @@ public class SystemManageAction extends PageAction {
 				throw new RuntimeException("系统新增参数传输错误");
 			systemService.insertSystem(system);
 		} catch (Exception e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "系统新增发生错误";
 			log.error(e);
 			if(log.isDebugEnabled()){
@@ -112,7 +136,7 @@ public class SystemManageAction extends PageAction {
 				throw new RuntimeException("系统删除参数传输错误");
 			systemService.removeAll(systemList);
 		} catch (Exception e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "系统删除发生错误";
 			log.error(e);
 			if(log.isDebugEnabled()){
@@ -133,7 +157,7 @@ public class SystemManageAction extends PageAction {
 				throw new RuntimeException("系统修改参数传输错误");
 			systemService.updateSystem(system);
 		} catch (Exception e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "系统修改发生错误";
 			log.error(e);
 			if(log.isDebugEnabled()){
@@ -154,7 +178,7 @@ public class SystemManageAction extends PageAction {
 				throw new RuntimeException("系统上移参数传输错误");
 			
 		} catch (Exception e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "系统上移发生错误";
 			log.error(e);
 			if(log.isDebugEnabled()){
@@ -236,7 +260,7 @@ public class SystemManageAction extends PageAction {
 			else
 				this.returnNo = 1;
 		} catch (Exception e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "系统代码验证发生错误";
 			log.error(e);
 			if(log.isDebugEnabled()){
@@ -246,28 +270,30 @@ public class SystemManageAction extends PageAction {
 		}
 		return SUCCESS;
 	}
-	public System getSystem() {
-		return system;
-	}
-
-	public void setSystem(System system) {
-		this.system = system;
-	}
-
-	public List<System> getSystemList() {
-		return systemList;
-	}
-
-	public void setSystemList(List<System> systemList) {
-		this.systemList = systemList;
-	}
-	@Resource(name="systemServiceImpl")
-	public void setSystemService(ISystemService systemService) {
-		this.systemService = systemService;
-	}
-	@Resource(name="treeNodeTool")
-	public void setTreeNodeTool(TreeNodeTool treeNodeTool) {
-		this.treeNodeTool = treeNodeTool;
+	
+	/**
+	 * 查询列表全部
+	 * @return
+	 */
+	public String querylistAll() {
+		try {
+			if(system == null)
+				system = new System();
+			if(system.getParent() != null && "0".equals(system.getParent().getSystemcode()))
+				system.setParent(null);
+			if("0".equals(system.getSystemcode()))
+				system.setSystemcode(null);
+			systemList =  systemService.getListSystem(system, queryExtraCond);
+		} catch (RuntimeException e) {
+			this.returnNo = -1;
+			this.returnMessage = "系统列表查询发生错误";
+			log.error(e);
+			if(log.isDebugEnabled()){
+				log.debug(e,e.fillInStackTrace());
+				this.returnMessageDebug = e.getMessage() +"\n";
+			}
+		}
+		return SUCCESS;
 	}
 	
 }

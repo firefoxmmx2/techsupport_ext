@@ -12,6 +12,7 @@ import net.sf.json.JSONObject;
 import org.hibernate.usertype.LoggableUserType;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aisino2.sysadmin.action.PageAction;
 import com.aisino2.sysadmin.domain.Menu;
@@ -76,7 +77,7 @@ public class MenuAction extends PageAction {
 				throw new RuntimeException("添加菜单参数传输错误");
 			menuService.insertMenu(menu);
 		} catch (RuntimeException e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "添加菜单发生错误";
 			log.error(e);
 			if (log.isDebugEnabled()) {
@@ -101,7 +102,7 @@ public class MenuAction extends PageAction {
 			menuService.updateMenu(menu);
 		} catch (RuntimeException e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "修改菜单发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -126,7 +127,7 @@ public class MenuAction extends PageAction {
 				throw new RuntimeException("删除菜单参数传递发生错误");
 			menuService.removeMenus(menuList);
 		} catch (RuntimeException e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "删除菜单发生错误";
 			log.error(e);
 			if (log.isDebugEnabled()) {
@@ -163,7 +164,7 @@ public class MenuAction extends PageAction {
 			}
 
 		} catch (RuntimeException e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "查询菜单列表发生错误";
 			log.error(e);
 			if (log.isDebugEnabled()) {
@@ -188,7 +189,7 @@ public class MenuAction extends PageAction {
 				throw new RuntimeException("获取菜单详细信息参数传递错误");
 			menu = menuService.getMenu(menu);
 		} catch (RuntimeException e) {
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "获取菜单详细信息发生错误";
 			log.error(e);
 			if (log.isDebugEnabled()) {
@@ -204,7 +205,7 @@ public class MenuAction extends PageAction {
 	 * 
 	 * @return
 	 */
-	public String queryMenuTreeNode() throws IOException{
+	public String queryMenuTreeNode() throws IOException {
 		try {
 			menu = (Menu) JSONObject.toBean(
 					JSONObject.fromObject(this.request.getParameter("qMenu")),
@@ -227,7 +228,7 @@ public class MenuAction extends PageAction {
 			out.close();
 		} catch (RuntimeException e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "查询菜单树形节点发生错误";
 			if (log.isDebugEnabled()) {
 				this.returnMessageDebug = e.getMessage();
@@ -235,5 +236,30 @@ public class MenuAction extends PageAction {
 			}
 		}
 		return NONE;
+	}
+
+	/**
+	 * 验证用户代码是否可用 可用 true 不可用 false
+	 * 
+	 * @return
+	 */
+	public String checkMenucode() {
+		try {
+			String menucode = this.request.getParameter("menucode");
+			boolean result = this.menuService.checkMenucode(menucode);
+			if (!result) {
+				returnNo = 1;
+				returnMessage = "该菜单代码已存在";
+			}
+		} catch (RuntimeException e) {
+			log.error(e);
+			returnNo = -1;
+			returnMessage = "验证用户代码发生错误";
+			if (log.isDebugEnabled()) {
+				log.debug(e, e.fillInStackTrace());
+				returnMessageDebug = e.getMessage();
+			}
+		}
+		return SUCCESS;
 	}
 }

@@ -87,7 +87,7 @@ public class DictAction extends PageAction {
 			}
 		} catch (Exception e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "字典列表查询出错";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -114,7 +114,7 @@ public class DictAction extends PageAction {
 			dict = dictService.getDict(dict);
 		} catch (Exception e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "查询字典详情发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -140,7 +140,7 @@ public class DictAction extends PageAction {
 			dictService.insertDict(dict);
 		} catch (Exception e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "添加字典发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -166,7 +166,7 @@ public class DictAction extends PageAction {
 			dictService.updateDict(dict);
 		} catch (Exception e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "修改字典发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -192,7 +192,7 @@ public class DictAction extends PageAction {
 			dictService.removeDicts(lDicts);
 		} catch (Exception e) {
 			log.error(e);
-			this.returnNo = 1;
+			this.returnNo = -1;
 			this.returnMessage = "删除字典发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
@@ -218,7 +218,7 @@ public class DictAction extends PageAction {
 			}
 		} catch (Exception e) {
 			log.error(e);
-			returnNo = 2; // 这里的2表示异常
+			returnNo = -1; 
 			returnMessage = "检查字典代码发生错误";
 			if (log.isDebugEnabled()) {
 				log.debug(e, e.fillInStackTrace());
