@@ -294,9 +294,16 @@ if (!techsupport.systemmanage.MenuManager) {
 							function(item, idx, all) {
 								if (item.text == '添加') {
 									item.setHandler(function() {
+										var data = mm.treePanel.getNodeById(mm.currentNodeId).attributes.attributes || {};
+										var store = grid.getStore();
+										var record = new store.recordType({
+											parent:{menucode:data.menucode,menuname:data.menuname,menufullcode:data.menufullcode},
+											system:{systemcode:data.systemcode}
+										});
 										var window = new techsupport.systemmanage.MenuWindow(
 												{
 													ownerCt : this,
+													initRecord:record,
 													store : grid.getStore(),
 													actions : grid.ownerCt.actions,
 													id : this.id + 'AddWindow',

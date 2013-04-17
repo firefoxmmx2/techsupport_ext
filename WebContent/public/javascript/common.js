@@ -129,10 +129,31 @@ Ext.apply(Ext.form.VTypes, {
 
 Ext.override(Ext.form.BasicForm, {
 	getValues : function(asString) {
-		var fs = Ext.BasicForm.call(this, asString);
-		if (typeof fs == "object") {
-			Ext.each(fs, function(item, idx, all) {
-					});
+		function buildValues(values) {
+			for (var key in values) {
+				var keyArr = key.split(".");
+				if(keyArr.length>=2){
+					var parent = null;
+					for(var i=0;i<keyArr.length-1;i++){
+						parent = values[i];
+						if(Ext.isEmpty(values[i]))
+							values[i] = {};
+					}
+					parent[keyArr.length-1] = values[key];
+					delete values[key];
+				}
+					
+			}
+
+			return values;
+		}
+		var fs = Ext.lib.Ajax.serializeForm(this.el.dom);
+		if (asString === true) {
+			return fs;
+		}
+		fs = Ext.urlDecode(fs);
+		if (Ext.isObject(fs)) {
+			fs = buildValues(fs);
 		}
 
 		return fs;
@@ -141,9 +162,9 @@ Ext.override(Ext.form.BasicForm, {
 		function buildValues(values) {
 			for (var key in values) {
 				if (Ext.isObject(values[key]) && !Ext.isFunction(values[key])) {
-					var subvalues = buildValues(values);
+					var subvalues = buildValues(values[key]);
 					for (var subkey in subvalues) {
-						values[key + '.' + subkey] = subvalues[key];
+						values[key + '.' + subkey] = subvalues[subkey];
 					}
 					delete values[key];
 				}

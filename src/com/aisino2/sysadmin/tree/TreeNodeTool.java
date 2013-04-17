@@ -242,7 +242,8 @@ public class TreeNodeTool {
 			attributes_map.put("funcentry", m.getFuncentry());
 			attributes_map.put("system_name", m.getSystem().getSystemname());
 			attributes_map.put("systemcode", m.getSystem().getSystemcode());
-
+			attributes_map.put("menufullcode", m.getMenufullcode());
+			
 			node.setAttributes(attributes_map);
 			// 子节点
 			List<Menu> temp_children_menu = null;
