@@ -37,6 +37,21 @@ if (!techsupport.systemmanage.MenuManager) {
 										var json = res.responseJSON;
 										if (json) {
 											if (json.success) {
+												var tree = Ext.getCmp(mm.id
+														+ "TreePanel");
+												var currentNode = tree
+														.getNodeById(mm.currentNodeId);
+
+												tree.loader.load(currentNode,
+														function(node) {
+															if (node.childNodes.length = 0)
+																node.leaf = true;
+															else {
+																node.leaf = false;
+																node.expand();
+															}
+
+														});
 												if (store)
 													store.load();
 												if (window)
@@ -294,18 +309,30 @@ if (!techsupport.systemmanage.MenuManager) {
 							function(item, idx, all) {
 								if (item.text == '添加') {
 									item.setHandler(function() {
-										var data = mm.treePanel.getNodeById(mm.currentNodeId).attributes.attributes || {};
+										var data = mm.treePanel
+												.getNodeById(mm.currentNodeId).attributes.attributes
+												|| {
+													'menucode' : '0',
+													menuname : '顶点'
+												};
+
 										var store = grid.getStore();
 										var record = new store.recordType({
-											parent:{menucode:data.menucode,menuname:data.menuname,menufullcode:data.menufullcode},
-											system:{systemcode:data.systemcode}
+											parent : {
+												menucode : data.menucode,
+												menuname : data.menuname,
+												menufullcode : data.menufullcode
+											},
+											system : {
+												systemcode : data.systemcode
+											}
 										});
 										var window = new techsupport.systemmanage.MenuWindow(
 												{
 													ownerCt : this,
-													initRecord:record,
+													initRecord : record,
 													store : grid.getStore(),
-													actions : grid.ownerCt.actions,
+													actions : grid.ownerCt.ownerCt.actions,
 													id : this.id + 'AddWindow',
 													mode : 'add'
 												});
@@ -323,7 +350,7 @@ if (!techsupport.systemmanage.MenuManager) {
 													{
 														ownerCt : this,
 														store : grid.getStore(),
-														actions : grid.ownerCt.actions,
+														actions : grid.ownerCt.ownerCt.actions,
 														id : this.id
 																+ 'ModifyWindow',
 														mode : 'modify',
@@ -443,7 +470,6 @@ if (!techsupport.systemmanage.MenuWindow) {
 					blankText : '所属系统必须输入',
 					xtype : 'combo',
 					store : new Ext.data.JsonStore({
-						autoLoad : true,
 						idProperty : 'systemcode',
 						root : 'systemList',
 						url : context_path
@@ -518,6 +544,7 @@ if (!techsupport.systemmanage.MenuWindow) {
 							xtype : 'button',
 							text : '确认',
 							handler : function() {
+
 								var form = mw.findById(mw.id + "Form");
 								var params = form.getForm().getValues();
 
@@ -531,8 +558,11 @@ if (!techsupport.systemmanage.MenuWindow) {
 							text : '确认',
 							handler : function() {
 								var form = mw.findById(mw.id + 'Form');
-								var params = form.getForm().getValues();
-								mw.actions.modify(params, mw.store, mw);
+								if (form.isValid()) {
+									var params = form.getForm().getValues();
+									mw.actions.modify(params, mw.store, mw);
+								}
+
 							}
 						}, closeButton]);
 			} else {

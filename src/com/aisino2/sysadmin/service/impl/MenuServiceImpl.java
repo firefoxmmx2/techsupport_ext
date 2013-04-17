@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aisino2.sysadmin.common.Util;
 import com.aisino2.sysadmin.dao.IMenuDao;
+import com.aisino2.sysadmin.dao.ISystemDao;
 import com.aisino2.sysadmin.domain.Menu;
 import com.aisino2.sysadmin.domain.Pager;
 import com.aisino2.sysadmin.domain.User;
@@ -17,22 +18,38 @@ import com.aisino2.sysadmin.service.IMenuService;
 @Component
 public class MenuServiceImpl implements IMenuService {
 	private IMenuDao menu_dao;
+	private ISystemDao systemDao;
+	
+	@Resource(name="systemDaoImpl")
+	public void setSystemDao(ISystemDao systemDao) {
+		this.systemDao = systemDao;
+	}
 
 	@Resource(name="menuDaoImpl")
 	public void setMenu_dao(IMenuDao menu_dao) {
 		this.menu_dao = menu_dao;
 	}
 
+	@Transactional
 	public void insertMenu(Menu menu) {
+		if(menu.getParent()!=null && "0".equals(menu.getParent().getMenucode()))
+			menu.setParent(null);
+		else{
+			menu.setParent(menu_dao.getMenu(menu.getParent()));
+			menu.getParent().setIsleaf("N");
+		}
 		this.menu_dao.insertMenu(menu);
 	}
-
+	@Transactional
 	public void deleteMenu(Menu menu) {
 		this.menu_dao.deleteMenu(menu);
 	}
 
+	@Transactional
 	public void updateMenu(Menu menu) {
-		this.menu_dao.updateMenu(menu);
+		Menu oldMenu = this.getMenu(menu);
+		Util.copyProperties(oldMenu, menu);
+		this.menu_dao.updateMenu(oldMenu);
 	}
 
 	public Menu getMenu(Menu menu) {
@@ -93,6 +110,9 @@ public class MenuServiceImpl implements IMenuService {
 		}
 		for (Menu menu : menuList) {
 			this.deleteMenu(menu);
+		}
+		if(menuList.get(0).getParent()!=null){
+			menuList.get(0).getParent().setIsleaf("Y");
 		}
 	}
 

@@ -126,23 +126,29 @@ Ext.apply(Ext.form.VTypes, {
 					return false;
 			}
 		});
-
+/**
+ * 重写BasicForm组件
+ */
 Ext.override(Ext.form.BasicForm, {
 	getValues : function(asString) {
 		function buildValues(values) {
 			for (var key in values) {
 				var keyArr = key.split(".");
-				if(keyArr.length>=2){
+				if (keyArr.length >= 2) {
 					var parent = null;
-					for(var i=0;i<keyArr.length-1;i++){
-						parent = values[i];
-						if(Ext.isEmpty(values[i]))
-							values[i] = {};
+					for (var i = 0; i < keyArr.length - 1; i++) {
+						if (Ext.isEmpty(values[keyArr[i]])) {
+							values[keyArr[i]] = {};
+						}
+
+						parent = values[keyArr[i]];
+
 					}
-					parent[keyArr.length-1] = values[key];
+					if (parent)
+						parent[keyArr[keyArr.length - 1]] = values[key];
 					delete values[key];
 				}
-					
+
 			}
 
 			return values;
@@ -194,6 +200,75 @@ Ext.override(Ext.form.BasicForm, {
 				}
 			}
 		}
+		return this;
+	}
+});
+
+/**
+ * 重写combo组件
+ */
+Ext.override(Ext.form.ComboBox, {
+	setValue : function(v) {
+		// 这个重写函数主要是为了AJAX加载的JSONSTROE的数据在使用setValue的时候也能够正确的设置.
+		var text = v;
+		// 代表自身
+		var cb = this;
+		if (this.valueField) {
+
+			var record = null;
+			// 当数据集里面有记录的时候
+			if (this.store.getCount() > 0) {
+				this.store.each(function(r) {
+							if (r.data[cb.valueField] == v) {
+								record = r;
+								return false;
+							}
+						});
+				if (record) {
+					text = record.data[this.displayField];
+				} else if (Ext.isDefined(this.valueNotFoundText)) {
+					text = this.valueNotFoundText;
+				}
+
+				this.lastSelectionText = text;
+				if (this.hiddenField) {
+					this.hiddenField.value = Ext.value(v, '');
+				}
+				Ext.form.ComboBox.superclass.setValue.call(this, text);
+				this.value = v;
+				this.clearInvalid();
+			} else {
+				// 当处于加载中状态的时候,因为load回调不能在创建combo组件的时候绑定,所以只好重新加载一次,
+				// 然后在这里设置回调,使他设置想要的结果.
+				cb.store.load({
+							callback : function() {
+								cb.store.each(function(r) {
+											if (r.data[cb.valueField] == v) {
+												record = r;
+												return false;
+											}
+										});
+
+								if (record) {
+									text = record.data[cb.displayField];
+								} else if (Ext.isDefined(cb.valueNotFoundText)) {
+									text = cb.valueNotFoundText;
+								}
+
+								cb.lastSelectionText = text;
+								if (cb.hiddenField) {
+									cb.hiddenField.value = Ext.value(v, '');
+								}
+								Ext.form.ComboBox.superclass.setValue.call(cb,
+										text);
+								cb.value = v;
+								cb.clearInvalid();
+							}
+						});
+			}
+
+		}
+
 		return this;
 	}
 });

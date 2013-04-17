@@ -72,7 +72,7 @@ public class MenuAction extends PageAction {
 		try {
 			menu = (Menu) JSONObject
 					.toBean(JSONObject.fromObject(this.request
-							.getParameter("addMenu")), Menu.class);
+							.getParameter("aMenu")), Menu.class);
 			if (menu == null)
 				throw new RuntimeException("添加菜单参数传输错误");
 			menuService.insertMenu(menu);
@@ -96,7 +96,7 @@ public class MenuAction extends PageAction {
 	public String modify() {
 		try {
 			menu = (Menu) JSONObject.toBean(JSONObject.fromObject(this.request
-					.getParameter("modifyMenu")), Menu.class);
+					.getParameter("mMenu")), Menu.class);
 			if (menu == null)
 				throw new RuntimeException("修改菜单参数传递发生错误");
 			menuService.updateMenu(menu);
@@ -121,7 +121,7 @@ public class MenuAction extends PageAction {
 	public String remove() {
 		try {
 			menuList = (List<Menu>) JSONArray.toList(JSONArray
-					.fromObject(this.request.getParameter("removeMenuList")),
+					.fromObject(this.request.getParameter("rMenu")),
 					Menu.class);
 			if (menuList == null || menuList.isEmpty())
 				throw new RuntimeException("删除菜单参数传递发生错误");
