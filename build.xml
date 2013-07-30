@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!--项目-->
+<project name="techsupport_ext" default="runFirefox">
+    <!--浏览器配置-->
+    <property name="chrome" location="/usr/bin/google-chrome"/>
+    <property name="firefox" location="/usr/bin/firefox"/>
+    <!--服务器配置-->
+    <property name="tomcatHome" location="/home/hooxin/Pro/apache-tomcat-6.0.18"/>
+    <property name="webroot" location="${tomcatHome}/webapps"/>
+    <property name="tomcatServerStart" location="${tomcatHome}/bin/startup.sh"/>
+    <property name="localWebServer" location="http://localhost:8888"/>
+    <!--发布名称配置-->
+    <property name="deploymentTargetName" value="techsupport_ext"/>
+
+    <!--JDK 配置-->
+    <property name="jdk.home" value="/opt/java"/>
+    <property name="jdk.bin" value="${jdk.home}/bin"/>
+    <path id="jdk.classpath">
+        <fileset dir="${jdk.home}">
+            <include name="jre/lib/*.jar"/>
+            <include name="jre/lib/ext/*.jar"/>
+        </fileset>
+    </path>
+
+
+    <path id="compile.classpath">
+        <fileset dir="WebContent/WEB-INF/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="init">
+        <mkdir dir="build/classes"/>
+        <mkdir dir="dist"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac destdir="build/classes" debug="true" srcdir="src" nowarn="true" executable="${jdk.bin}/javac">
+            <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+
+    <target name="war" depends="compile">
+        <war destfile="${webroot}/${deploymentTargetName}.war" webxml="WebContent/WEB-INF/web.xml">
+            <fileset dir="WebContent"/>
+            <fileset dir="src"/>
+            <lib dir="WebContent/WEB-INF/lib"/>
+            <classes dir="build/classes"/>
+        </war>
+    </target>
+
+    <target name="startTomcatRun" depends="war">
+        <exec executable="${tomcatServerStart}"/>
+    </target>
+
+    <target name="runChrome" depends="startTomcatRun">
+        <exec executable="${chrome}" spawn="true">
+            <arg value="${localWebServer}/${deploymentTargetName}"/>
+        </exec>
+    </target>
+
+    <target name="runFirefox" depends="startTomcatRun">
+        <exec executable="${firefox}" spawn="true">
+            <arg value="${localWebServer}/${deploymentTargetName}"/>
+        </exec>
+    </target>
+
+    <target name="clean">
+        <delete dir="dist"/>
+        <delete dir="build"/>
+    </target>
+
+
+</project>
