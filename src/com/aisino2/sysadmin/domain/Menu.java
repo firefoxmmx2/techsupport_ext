@@ -98,7 +98,7 @@ public class Menu implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="systemcode",nullable=false,referencedColumnName="systemcode")
 	private System system;
-	@ManyToOne(cascade={CascadeType.ALL})
+	@ManyToOne
 	@JoinColumn(name="parentmenucode",nullable=true,referencedColumnName="menucode")
 	private Menu parent;
 

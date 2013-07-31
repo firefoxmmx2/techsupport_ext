@@ -18,28 +18,25 @@ import com.aisino2.sysadmin.service.IMenuService;
 @Component
 public class MenuServiceImpl implements IMenuService {
 	private IMenuDao menu_dao;
-	private ISystemDao systemDao;
-	
-	@Resource(name="systemDaoImpl")
-	public void setSystemDao(ISystemDao systemDao) {
-		this.systemDao = systemDao;
-	}
 
-	@Resource(name="menuDaoImpl")
+	@Resource(name = "menuDaoImpl")
 	public void setMenu_dao(IMenuDao menu_dao) {
 		this.menu_dao = menu_dao;
 	}
 
 	@Transactional
 	public void insertMenu(Menu menu) {
-		if(menu.getParent()!=null && "0".equals(menu.getParent().getMenucode()))
+		if (menu.getParent() != null
+				&& "0".equals(menu.getParent().getMenucode()))
 			menu.setParent(null);
-		else{
+		else {
 			menu.setParent(menu_dao.getMenu(menu.getParent()));
 			menu.getParent().setIsleaf("N");
+			this.updateMenu(menu.getParent());
 		}
 		this.menu_dao.insertMenu(menu);
 	}
+
 	@Transactional
 	public void deleteMenu(Menu menu) {
 		this.menu_dao.deleteMenu(menu);
@@ -58,7 +55,7 @@ public class MenuServiceImpl implements IMenuService {
 
 	public Pager getListForPage(Menu menu, int pageNo, int pageSize,
 			String sort, String desc) {
-		
+
 		return this.menu_dao.getListForPage(menu, pageNo, pageSize, sort, desc);
 	}
 
@@ -106,21 +103,26 @@ public class MenuServiceImpl implements IMenuService {
 	@Override
 	public void removeMenus(List<Menu> menuList) {
 		if (menuList == null || menuList.isEmpty()) {
-			throw new RuntimeException("菜单列表");
+			throw new RuntimeException("被删除菜单列表不能为空");
 		}
+		Menu someMenu  = null;
 		for (Menu menu : menuList) {
+			menu = this.getMenu(menu);
+			someMenu = menu;
 			this.deleteMenu(menu);
 		}
-		if(menuList.get(0).getParent()!=null){
-			menuList.get(0).getParent().setIsleaf("Y");
+
+		if (someMenu.getParent() != null
+				&& !(someMenu.getChild_menu_list() == null || someMenu.getChild_menu_list().isEmpty())) {
+			someMenu.getParent().setIsleaf("Y");
 		}
 	}
 
 	@Override
 	public boolean checkMenucode(String menucode) {
-		if(!Util.isNotEmpty(menucode))
+		if (!Util.isNotEmpty(menucode))
 			throw new RuntimeException("被验证的菜单代码不能为空");
-		
+
 		return this.menu_dao.checkMenucode(menucode);
 	}
 

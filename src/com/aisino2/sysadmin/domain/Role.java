@@ -64,20 +64,21 @@ public class Role implements Serializable{
 	/** @ --角色描述--roledescription--String--100-- */
 	private String roledescription;
 
-	@Column
+	
 	/** @ --角色类别--roletype--Integer--1-- */
-	private Integer roletype;
+	@Column
+	private Integer roletype = 0;
 
 	@ManyToOne
 	@JoinColumn(name="departid",insertable=false,updatable=false)
 	private Department department;
-	@OneToMany(cascade={CascadeType.MERGE,CascadeType.PERSIST},targetEntity=Function.class)
+	@ManyToMany(targetEntity=Function.class)
 	@JoinTable(name="t_role_func",joinColumns=@JoinColumn(name="roleid"),inverseJoinColumns=@JoinColumn(name="funccode"))
 	private List<Function> roleFunctions;
-	@ManyToMany(cascade={CascadeType.MERGE,CascadeType.PERSIST},targetEntity=User.class)
+	@ManyToMany(targetEntity=User.class)
 	@JoinTable(name="t_user_role",joinColumns=@JoinColumn(name="roleid"),inverseJoinColumns=@JoinColumn(name="userid"))
 	private List<User> roleUsers;
-	@ManyToMany(cascade={CascadeType.MERGE,CascadeType.PERSIST},targetEntity=Menu.class)
+	@ManyToMany(targetEntity=Menu.class)
 	@JoinTable(name="t_role_menu",joinColumns=@JoinColumn(name="roleid"),inverseJoinColumns=@JoinColumn(name="menucode"))
 	private List<Menu> roleMenus;
 
